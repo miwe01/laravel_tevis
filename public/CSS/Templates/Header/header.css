@@ -1,0 +1,88 @@
+/* header style */
+header{
+    display: flex;
+    margin: 0 auto;
+    border-bottom: 1px solid black;
+    padding: 10px 0px 2px 5px;
+}
+/* */
+
+/* logo */
+.bild{
+    padding-bottom: 5px;
+    display: flex;
+    align-items: flex-end;
+}
+/* */
+
+/* navigation */
+nav{
+    margin-left: auto;
+}
+.header-ul{
+    display: flex;
+    position: relative;
+
+    height: 70px;
+    justify-content: flex-end;
+    align-items: flex-end;
+    padding-right: 5px;
+}
+.header-ul > li{
+    display: inline-block;
+    margin-right: 15px;
+}
+/* */
+
+/* header-li = Dashboard + Mein Konto */
+.header-li{
+    padding-bottom: 10px;
+}
+/* */
+
+/* logout button */
+#logout-li{
+    margin-left: 15px;
+    border: 1px solid black;
+    background-color: #5C5C5C;
+    padding: 5px 0px;
+    margin-bottom: 5px;
+}
+
+#logout-li a{
+    color: white;
+    padding: 10px;
+}
+/* */
+
+/* Flags */
+#german{
+    margin-right: 50px;
+}
+#uk{
+    margin-right: 18px;
+}
+/* */
+
+
+/* mobile Users */
+@media (max-width: 610px){
+    .bild > img{
+        width: 100px;
+        height: auto;
+    }
+    .header-li a{
+        font-size: 12px;
+    }
+    .header-ul > li {
+        margin-right: 10px;
+    }
+    #logout-li{
+        margin-left: 10px;
+    }
+    #logout-li a{
+        padding: 5px;
+        font-size: 12px;
+    }
+}
+/* */
