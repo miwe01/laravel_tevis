@@ -24,12 +24,12 @@ function CheckRolle(){
 }
 */
 /* Überprüft ob es eine CSV Datei ist wenn nicht akzeptiert */
-function checkType(){
-    var fileName = document.getElementById("file").value;
+function checkType(Name){
+    var fileName = document.getElementById(Name).value;
     let extension = fileName.substring(fileName.lastIndexOf('.') + 1);
 
     if(extension != "csv"){
-        document.getElementById("file").value = "";
+        document.getElementById(Name).value = "";
         alert("Keine CSV Datei");
     }
 }

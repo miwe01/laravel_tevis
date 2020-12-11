@@ -17,12 +17,20 @@ Route::get('/', function () {
     return view('welcome');
 });
 */
-
 Route::get('/', '\App\Http\Controllers\PruefungsamtController@index')->name('dashboard');
 Route::post('/', '\App\Http\Controllers\PruefungsamtController@index')->name('dashboard');
 Route::post('/addPerson', '\App\Http\Controllers\PruefungsamtController@benutzerAdd');
 Route::post('/fileUpload', '\App\Http\Controllers\PruefungsamtController@fileUpload');
 Route::post('/klausurZulassung', '\App\Http\Controllers\PruefungsamtController@klausurZulassung');
+Route::post('/klausurZulassungen', '\App\Http\Controllers\PruefungsamtController@klausurZulassungen');
+Route::post('/praktikumAnerkennen', '\App\Http\Controllers\PruefungsamtController@praktikumAnerkennen');
+Route::post('/Testatbogen', '\App\Http\Controllers\PruefungsamtController@Testatbogen');
+
+
+Route::get('/konto', '\App\Http\Controllers\PruefungsamtController@konto')->name('konto');
+Route::post('/konto/passwortAendern', '\App\Http\Controllers\PruefungsamtController@passwortAendern');
+
+
 /*
 Route::post('/benutzerAdd', '\App\Http\Controllers\PruefungsamtController@check');
 Route::post('/benutzerDelete', '\App\Http\Controllers\PruefungsamtController@check');

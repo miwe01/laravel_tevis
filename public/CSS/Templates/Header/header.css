@@ -12,7 +12,10 @@ header{
     padding-bottom: 5px;
     display: flex;
     align-items: flex-end;
+    width: 150px;
+    height: auto;
 }
+
 /* */
 
 /* navigation */
