@@ -1,7 +1,10 @@
 <?php
-
+if(!isset($_SESSION)){
+    session_start();
+}
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\PruefungsamtController;
+use App\Http\Controllers\AuthenticationController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -17,18 +20,31 @@ Route::get('/', function () {
     return view('welcome');
 });
 */
-Route::get('/', '\App\Http\Controllers\PruefungsamtController@index')->name('dashboard');
-Route::post('/', '\App\Http\Controllers\PruefungsamtController@index')->name('dashboard');
-Route::post('/addPerson', '\App\Http\Controllers\PruefungsamtController@benutzerAdd');
-Route::post('/fileUpload', '\App\Http\Controllers\PruefungsamtController@fileUpload');
-Route::post('/klausurZulassung', '\App\Http\Controllers\PruefungsamtController@klausurZulassung');
-Route::post('/klausurZulassungen', '\App\Http\Controllers\PruefungsamtController@klausurZulassungen');
-Route::post('/praktikumAnerkennen', '\App\Http\Controllers\PruefungsamtController@praktikumAnerkennen');
-Route::post('/Testatbogen', '\App\Http\Controllers\PruefungsamtController@Testatbogen');
+Route::view('/', 'Login.index', [])->name('login');
+Route::post('/authentication', [AuthenticationController::class, 'authenticate']);
+//Route::get('/', '\App\Http\Controllers\PruefungsamtController@index')->name('dashboard');
 
 
-Route::get('/konto', '\App\Http\Controllers\PruefungsamtController@konto')->name('konto');
-Route::post('/konto/passwortAendern', '\App\Http\Controllers\PruefungsamtController@passwortAendern');
+
+Route::middleware('auth')->prefix('pruefungsamt')->group(function(){
+    $PC = PruefungsamtController::class;
+
+    Route::get('', [$PC, 'index'])->name('dashboard');
+    Route::post('', [$PC, 'index'])->name('dashboard');
+
+    Route::post('/logout', [$PC,  'logout']);
+    Route::post('/addPerson', [$PC,  'benutzerAdd']);
+    Route::post('/fileUpload', [$PC, 'fileUpload']);
+    Route::post('/klausurZulassung', [$PC, 'klausurZulassung']);
+    Route::post('/klausurZulassungen',[$PC, 'klausurZulassungen']);
+    Route::post('/praktikumAnerkennen', [$PC, 'praktikumAnerkennen']);
+    Route::post('/Testatbogen', [PruefungsamtController::class, 'Testatbogen']);
+
+    Route::get('/konto', '\App\Http\Controllers\PruefungsamtController@konto')->name('konto');
+    Route::post('/konto/passwortAendern', '\App\Http\Controllers\PruefungsamtController@passwortAendern');
+});
+
+
 
 
 /*

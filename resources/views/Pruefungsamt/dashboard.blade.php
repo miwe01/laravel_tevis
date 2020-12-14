@@ -1,17 +1,23 @@
+@if(isset($fehler))
+    {{phpAlert($fehler)}}
+@endif
+
+{{$_SESSION['PA_UserId']}}
+
+@if(isset($info))
+    {{phpAlert($info)}}
+@endif
 @extends('layout')
 
 @section('main')
     <!-- Css für Dashboard -->
     <link rel="stylesheet" href="{{URL::asset("CSS/dashboard.css")}}">
 <!--dashboard -->
-@if(isset($fehler))
-    {{phpAlert($fehler)}}
-@endif
     <div id="wrapper">
         <div id="p1" class="loading">
             <div class="close" onclick="myFunction(p1, 'p1')">X</div>
             <h1>Student hinzufügen</h1>
-                <form action="/addPerson" method="post">
+                <form action="/pruefungsamt/addPerson" method="post">
                     @csrf
                 <input type="text" name="titel" placeholder="Titel(optional)">
                 <input type="text" name="nachname" placeholder="Nachname" value="abc" required>
@@ -46,7 +52,7 @@
             <div id="col-1-buttons">
                 <button class="big-buttons" onclick="myFunction(p1, 'p1')">Neue Person erstellen</button>
                 <label class="big-buttons">
-                    <form action="/fileUpload" method="post" enctype="multipart/form-data">
+                    <form action="/pruefungsamt/fileUpload" method="post" enctype="multipart/form-data">
                         @csrf
                         <!-- <input type="file" onchange="form.submit()" name="studierende-liste-upload">
                         Studierenden Liste importieren -->
@@ -70,13 +76,13 @@
         <div id="col-2">
             <div id="klausurzulassung">
                 <h3>Klausurzulassung prüfen</h3>
-                <form action="/klausurZulassung" method="post">
+                <form action="/pruefungsamt/klausurZulassung" method="post">
                     @csrf
                 <div>
                 <label for="matrikelnummer1">Matrikelnummer</label>
-                <input type="number" id="matrikelnummer1" name="matrikelnummer" placeholder="XXXXXX" min="1111111" max="9999999">
+                <input type="number" id="matrikelnummer1" name="matrikelnummer" placeholder="XXXXXXX" min="1111111" max="9999999" required>
                     <select name="modul">
-                        <option>Modul auswählen</option>
+                        <option value="">Modul auswählen</option>
                         <optgroup label="WiSe">
 
                     @foreach($WinterModule as $m)
@@ -97,7 +103,7 @@
 
             <div id="klausurzulassungen">
                 <h3>Klausurzulassungen prüfen</h3>
-                <form action="/klausurZulassungen" target="_blank"  method="post" enctype="multipart/form-data">
+                <form action="/pruefungsamt/klausurZulassungen" target="_blank"  method="post" enctype="multipart/form-data">
                     @csrf
                     <div>
                 <input type="file" id="file2" name="file" onchange="checkType('file2')" required>
@@ -126,13 +132,13 @@
         <div id="col-3">
             <div id="praktikum">
                 <h3>Praktikum anerkennen</h3>
-                <form action="/praktikumAnerkennen" method="post">
+                <form action="/pruefungsamt/praktikumAnerkennen" method="post">
                     @csrf
                     <div>
                 <label for="matrikelnummer2">Matrikelnummer</label>
                 <input type="number" id="matrikelnummer2" name="matrikelnummer" placeholder="XXXXXX" min="1111111" max="9999999">
                         <select name="modul">
-                            <option>Modul auswählen</option>
+                            <option value="">Modul auswählen</option>
                             <optgroup label="WiSe">
 
                                 @foreach($WinterModule as $m)
@@ -153,12 +159,11 @@
                 </form>
             </div>
                 <div id="testatbogen">
-                    <form action="/Testatbogen" method="post" target="_blank">
+                    <form action="/pruefungsamt/Testatbogen" method="post" target="_blank">
                         @csrf
                     <h3>Testatbogen anzeigen</h3>
                         <div>
                     <label for="matrikelnummer3">Matrikelnummer</label>
-
                     <input type="number" id="matrikelnummer3" name="matrikelnummer" placeholder="XXXXXXX" min="1111111" max="9999999">
                     <button type="submit" class="form-button" name="matrikel-anzeigen">Anzeigen</button>
                         </div>

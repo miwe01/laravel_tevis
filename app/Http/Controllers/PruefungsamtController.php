@@ -13,9 +13,15 @@ class PruefungsamtController extends Controller
         $wintermodule = DB::table('modul')->select('Modulnummer', 'Modulname', 'Semester', 'Jahr')->where('Semester', 'WiSe')->get();
         $sommermodule = DB::table('modul')->select('Modulnummer', 'Modulname', 'Semester', 'Jahr')->where('Semester', 'SoSe')->get();
 
-        return view('Pruefungsamt.dashboard',['fehler'=>$request->fehler, 'lastAdded'=>$kennung, 'WinterModule'=>$wintermodule, 'SommerModule' =>
+        return view('Pruefungsamt.dashboard',['fehler'=>$request->fehler, 'info'=>$request->info,'lastAdded'=>$kennung, 'WinterModule'=>$wintermodule, 'SommerModule' =>
             $sommermodule, 'title'=>'Dashboard']);
     }
+
+    public function logout(Request $request){
+        session_destroy();
+        return redirect()->route('login');
+    }
+
 
     public function benutzerAdd(Request $request){
         // print_r($request->all());
@@ -70,7 +76,7 @@ class PruefungsamtController extends Controller
             $rolle = $request->rolle;
             if ($rolle == "professor"){
                 DB::table('professor')->insert(
-                    ['Kennung'=>$request->kennung, 'Buero'=>'1', 'Telefon'=>'123']
+                    ['Kennung'=>$request->kennung, 'Titel'=>$request->titel]
                 );
             }
 
@@ -144,7 +150,7 @@ class PruefungsamtController extends Controller
                 );
 
             }
-            return redirect()->route('dashboard', ['fehler'=>'Datei wurde importiert']);
+            return redirect()->route('dashboard', ['info'=>'Datei wurde importiert']);
         }
         else
             return redirect()->route('dashboard', ['fehler'=>'Fehler beim Öffnen']);
@@ -152,15 +158,21 @@ class PruefungsamtController extends Controller
 
     public function klausurZulassung(Request $request){
 
+        if ($request->modul == "")
+            return redirect()->route('dashboard', ['fehler'=>'Kein Modul ausgewählt']);
+
+        // ist matrikelnummer überhaupt richtig
+        $matrikelnummer = DB::table('student')->where('Matrikelnummer', $request->matrikelnummer)->value("Matrikelnummer");
+        if($matrikelnummer == NULL)
+            return redirect()->route('dashboard', ['fehler'=>'Matrikelnummer ist falsch']);
+
         $testatid = DB::table('testat')->where('Modulnummer', $request->modul)->value("ID");
         //kein Testat von Modul => zugelassen
         if ($testatid == NULL){
-            return redirect()->route('dashboard', ['fehler'=>'Modul nicht gefunden, automatische Klausurzulassung']);
+            return redirect()->route('dashboard', ['info'=>'Modul nicht gefunden, automatische Klausurzulassung']);
         }
         else{
             $matrikelnummer = (int) $request->matrikelnummer;
-            // get Id from testat
-           //$testat = DB::table('testat')->select("ID")->where('Modulnummer', $request->modul)->first();
 
             //testatverwaltung
             /* $checktestat = DB::table('testatverwaltung')->where([
@@ -168,20 +180,17 @@ class PruefungsamtController extends Controller
                 ['Matrikelnummer', $matrikelnummer]
             ])->value("Testat"); */
 
-            $checktestat = DB::table('testat')
-                ->join('testatverwaltung', 'testat.ID', '=', 'testatverwaltung.ID')
+            $checktestat = DB::table('testat AS t')
+                ->join('testatverwaltung AS tv', 't.ID', '=', 'tv.ID')
                 ->where([
                 ['Modulnummer', $request->modul],
                 ['Matrikelnummer', $matrikelnummer],
-                ['Praktikumsname', "Endtestat"]
+                ['Praktikumsname', "Endtestat"],
+                    ['Testat', '1']
                  ])->value("Matrikelnummer");
 
-
-            // SELECT testat.ID,Matrikelnummer FROM testatverwaltung,
-            // testat WHERE testat.ID=TestatID AND Praktikumsname="Endtestat";
-
             if ($checktestat == $matrikelnummer){
-                return redirect()->route('dashboard', ['fehler'=>'Student ist zugelassen']);
+                return redirect()->route('dashboard', ['info'=>'Student ist zugelassen']);
             }
             else{
                 return redirect()->route('dashboard', ['fehler'=>'Student ist nicht zugelassen']);
@@ -226,15 +235,15 @@ class PruefungsamtController extends Controller
         //dd($testatid);
         //kein Testat von Modul => zugelassen
         if ($testatid == NULL){
-            return redirect()->route('dashboard', ['fehler'=>'Alle Studenten sind zugelassen, weil es kein Testat gibt']);
+            return redirect()->route('dashboard', ['info'=>'Alle Studenten sind zugelassen, weil es kein Testat gibt']);
         }
             //$matrikelnummern=[3252173,125,54];
             //print_r($matrikelnummern);
             //dd($matrikelnummern);
             // noch nicht fertig, weil Problem mit Datenbank
-            $trueTestat = DB::table('testat')
-                ->join('modul', 'testat.Modulnummer', '=', 'modul.Modulnummer')
-                ->join('testatverwaltung', 'testat.ID', '=', 'testatverwaltung.ID')
+            $testate = DB::table('testat AS t')
+                ->join('modul AS m', 't.Modulnummer', '=', 'm.Modulnummer')
+                ->join('testatverwaltung AS tv', 't.ID', '=', 'tv.ID')
                 ->whereIn(
                 'Matrikelnummer', $matrikelnummern
                 )
@@ -242,7 +251,7 @@ class PruefungsamtController extends Controller
                     'Praktikumsname', 'Endtestat'
                 )
                 ->where(
-                    'testat.Modulnummer', $request->modul
+                    't.Modulnummer', $request->modul
                 )
                 ->get();
         /*
@@ -255,7 +264,7 @@ class PruefungsamtController extends Controller
        /* if ($checktestat == NULL)
             return redirect()->route('dashboard', ['fehler'=>'Kein Student']);
        */
-        return view('Pruefungsamt.klausurZulassungenListe', ['title'=> 'Testate', 'Testate' => $trueTestat]);
+        return view('Pruefungsamt.klausurZulassungenListe', ['title'=> 'Testate', 'Testate' => $testate]);
                 dd($trueTestat);
         /* where in nimmt array
         //$myArray = explode(',', $array);
@@ -275,21 +284,53 @@ class PruefungsamtController extends Controller
             return redirect()->route('dashboard', ['fehler'=>'Keine Modul ausgewählt']);
 
         // gibt modulnummer zurück
-        $modulnummer = DB::table("Modul")->where("Modulname", $request->modul)->value("Modulnummer");
-        $testatid = DB::table('testat')->where('Modulnummer', $modulnummer)->value("ID");
-        //dd($testat);
-        if($testatid == NULL)
-            return redirect()->route('dashboard', ['fehler'=>'Modul hat kein Testat']);
+        // $modulnummer = DB::table("Modul")->where("Modulname", $request->modul)->value("Modulnummer");
+        // bekommt Id von Reihe mit "Endtestat" -> wenn fehler dann Modul hat kein Endtestat
+        $endtestatid = DB::table('testat')
+            ->where('Modulnummer', $request->modul)
+            ->where('Praktikumsname', 'Endtestat')
+            ->value("ID");
 
+        // ARBK = ID->5
+        // DBWT2020 = ID->10
+        // DBWT2019 = ID->15
+        //dd($endtestatid);
+        if($endtestatid == NULL)
+            return redirect()->route('dashboard', ['fehler'=>'Modul hat kein (End)Testat']);
+
+
+
+/*
+ *
+ *
+ * SELECT * FROM testat AS t
+JOIN testatverwaltung AS tv
+ON t.ID = tv.id
+ WHERE Modulnummer=35363
+ AND Matrikelnummer=2359263;
+ */
+        /*
         $testatid = DB::table('testatverwaltung')->where('ID', $testatid)->value("ID");
 
         if ($testatid == NULL)
             return redirect()->route('dashboard', ['fehler'=>'Fehler aufgetreten']);
-
-        $testatbestanden = DB::table('testatverwaltung')
-            ->where('ID', $testatid)
-            ->update(['TestatID' => 1]);
-        return redirect()->route('dashboard', ['fehler'=>'Testat bestanden']);
+        */
+/* IDEE INSERT Entestat für Schüler
+          DB::table('testatverwaltung')->insertorignore(
+              ['Matrikelnummer'=>$request->matrikelnummer,
+                  'TestatID'=>$endtestatid, 'Testat'=>1,
+                  'Kommentar'=>'Entestat wurde automatisch hinzugefügt vom Prüfungsamt'
+              ]
+          );
+*/
+        //dd($endtestatid);
+        $check = DB::table('testatverwaltung')
+            ->where('ID', $endtestatid)
+            ->update(['Testat' => 1]);
+        if ($check == 0)
+            return redirect()->route('dashboard', ['info'=>'Testat is schon bestanden, oder Benutzer hat kein Endtestat']);
+        //dd($check);
+        return redirect()->route('dashboard', ['info'=>'Testat bestanden']);
     }
 
     public function Testatbogen(Request $request){
@@ -297,11 +338,16 @@ class PruefungsamtController extends Controller
             return redirect()->route('dashboard', ['fehler'=>'Keine Matrikelnummer']);
 
         /* SELECT * FROM testatverwaltung, testat, modul WHERE Matrikelnummer=2359263 AND testat.ID = testatverwaltung.ID; */
-        $testat = DB::table('testat')
-            ->join('modul', 'testat.Modulnummer', '=', 'modul.Modulnummer')
-            ->join('testatverwaltung', 'testat.ID', '=', 'testatverwaltung.ID')
-            ->where('Matrikelnummer', $request->matrikelnummer)->get();
-        dd($testat);
+        $testatbogen = DB::table('testat AS t')
+            ->select('t.Modulnummer', 'Modulname', 'Semester', 'Jahr', 'Testat')
+            ->join('modul AS m', 't.Modulnummer', '=', 'm.Modulnummer')
+            ->join('testatverwaltung AS tv', 't.ID', '=', 'tv.TestatID')
+            ->where('tv.Matrikelnummer', $request->matrikelnummer)
+            ->where('Praktikumsname', 'Endtestat')
+            ->get();
+
+        //dd($testatbogen);
+        return view('Pruefungsamt.testatbogen', ['title'=>'Testatbogen','Testatbogen'=>$testatbogen, 'Student'=>$request->matrikelnummer]);
     }
 
 

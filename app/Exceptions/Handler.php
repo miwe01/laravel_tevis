@@ -3,7 +3,19 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+// use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Throwable;
+
+//
+//
+//
+// Wenn auskommentiert(use, und render Methode) wird jede Url die falsch ist
+// (URl versucht auf Seiten zu kommen die nicht existieren)
+// wird zurück auf Login geworfen
+//
+//
+//
+
 
 class Handler extends ExceptionHandler
 {
@@ -37,4 +49,13 @@ class Handler extends ExceptionHandler
             //
         });
     }
+
+    /*
+    public function render($request, Throwable $e){
+        if ($e instanceof MethodNotAllowedHttpException)
+        {
+            return redirect()->route('login');
+        }
+    }
+    */
 }

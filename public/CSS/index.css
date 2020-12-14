@@ -1,0 +1,100 @@
+*{
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+body{
+    margin: 0;
+}
+#wrapper{
+    background-color: #8F908F;
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+}
+
+#login{
+    border-radius: 2px;
+    background-color: white;
+    width: 350px;
+    height: 400px;
+}
+#fh-aachen-logo{
+    position: absolute;
+
+}
+figure{
+    margin: 60px auto 0 auto;
+    width: 200px;
+}
+figcaption{
+    color: #757575;
+    text-align: center;
+    font-size: 18px;
+    height: 28px;
+}
+form{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 15px auto;
+    width: 250px;
+
+
+}
+form input{
+    margin-top: 10px;
+    width: 100%;
+    height: 30px;
+    padding-left: 9px;
+
+}
+input:active{
+    border: 1px solid #05B1AB;
+}
+input:focus{
+    outline: none;
+}
+input:hover{
+    border: 1px solid #05B1AB;
+    padding-left: 10px;
+}
+form button{
+    margin-top: 15px;
+    width: 55%;
+    display: block;
+}
+.big-buttons{
+    height: 35px;
+    background-color: #4d4d4d;
+    border-radius: 2px;
+    box-shadow: 2px 2px darkgray;
+    color: white;
+    border: 1px solid black;
+    outline: none;
+    font-size: 16px;
+}
+
+
+.link-wrapper{
+    position: absolute;
+    bottom: 0;
+    margin-bottom: 10px;
+}
+
+.link-wrapper a{
+    text-decoration: none;
+    font-size: 17px;
+    color: black;
+}
+
+
+.links-a{
+    padding-left: 10px;
+}
+
+.link-wrapper a:hover{
+  
+}
