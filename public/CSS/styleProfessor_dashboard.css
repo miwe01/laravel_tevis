@@ -1,0 +1,92 @@
+body{
+            max-width: 90%;
+        }
+        
+        .headbutton{
+            margin-right: 2cm;
+        }
+        button{
+            float:left;
+            background-color: cadetblue;
+            text-align: center ;
+            margin-right: 2cm;
+            transform: translate(30cm,-1.5cm);
+            padding: 10px;
+            width: 4cm;
+        }
+        button.b2{
+            background-color: cadetblue;
+            text-align: center ;
+            margin-right: 2cm;
+            transform: translate(32cm,-1.5cm);
+            width: 5cm;
+            padding-: 10;
+        }
+        hr{
+            font-weight: bold;
+            position: relative;
+        }
+        h1.dashboard{
+            text-align: left;
+            color: cadetblue;
+            font-family: Verdana;
+            font-weight: 90;
+            margin-top: 1mm;
+        }
+        div.grid1{
+            margin-left: 6cm;
+            text-align: -moz-center;
+            font-weight: bold;
+            font-family: Verdana;
+            border-style:solid;
+            padding-bottom :1cm;
+            border-bottom: none;
+            background-color: lightblue;
+        }
+        div.grid2{
+            margin-left: 6cm;
+            background-color: lightblue;
+            margin-top: 2cm;
+            text-align: -moz-center;
+            font-weight: bold;
+            font-family: Verdana;
+            border-style:solid;
+            padding-bottom :1cm;
+            border-bottom: none;
+        }
+        div{
+            margin-left: 6cm;
+            border-bottom: none;
+            border-style: solid;
+            padding-bottom: 2cm;
+            min-width: 25cm;
+            max-width: 70%;
+        }
+
+        li.kurse {
+
+            list-style: none;
+            border-left: none;
+            font-family: Calibri;
+        }
+        li.li1{
+            border-left: none;
+        }
+        li {
+            border-left: solid;
+            float: left;
+            list-style: none;
+            margin-right: 0.5cm;
+            padding-left: 1cm;
+        }
+        img{
+            margin-left: -12cm;
+            width: 3cm ;
+            height:8cm;
+            float:left;
+
+        }
+        a{
+            text-decoration: none;
+            color: cadetblue;
+        }
