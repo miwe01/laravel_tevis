@@ -1,6 +1,5 @@
-
-
-@extends('WiMi/layoutWiMi')
+@extends('Template.layout')
+@extends('Template.links_wimi')
 
 @section('main')
 

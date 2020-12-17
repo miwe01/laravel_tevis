@@ -1,8 +1,7 @@
-
-@extends('Student/layoutStudent')
+@extends('Template.layout')
+@extends('Template.links_student')
 
 @section('main')
-
 
     <link rel="stylesheet" href="{{URL::asset("CSS/styleStudent.css")}}">
 

@@ -1,9 +1,7 @@
-
-@extends('HiWi/layoutHiWi')
+@extends('Template.layout')
+@extends('Template.links_hiwi')
 
 @section('main')
-
-
     <link rel="stylesheet" href="{{URL::asset("CSS/styleHiWi.css")}}">
 
 

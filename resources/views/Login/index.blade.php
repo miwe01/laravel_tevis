@@ -26,7 +26,6 @@
 
             <input type="password" name="passwort" placeholder="Passwort" required>
             <button type="submit" class="big-buttons" name="einloggen">Einloggen</button>
-            <a href="#">Prüfungsamt</a>
         </form>
     </div>
         <div class="link-wrapper">

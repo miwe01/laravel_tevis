@@ -1,5 +1,5 @@
-
-@extends('HiWi/layoutHiWi')
+@extends('Template.layout')
+@extends('Template.links_hiwi')
 
 @section('main')
 

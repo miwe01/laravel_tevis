@@ -1,6 +1,6 @@
+@extends('Template.layout')
+@extends('Template.links_wimi')
 
-
-@extends('WiMi/layoutWiMi')
 @section('main')
 
     <link rel="stylesheet" href="{{URL::asset("CSS/styleWiMi.css")}}">

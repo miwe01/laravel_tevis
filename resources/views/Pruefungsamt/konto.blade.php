@@ -1,4 +1,6 @@
-@extends('layout')
+@extends('Template.layout')
+@extends('Template.links_pruefungsamt')
+
 @section('main')
 <link rel="stylesheet" href="{{URL::asset("CSS/dashboard.css")}}">
 @if(isset($info))

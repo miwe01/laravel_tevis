@@ -1,16 +1,14 @@
-@extends('Professor/layoutProfessor')
+@extends('Template.layout')
+@extends('Template.links_professor')
 
 @section('main')
 
 <link rel="stylesheet" href="{{URL::asset("CSS/styleProfessor_dashboard.css")}}">
 
 <h1> TeVis</h1>
-<hr>
-<button value="submit" class="headbutton"> Dashboard </button>
-<button value="submit" class="headbutton">Mein Konto </button>
+
 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/FHAachen-logo2010.svg/1200px-FHAachen-logo2010.svg.png" alt="fh aachen logo" >
-@endsection
-@section('main')
+
 <h1 class ="dashboard">Dashboard</h1>
 
 <div class="grid1">Kurse: WiSe20/21</div>

@@ -2,45 +2,51 @@
     {{phpAlert($fehler)}}
 @endif
 
-{{$_SESSION['PA_UserId']}}
+{{--{{$_SESSION['PA_UserId']}}--}}
 
 @if(isset($info))
     {{phpAlert($info)}}
 @endif
-@extends('layout')
 
-@section('main')
-    <!-- Css für Dashboard -->
-    <link rel="stylesheet" href="{{URL::asset("CSS/dashboard.css")}}">
-<!--dashboard -->
-    <div id="wrapper">
-        <div id="p1" class="loading">
-            <div class="close" onclick="myFunction(p1, 'p1')">X</div>
-            <h1>Student hinzufügen</h1>
-                <form action="/pruefungsamt/addPerson" method="post">
-                    @csrf
-                <input type="text" name="titel" placeholder="Titel(optional)">
-                <input type="text" name="nachname" placeholder="Nachname" value="abc" required>
-                <input type="text" name="vorname" placeholder="Vorname" value="xyz" required>
-                <input type="text" name="email" placeholder="Email-Adresse" value="e" required>
-                <input type="text" placeholder="Kennung" name="kennung" value="mw" required>
-                <select name="rolle" id="rollen" onchange="showMatrikel()">
-                    <option value="">Rolle auswählen</option>
-                    <option value="student">Student</option>
-                    <option value="professor">Professor</option>
-                    <option value="wimi">WiMi</option>
-                    <option value="hiwi">HiWi</option>
-                </select>
-                <input type="number" id="matrikelnummer" placeholder="Matrikelnummer" name="matrikelnummer">
-                <button type="submit" class="big-buttons" value=addPerson" name="addPerson" id="addPerson">Submit</button>
-            </form>
-        </div>
 
-        @if($errors->first('rolle'))
-            {{phpAlert("Keine Rolle ausgewählt")}}
-            <script> myFunction(p1, 'p1'); </script>
-        @endif
-    {{-- dd(get_defined_vars()) --}}
+
+@extends('Template.layout')
+@extends('Template.links_pruefungsamt')
+
+
+
+    @section('main')
+        <!-- Css für Dashboard -->
+        <link rel="stylesheet" href="{{URL::asset("CSS/dashboard.css")}}">
+    <!--dashboard -->
+        <div id="wrapper">
+            <div id="p1" class="loading">
+                <div class="close" onclick="myFunction(p1, 'p1')">X</div>
+                <h1>Student hinzufügen</h1>
+                    <form action="/pruefungsamt/addPerson" method="post">
+                        @csrf
+                    <input type="text" name="titel" placeholder="Titel(optional)">
+                    <input type="text" name="nachname" placeholder="Nachname" value='<?php echo isset($_POST['nachname']) ? $_POST['nachname'] : ''; ?>' required>
+                    <input type="text" name="vorname" placeholder="Vorname" value="xyz" required>
+                    <input type="text" name="email" placeholder="Email-Adresse" value="e" required>
+                    <input type="text" placeholder="Kennung" name="kennung" value="mw" required>
+                    <select name="rolle" id="rollen" onchange="showMatrikel()">
+                        <option value="">Rolle auswählen</option>
+                        <option value="student">Student</option>
+                        <option value="professor">Professor</option>
+                        <option value="wimi">WiMi</option>
+                        <option value="hiwi">HiWi</option>
+                    </select>
+                    <input type="number" id="matrikelnummer" placeholder="Matrikelnummer" name="matrikelnummer">
+                    <button type="submit" class="big-buttons" value=addPerson" name="addPerson" id="addPerson">Submit</button>
+                </form>
+            </div>
+
+            @if($errors->first('rolle'))
+                {{phpAlert("Keine Rolle ausgewählt")}}
+                <script> myFunction(p1, 'p1'); </script>
+            @endif
+        {{-- dd(get_defined_vars()) --}}
        @if($errors->any())
             {{phpAlert($errors->first())}}
             <script> myFunction(p1, 'p1'); </script>
@@ -51,16 +57,17 @@
 
             <div id="col-1-buttons">
                 <button class="big-buttons" onclick="myFunction(p1, 'p1')">Neue Person erstellen</button>
-                <label class="big-buttons">
-                    <form action="/pruefungsamt/fileUpload" method="post" enctype="multipart/form-data">
-                        @csrf
-                        <!-- <input type="file" onchange="form.submit()" name="studierende-liste-upload">
-                        Studierenden Liste importieren -->
-                        <input type="file" id="file" name="file" onchange="checkType('file')" required>Hallo
-                            <button type="submit" name="fileUpload" value="fileUpload">Schicken</button>
-                    </form>
-                </label>
             </div>
+
+            <div id="col-1-fileUpload">
+                <h3>Studierende Liste</h3>
+                <form action="/pruefungsamt/fileUpload" method="post" enctype="multipart/form-data">
+                @csrf
+                    <input type="file" id="file" name="file" onchange="checkType('file')" required>
+                    <button type="submit" name="fileUpload" value="fileUpload">Schicken</button>
+                </form>
+            </div>
+
             <div id="col-1-last-added">
                 <h3>Zuletzt hinzugefügt</h3>
                 <ul>
@@ -80,7 +87,7 @@
                     @csrf
                 <div>
                 <label for="matrikelnummer1">Matrikelnummer</label>
-                <input type="number" id="matrikelnummer1" name="matrikelnummer" placeholder="XXXXXXX" min="1111111" max="9999999" required>
+                <input type="number" id="matrikelnummer1" name="matrikelnummer" placeholder="XXXXXXX" min="1111111" max="9999999" value="3566465" required>
                     <select name="modul">
                         <option value="">Modul auswählen</option>
                         <optgroup label="WiSe">
