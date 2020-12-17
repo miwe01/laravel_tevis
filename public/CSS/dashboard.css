@@ -1,16 +1,12 @@
+/* Prüfungsamt CSS */
+/* Autor: Weber Mika*/
 *{
     box-sizing: border-box;
-    font-family: Arial, Helvetica, sans-serif;
 }
 body{
     margin: 0;
 }
 
-
-.a-img{
-    position: absolute;
-    top:0;
-}
 a:visited, a:link{
     color: black;
 }
@@ -31,7 +27,12 @@ input:hover, input:focus{
     margin: 0 auto;
     display: grid;
 }
-
+#p1{
+    height: 270px;
+}
+#p2{
+    height: 200px;
+}
 #p1, #p2{
     visibility: hidden;
     /* unsichtbarer div der die position fixed hat */
@@ -41,7 +42,7 @@ input:hover, input:focus{
     top: 50px;
     padding: 20px;
     width: 50%;
-    height: 200px;
+
     background-color: darkgray;
     border-radius: 5px;
     border: 1px solid black;
@@ -99,9 +100,9 @@ input[type="number"], select, input[type="file"]{
     height: 22px;
 }
 
-input[type="file"]{
-    outline: none;
-}
+/*input[type="file"]{*/
+/*    outline: none;*/
+/*}*/
 button{
     cursor: pointer;
 }
@@ -134,9 +135,28 @@ button{
 }
 /**/
 /* input file */
+#col-1-fileUpload form{
+    margin: 0px;
+}
 #col-1-buttons input[type="file"]{
     display: none;
 }
+
+#col-1-fileUpload, #col-1-fileUpload input[type="file"]{
+    width: 200px;
+}
+
+#col-1-fileUpload{
+padding: 5px;
+}
+input[type="file"] {
+    outline-style: none;
+}
+
+#col-1-fileUpload button{
+    width: 100%;
+}
+
 
 #col-1-buttons > label{
     text-align: center;
@@ -152,7 +172,7 @@ button{
 
 
 /* every div -> shadow and radius */
-#col-1-last-added, #klausurzulassung, #klausurzulassungen, #praktikum, #testatbogen{
+#col-1-fileUpload, #col-1-last-added, #klausurzulassung, #klausurzulassungen, #praktikum, #testatbogen{
     margin: 20px auto 0 auto;
     box-shadow: 2px 2px darkgray;
     border-radius: 2px;
@@ -214,9 +234,6 @@ button{
 @media(max-width:1030px)  and (min-width: 710px){
     body{
         margin-bottom: 40px;
-    }
-    header, #wrapper{
-        width: 85%;
     }
     #wrapper{
         grid-template-columns: 1fr 1fr;
@@ -286,7 +303,6 @@ button{
     h3{
         width: 55%;
         text-align: center;
-
     }
      #testatbogen{
         width: 85%;

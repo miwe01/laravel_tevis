@@ -9,17 +9,12 @@ use Illuminate\Support\Facades\Hash;
 class PruefungsamtController extends Controller
 {
     public function index(Request $request){
-        $kennung = DB::table('benutzer')->select('Nachname', 'Vorname')->orderBy('erfasst_am', 'desc')->take(5)->get();
+        $kennung = DB::table('benutzer')->select('Nachname', 'Vorname')->orderBy('erfasst_am', 'desc')->orderBy('Nachname', 'asc')->take(5)->get();
         $wintermodule = DB::table('modul')->select('Modulnummer', 'Modulname', 'Semester', 'Jahr')->where('Semester', 'WiSe')->get();
         $sommermodule = DB::table('modul')->select('Modulnummer', 'Modulname', 'Semester', 'Jahr')->where('Semester', 'SoSe')->get();
 
         return view('Pruefungsamt.dashboard',['fehler'=>$request->fehler, 'info'=>$request->info,'lastAdded'=>$kennung, 'WinterModule'=>$wintermodule, 'SommerModule' =>
             $sommermodule, 'title'=>'Dashboard']);
-    }
-
-    public function logout(Request $request){
-        session_destroy();
-        return redirect()->route('login');
     }
 
 
@@ -49,6 +44,7 @@ class PruefungsamtController extends Controller
                 $firsterror = $validator->errors()->first();
                 return redirect()->route('dashboard')->withErrors($firsterror);
             }
+
             // Daten sind korrekt jetzt wird überprüft ob es Benutzer schon gibt
 
             $kennung = DB::table('benutzer')->where('Kennung', $request->kennung)->first();
@@ -169,17 +165,12 @@ class PruefungsamtController extends Controller
         $testatid = DB::table('testat')->where('Modulnummer', $request->modul)->value("ID");
         //kein Testat von Modul => zugelassen
         if ($testatid == NULL){
-            return redirect()->route('dashboard', ['info'=>'Modul nicht gefunden, automatische Klausurzulassung']);
+            return redirect()->route('dashboard', ['info'=>'Modul hat kein Testat, automatische Klausurzulassung']);
         }
         else{
             $matrikelnummer = (int) $request->matrikelnummer;
 
-            //testatverwaltung
-            /* $checktestat = DB::table('testatverwaltung')->where([
-                ['TestatID', $testatid],
-                ['Matrikelnummer', $matrikelnummer]
-            ])->value("Testat"); */
-
+            // checkt ob User Endtestat hat
             $checktestat = DB::table('testat AS t')
                 ->join('testatverwaltung AS tv', 't.ID', '=', 'tv.ID')
                 ->where([
@@ -196,7 +187,6 @@ class PruefungsamtController extends Controller
                 return redirect()->route('dashboard', ['fehler'=>'Student ist nicht zugelassen']);
             }
         }
-        //$kennung = DB::table('benutzer')->where('Kennung', $request->kennung)->first();
     }
     public function klausurZulassungen(Request $request){
         // wenn kein Modul ausgewählt wurde
@@ -377,20 +367,24 @@ ON t.ID = tv.id
         //            }*/
         //
         // und dann kann er es ändern
-        $KennungVonPassword = DB::table('benutzer')->where('Password', $request->opassword)->value('Kennung');
-        if ($KennungVonPassword == NULL)
-            return redirect()->route('konto', ['fehler_menu'=>'Falsches Passwort']);
 
+        $KennungVonPassword = DB::table('benutzer')
+            ->where('Kennung', $_SESSION['PA_UserId'])
+            ->value('Password');
 
+     //dd(Hash::make('test..123'));
+//       dd($KennungVonPassword);
+//      dd($request->opassword);
+        if (Hash::check($request->opassword, $KennungVonPassword)) {
+            $newPassword = Hash::make($request->npassword);
 
-        $newPassword = DB::table('benutzer')
-            ->where('Kennung', $KennungVonPassword)
-            ->update(['Password' => $request->npassword]);
-
-        if($newPassword)
+            DB::table('benutzer')
+                ->where('Kennung', $_SESSION['PA_UserId'])
+                ->update(['Password' => $newPassword]);
             return redirect()->route('konto', ['info'=>'Passwort wurde geändert']);
-        else
-            return redirect()->route('konto', ['fehler_menu'=>'Fehler bei Passwort']);
+        }
+
+        return redirect()->route('konto', ['fehler_menu'=>'Fehler bei Passwort']);
 
     }
 }
