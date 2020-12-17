@@ -7,6 +7,11 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthenticationController extends Controller
 {
+    public function logout(Request $request){
+        session_destroy();
+        return redirect()->route('login');
+    }
+
     public function authenticate(Request $request){
         $kennung = $request->kennung;
         $passwort = $request->passwort;
@@ -26,9 +31,9 @@ class AuthenticationController extends Controller
             ->where('Kennung', $kennung)
             ->value('Password');
 
-       /* $hash = Hash::make('test..123');
-        dd($hash);
-       */
+//       $hash = Hash::make('test..123');
+//       dd($hash);
+
         // Benutzer gibt es nicht
 
         if ($kennungCheck == NULL){
@@ -46,11 +51,46 @@ class AuthenticationController extends Controller
                 unset($_SESSION['fehler']);
 
 
-
+            // Pruefungsamt
             $pruefungsamtCheck = DB::table('pruefungsamt')->where('Kennung', $kennung)->value('Kennung');
             if ($pruefungsamtCheck != NULL){
                 $_SESSION['PA_UserId'] = $kennung;
                 return redirect()->route('dashboard');
+            }
+            // Hiwi
+            $HiwiCheck = DB::table('tutor')
+                ->where('Kennung', $kennung)
+                ->where('Rolle', 'HiWI')
+                ->value('Kennung');
+            if ($HiwiCheck != NULL){
+                $_SESSION['HiWi_UserId'] = $kennung;
+                return redirect()->route('HiWi');
+            }
+            // Wimi
+            $WiMiCheck = DB::table('tutor')
+                ->where('Kennung', $kennung)
+                ->where('Rolle', 'WiMi')
+                ->value('Kennung');
+            if ($WiMiCheck != NULL){
+                $_SESSION['WiMi_UserId'] = $kennung;
+                return redirect()->route('Wimi');
+            }
+            // student
+            $StudentCheck = DB::table('student')
+                ->where('Kennung', $kennung)
+                ->value('Kennung');
+            if ($StudentCheck != NULL){
+                $_SESSION['Student_UserId'] = $kennung;
+                return redirect()->route('Student');
+            }
+            // professor
+            $ProfessorCheck = DB::table('professor')
+                ->where('Kennung', $kennung)
+                ->value('Kennung');
+
+            if ($ProfessorCheck != NULL){
+                $_SESSION['Prof_UserId'] = $kennung;
+                return redirect()->route('Professor');
             }
             // alle andere Rollen (Professor, Tutor, etc...)
             //else if()
