@@ -1,0 +1,7 @@
+Kennung: hiwi123 Passwort: test..123
+Kennung: wimi123 Passwort: test..123
+Kennung: student123 Passwort: test..123 Matrikelnummer: 123456
+Kennung prof123 Passwort: test..123
+
+// Prüfungsamt
+Kennung mw7655s Passwort: test..123

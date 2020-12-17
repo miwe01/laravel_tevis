@@ -1,4 +1,24 @@
 /* header style */
+*{
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+@media(max-width:1030px)  and (min-width: 710px) {
+    header, #wrapper {
+        width: 85%;
+    }
+}
+@media(min-width:610px) and (max-width: 710px) {
+    header, #wrapper {
+        width: 95%;
+    }
+}
+@media (max-width: 610px) {
+    header {
+        width: 100%;
+    }
+}
+
 header{
     display: flex;
     margin: 0 auto;
@@ -31,10 +51,36 @@ nav{
     align-items: flex-end;
     padding-right: 5px;
 }
+.header-ul form{
+    margin: 0;
+}
+
 .header-ul > li{
     display: inline-block;
     margin-right: 15px;
 }
+.header-ul{
+    padding-left: 30px;
+    margin: 0;
+}
+
+.a-img{
+    position: absolute;
+    top:0;
+}
+a:visited, a:link{
+    color: black;
+}
+a:hover{
+    color: #00B5AD;
+    transition: 0.3s;
+}
+a{
+    text-decoration: none;
+    font-size: 15px;
+}
+
+
 /* */
 
 /* header-li = Dashboard + Mein Konto */
@@ -52,18 +98,38 @@ nav{
     margin-bottom: 5px;
 }
 
-#logout-li a{
+#logout-li{
+    list-style-type: none;
+    height: 28px;
+    padding: 0;
+}
+
+#logout-li button{
+    background: none!important;
+    border: none;
+    padding: 0!important;
+
     color: white;
     padding: 10px;
+    background-color: inherit;
+    padding: 0;
+    height: 100%;
+    width: 55px;
+    margin: 0;
+
+    cursor: pointer;
 }
+
+
+
 /* */
 
 /* Flags */
 #german{
-    margin-right: 50px;
+    margin-right: 36px;
 }
 #uk{
-    margin-right: 18px;
+
 }
 /* */
 
