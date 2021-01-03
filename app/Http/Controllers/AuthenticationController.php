@@ -64,16 +64,7 @@ class AuthenticationController extends Controller
                 ->value('Kennung');
             if ($HiwiCheck != NULL){
                 $_SESSION['HiWi_UserId'] = $kennung;
-                return redirect()->route('HiWi');
-            }
-            // Wimi
-            $WiMiCheck = DB::table('tutor')
-                ->where('Kennung', $kennung)
-                ->where('Rolle', 'WiMi')
-                ->value('Kennung');
-            if ($WiMiCheck != NULL){
-                $_SESSION['WiMi_UserId'] = $kennung;
-                return redirect()->route('Wimi');
+                return redirect()->route('Tutor/dashboard');
             }
             // student
             $StudentCheck = DB::table('student')
@@ -81,7 +72,17 @@ class AuthenticationController extends Controller
                 ->value('Kennung');
             if ($StudentCheck != NULL){
                 $_SESSION['Student_UserId'] = $kennung;
-                return redirect()->route('Student');
+                return redirect()->route('Student/dashboard');
+            }
+
+            // Wimi
+            $WiMiCheck = DB::table('tutor')
+                ->where('Kennung', $kennung)
+                ->where('Rolle', 'WiMi')
+                ->value('Kennung');
+            if ($WiMiCheck != NULL){
+                $_SESSION['WiMi_UserId'] = $kennung;
+                return redirect()->route('Tutor/dashboard');
             }
             // professor
             $ProfessorCheck = DB::table('professor')

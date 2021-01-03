@@ -2,6 +2,9 @@
 if(!isset($_SESSION)){
     session_start();
 }
+
+use App\Http\Controllers\StudentController;
+use App\Http\Controllers\TutorController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PruefungsamtController;
 use App\Http\Controllers\AuthenticationController;
@@ -51,61 +54,22 @@ Route::middleware('auth')->prefix('Professor')->group(function() {
     });
 });
 
-// HiWi routes
-Route::middleware('auth')->prefix('HiWi')->group(function(){
-
-    Route::get('/main_HiWi', function () {
-        return view('/HiWi/main_HiWi', ['title'=>'HiWi']);
-    })->name('HiWi');
-
-    Route::get('/HiWi', function () {
-        return view('/HiWi/HiWi', ['title'=>'HiWi']);
-    });
-    Route::get('/testSWE', function () {
-        return view('/HiWi/testSWE_HiWi', ['title'=>'testSWE']);
-    });
-    Route::get('/test', function () {
-        return view('/HiWi/HiWiTestGruppeA1', ['title'=>'TestGruppeA1']);
-    });
-    Route::get('/konto_HiWi', function () {
-        return view('/HiWi/konto_HiWi', ['title'=>'Konto']);
-    });
-    Route::get('/testatbogen_HiWi', function () {
-        return view('/HiWi/Testatbogen_HiWi', ['title'=>'Testatbogen']);
-    });
-});
-
-// WiMi routes
-Route::middleware('auth')->prefix('WiMi')->group(function(){
-Route::get('/test', function () {
-    return view('test', ['title'=>'Test']);
-});
-Route::get('/main_WiMi', function () {
-    return view('/WiMi/main_WiMi', ['title'=>'WiMi']);
-})->name('Wimi');
-Route::get('/konto_WiMi', function () {
-    return view('/WiMi/konto_WiMi', ['title'=>'Konto']);
-});
-Route::get('/test', function () {
-    return view('/WiMi/TestGruppeA1', ['title'=>'TestGruppeA1']);
-});
-});
-
 // student routes
 Route::middleware('auth')->prefix('Student')->group(function() {
-    Route::get('/main_Student', function () {
-        return view('/Student/main_Student', ['title'=>'main_Student']);
-    })->name('Student');;
-    Route::get('/main_WiMi', function () {
-        return view('/Student/main_WiMi', ['title'=>'main_WiMi']);
-    });
-    Route::get('/konto_Student', function () {
-        return view('/Student/konto_Student', ['title'=>'konto_Student']);
-    });
-    Route::get('/testatbogen_Student', function () {
-        return view('/Student/Testatbogen_Student', ['title'=>'Testatbogen_Student']);
-    });
-    Route::get('/testSWE', function () {
-        return view('/Student/testSWE_Student', ['title'=>'testSWE_Student']);
-    });
+
+    Route::get('/dashboard', [StudentController::class, 'index'])->name('Student/dashboard');
+    Route::post('/testatbogen', [StudentController::class, 'show']);
+    Route::post('/dashboard', [StudentController::class, 'index']);
+    Route::post('/dashboard/{testat}', [StudentController::class, 'testat']);
+});
+Route::get('/passwordtohash', function () {
+    return view('/passwordtohash');});
+
+// Tutor routes
+Route::middleware('auth')->prefix('Tutor')->group(function(){
+
+    Route::get('/dashboard', [TutorController::class, 'index'])->name('Tutor/dashboard');
+    Route::post('/dashboard/{testatverwaltung}', [TutorController::class, 'testatverwaltung']);
+    Route::post('/dashboard/{testatverwaltung}/{testat}', [TutorController::class, 'testat']);
+
 });
