@@ -1,7 +1,7 @@
 body{
             max-width: 90%;
         }
-        
+
         .headbutton{
             margin-right: 2cm;
         }
@@ -79,13 +79,7 @@ body{
             margin-right: 0.5cm;
             padding-left: 1cm;
         }
-        img{
-            margin-left: -12cm;
-            width: 3cm ;
-            height:8cm;
-            float:left;
 
-        }
         a{
             text-decoration: none;
             color: cadetblue;

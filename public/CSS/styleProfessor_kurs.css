@@ -1,10 +1,4 @@
- img{
-            margin-left: -12cm;
-            width: 3cm ;
-            height:8cm;
-            float:left;
-        }
-        button.b2{
+ button.b2{
             background-color: cadetblue;
             text-align: center ;
             margin-right: 2cm;

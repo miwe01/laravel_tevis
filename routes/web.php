@@ -3,6 +3,7 @@ if(!isset($_SESSION)){
     session_start();
 }
 
+use App\Http\Controllers\ProfessorController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\TutorController;
 use Illuminate\Support\Facades\Route;
@@ -40,18 +41,14 @@ Route::middleware('auth')->prefix('pruefungsamt')->group(function(){
 
 // professor routes
 Route::middleware('auth')->prefix('Professor')->group(function() {
-    Route::get('/Professor', function () {
-        return view('/Professor/dashboard', ['title'=>'Dashboard']);
-    })->name('Professor');;
+    Route::get('/Professor', [ProfessorController::class, 'index'])->name('Professor');;
     Route::get('/meine_kurse', function () {
         return view('/Professor/meine_kurse', ['title'=>'meine_kurse']);
     });
-    Route::get('/kurs', function () {
+    Route::post('/kurs', function () {
         return view('/Professor/kurs', ['title'=>'kurs']);
     });
-    Route::get('/gruppe_bearbeiten', function () {
-        return view('/Professor/gruppe_bearbeiten', ['title'=>'gruppe_bearbeiten']);
-    });
+    Route::post('/gruppe', [ProfessorController::class, 'gruppe']);
 });
 
 // student routes

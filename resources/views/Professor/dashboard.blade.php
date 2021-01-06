@@ -3,57 +3,55 @@
 
 @section('main')
 
-<link rel="stylesheet" href="{{URL::asset("CSS/styleProfessor_dashboard.css")}}">
+    <link rel="stylesheet" href="{{URL::asset("CSS/styleProfessor_dashboard.css")}}">
 
-<h1> TeVis</h1>
 
-<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/FHAachen-logo2010.svg/1200px-FHAachen-logo2010.svg.png" alt="fh aachen logo" >
 
-<h1 class ="dashboard">Dashboard</h1>
+    <h1 class ="dashboard">Dashboard</h1>
 
-<div class="grid1">Kurse: WiSe20/21</div>
+    <div class="grid1">Kurse: WiSe20/21</div>
 
-<div>
-    <ul>
-        <li class ="kurse"><a href="Kurs1.html">Kurse1</a> </li>
-        <br>
-        <li class="li1" >Raum </li>
-        <li>Zeitpunkt</li>
-        <li>Gruppenanzahl</li>
-        <li>Teilnehmerzahl</li>
-    </ul>
-    <br>
-    <ul>
-        <li class ="kurse"><a href="Kurse2.html">Kurse2</a> </li>
-        <br>
-        <li class ="li1">Raum</li>
-        <li>Zeitpunkt</li>
-        <li>Gruppenanzahl</li>
-        <li>Teilnehmerzahl</li>
-    </ul>
-</div>
+    <div>
 
-<div class="grid2">Gruppen</div>
+        @foreach($kurse as $kurs)
+            <ul>
+                <li class ="kurse">{{$kurs->Modulnummer}} {{$kurs->Modulname}} </li>
+                <br>
+                <li class="li1" >{{$kurs->Raum}} </li>
+                <li>Gruppenanzahl</li>
+                <li>Teilnehmerzahl</li>
+            </ul>
+            <form action="/Professor/kurs" method="post">
+                @csrf
+                <input type="hidden" value="{{$kurs->Modulnummer}}" name="Modulname" id="bearbeiten">
+                <input type="hidden" value="{{$kurs->Jahr}}" name="Modulname" id="bearbeiten">
+                <input type="submit" name="bearbeiten" id="bearbeiten" value="bearbeiten">
+            </form>
+        @endforeach
 
-<div>
-    <ul>
-        <li class ="kurse"> <a href="GruppeBearbeiten.html"> Gruppe 1 </a></li>
-        <br>
-        <li class="li1" >Raum </li>
-        <li> Zeitpunkt  </li>
-        <li>Teilnehmer</li>
-        <li><a href="mailto:betreuer1@alumni.fh-aachen.de">Betreuername</a></li>
-        <li>Meetingraum</li>
-    </ul>
-    <br>
-    <ul>
-        <li class ="kurse"> <a href="GruppeBearbeiten.html"> Gruppe 2  </a> </li>
-        <br>
-        <li class="li1" >Raum </li>
-        <li> Zeitpunkt  </li>
-        <li>Teilnehmer</li>
-        <li><a href="mailto:betreuer2@alumni.fh-aachen.de">Betreuername</a></li>
-        <li>Meetingraum</li>
-    </ul>
-</div>
+
+    </div>
+
+    <div class="grid2">Gruppen</div>
+
+    <div>
+        @foreach($gruppen as $gruppe)
+            <ul>
+                <li class ="kurse"> {{$gruppe->Modulname}} {{$gruppe->Gruppenname}} </li>
+                <br>
+                <li class="li1" >Raum </li>
+                <li>Teilnehmer</li>
+                <li><a href="mailto:betreuer1@alumni.fh-aachen.de">Betreuername</a></li>
+                <li>{{$gruppe->Webex}}</li>
+            </ul>
+            <form action="/Professor/gruppe" method="post">
+                @csrf
+                <input type="hidden" value="{{$gruppe->Modulnummer}}" name="Modulnummer" id="bearbeiten">
+                <input type="hidden" value="{{$gruppe->Jahr}}" name="Jahr" id="bearbeiten">
+                <input type="hidden" value="{{$gruppe->Gruppenummer}}" name="Gruppenummer" id="bearbeiten">
+                <input type="submit" name="bearbeiten" id="bearbeiten" value="bearbeiten">
+            </form>
+        @endforeach
+
+    </div>
 @endsection
