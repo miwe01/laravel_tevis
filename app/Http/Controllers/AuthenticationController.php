@@ -108,47 +108,47 @@ class AuthenticationController extends Controller
 
 
     public function konto(Request $request){
-    if ((isset($_SESSION['HiWi_UserId'])))
-    {
-        return view('Login.konto',
-            ['info'=> $request->info,
-                'fehler_menu'=>$request->fehler_menu
-                ,'title'=>'Mein Konto']);
-    }
+        if ((isset($_SESSION['HiWi_UserId'])))
+        {
+            return view('Login.konto',
+                ['info'=> $request->info,
+                    'fehler_menu'=>$request->fehler_menu
+                    ,'title'=>'Mein Konto']);
+        }
 
-    elseif((isset($_SESSION['Student_UserId'])))
-    {
-        return view('Login.konto',
-            ['info'=> $request->info,
-                'fehler_menu'=>$request->fehler_menu
-                ,'title'=>'Mein Konto']);
-    }
+        elseif((isset($_SESSION['Student_UserId'])))
+        {
+            return view('Login.konto',
+                ['info'=> $request->info,
+                    'fehler_menu'=>$request->fehler_menu
+                    ,'title'=>'Mein Konto']);
+        }
 
-    elseif((isset($_SESSION['WiMi_UserId'])))
-    {
-        return view('Login.konto',
-            ['info'=> $request->info,
-                'fehler_menu'=>$request->fehler_menu
-                ,'title'=>'Mein Konto']);
-    }
+        elseif((isset($_SESSION['WiMi_UserId'])))
+        {
+            return view('Login.konto',
+                ['info'=> $request->info,
+                    'fehler_menu'=>$request->fehler_menu
+                    ,'title'=>'Mein Konto']);
+        }
 
-    elseif((isset($_SESSION['Prof_UserId'])))
-    {
-        return view('Login.konto',
-            ['info'=> $request->info,
-                'fehler_menu'=>$request->fehler_menu
-                ,'title'=>'Mein Konto']);
-    }
+        elseif((isset($_SESSION['Prof_UserId'])))
+        {
+            return view('Login.konto',
+                ['info'=> $request->info,
+                    'fehler_menu'=>$request->fehler_menu
+                    ,'title'=>'Mein Konto']);
+        }
 
-    elseif((isset($_SESSION['PA_UserId'])))
-    {
-        return view('Login.konto',
-            ['info'=> $request->info,
-                'fehler_menu'=>$request->fehler_menu
-                ,'title'=>'Mein Konto']);
+        elseif((isset($_SESSION['PA_UserId'])))
+        {
+            return view('Login.konto',
+                ['info'=> $request->info,
+                    'fehler_menu'=>$request->fehler_menu
+                    ,'title'=>'Mein Konto']);
+        }
+        return redirect()->route('login');
     }
-    return redirect()->route('login');
-}
 
     public function passwortAendern(Request $request){
         if($request->opassword == NULL || $request->npassword == NULL)
@@ -192,8 +192,8 @@ class AuthenticationController extends Controller
             $actualuser = $_SESSION['Prof_UserId'];
         }
 
-        if ($request->opassword == $KennungVonPassword) {
-            $newPassword = $request->npassword;
+        if (Hash::check($request->opassword, $KennungVonPassword)) {
+            $newPassword = Hash::make($request->npassword);
 
             DB::table('benutzer')
                 ->where('Kennung', $actualuser)
