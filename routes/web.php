@@ -18,8 +18,7 @@ use App\Http\Controllers\AuthenticationController;
 Route::view('/', 'Login.index', [])->name('login');
 Route::post('/authentication', [AuthenticationController::class, 'authenticate']);
 Route::post('/logout', [AuthenticationController::class, 'logout']);
-Route::get('/konto', [AuthenticationController::class, 'konto'])->name('konto');
-Route::post('/konto', [AuthenticationController::class, 'passwortAendern']);
+
 
 //Pruefungsamt routes
 Route::middleware('auth')->prefix('pruefungsamt')->group(function(){
@@ -36,7 +35,8 @@ Route::middleware('auth')->prefix('pruefungsamt')->group(function(){
     Route::post('/Testatbogen', [PruefungsamtController::class, 'Testatbogen']);
 
 
-
+    Route::get('/konto', [AuthenticationController::class, 'konto'])->name('konto');
+    Route::post('/konto', [AuthenticationController::class, 'passwortAendern']);
   //  Route::get('/konto', '\App\Http\Controllers\PruefungsamtController@konto')->name('konto');
  //   Route::post('/konto/passwortAendern', '\App\Http\Controllers\PruefungsamtController@passwortAendern');
 });
@@ -45,15 +45,14 @@ Route::middleware('auth')->prefix('pruefungsamt')->group(function(){
 // professor routes
 Route::middleware('auth')->prefix('Professor')->group(function() {
     Route::get('/Professor', [ProfessorController::class, 'index'])->name('Professor');;
-    Route::get('/meine_kurse', function () {
-        return view('/Professor/meine_kurse', ['title'=>'meine_kurse']);
-    });
-    Route::post('/kurs', function () {
-        return view('/Professor/kurs', ['title'=>'kurs']);
-    });
+    Route::get('/meine_kurse', function () {return view('/Professor/meine_kurse', ['title'=>'meine_kurse']);});
+    Route::post('/kurs', function () {return view('/Professor/kurs', ['title'=>'kurs']);});
     Route::post('/gruppe', [ProfessorController::class, 'gruppe']);
-
-
+    Route::post('/gruppe/tutorloeschen', '\App\Http\Controllers\ProfessorController@tutorLoeschen');
+    Route::post('/gruppe/studentloeschen', '\App\Http\Controllers\ProfessorController@studentenAusGruppeLoeschen');
+    Route::post('/gruppe/studentVerschieben', '\App\Http\Controllers\ProfessorController@studentVerschieben');
+    Route::post('/gruppe/studentHinzu', '\App\Http\Controllers\ProfessorController@studentZuGruppe');
+    Route::post('/gruppe/betreuerHinzu', '\App\Http\Controllers\ProfessorController@betreuerZuGruppe');
 });
 
 // student routes
@@ -63,7 +62,8 @@ Route::middleware('auth')->prefix('Student')->group(function() {
     Route::post('/testatbogen', [StudentController::class, 'show']);
     Route::post('/dashboard', [StudentController::class, 'index']);
     Route::post('/dashboard/{testat}', [StudentController::class, 'testat']);
-
+    Route::get('/konto', [AuthenticationController::class, 'konto'])->name('konto');
+    Route::post('/konto', [AuthenticationController::class, 'passwortAendern']);
 });
 
 // Tutor routes
@@ -73,6 +73,7 @@ Route::middleware('auth')->prefix('Tutor')->group(function(){
     Route::post('/dashboard/{testatverwaltung}', [TutorController::class, 'testatverwaltung']);
     Route::get('/dashboard/{testatverwaltung}', [TutorController::class, 'testatverwaltung'])->name('Tutor/testatverwaltung');
     Route::post('/dashboard/{testatverwaltung}/{testat}', [TutorController::class, 'testat'])->name('Tutor/testat');
-
+    Route::get('/konto', [AuthenticationController::class, 'konto'])->name('konto');
+    Route::post('/konto', [AuthenticationController::class, 'passwortAendern']);
 });
 
