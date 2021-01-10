@@ -1,5 +1,5 @@
 @extends('Template.layout')
-@extends('Template.links_professor')
+@extends('Template.links')
 
 @section('main')
 
@@ -12,32 +12,54 @@
         <table class="mitglieder">
             <thead>
             <tr>
-                <th><input type="checkbox"></th>
                 <th>Matrikelnummer</th>
                 <th>Vorname</th>
                 <th>Nachname</th>
                 @foreach($testat as $t)
                     <th>{{$t->Praktikumsname}}</th>
                 @endforeach
+                <th>Werkzeuge</th>
             </tr>
             </thead>
             <tbody>
             @foreach($studenten as $student)
                 <tr>
-                    <td><input type="checkbox"> </td>
                     <td>{{$student->Matrikelnummer}}</td>
                     <td>{{$student->Vorname}}</td>
                     <td>{{$student->Nachname}}</td>
                     @foreach($testat as $t)
                         <th><input type="checkbox"></th>
                     @endforeach
+                    <td>
+                        <form action="/Professor/gruppe/studentloeschen" method="post">
+                            <input type="hidden" value="{{$gruppeninfo[0]->Gruppenummer}}" name="GruppenID" id="sloeschen">
+                            <input type="hidden" value="{{$student->Matrikelnummer}}" name="Matrikelnummer" id="sloeschen">
+                            <input type="submit" value="Löschen" name="loeschen" id="sloeschen">
+                        </form>
+                        <form action="/Professor/gruppe/studentVerschieben" method="post">
+                            <select name="gruppenauswahl" id="verschieben" name="GruppenID">
+                            @foreach($gruppen as $gruppe)
+                                <option value="{{$gruppe->Gruppenummer}}"> {{$gruppe->Gruppenummer}}</option>
+                            @endforeach
+                            </select>
+                            <input type="hidden" value="{{$gruppeninfo[0]->Gruppenummer}}" name="altGruppenID" id="verschieben">
+                            <input type="hidden" value="{{$student->Matrikelnummer}}" name="Matrikelnummer" id="verschieben">
+                            <input type="submit" value="Verschieben" name="verschieben" id="verschieben">
+                        </form>
+                    </td>
                 </tr>
             @endforeach
             </tbody>
         </table>
     </div>
 
-    <div><button type="button" class="mitte"> Studierenden hinzufügen</button> </div>
+
+    <div>
+        <form class="mitte" action="/Professor/gruppe/studentHinzu" method="post">
+            <input type="text" name="Matrikelnummer" id="hinzu">
+            <input type="submit" value="Student hinzufügen" id="hinzu">
+        </form>
+    </div>
 
 
     <div class="grid-container">
@@ -56,11 +78,20 @@
                     <td>{{$tutor->Vorname}} {{$tutor->Nachname}}</td>
                     <td><a href="mailto:max.mustermann@alumni.fh-aachen.de">max.mustermann@alumni.fh-aachen.de</a></td>
                     <td><a href="max.mustermann.webex.com">max.mustermann.webex.com</a></td>
-                    <td><a href="">Löschen</a></td>
+                    <td>
+                        <form action="/Professor/gruppe/tutorloeschen" method="post">
+                            <input type="hidden" value="{{$gruppeninfo[0]->Gruppenummer}}" name="Gruppennummer" id="loeschen">
+                            <input type="hidden" value="{{$tutor->Kennung}}" name="Kennung" id="loeschen">
+                            <input type="submit" name="loeschen" value="Löschen" id="loeschen">
+                        </form>
+                    </td>
                 </tr>
             @endforeach
             </tbody>
         </table>
-        <div><button type="button" class="mitte"> Betreuer hinzufügen</button> </div>
+        <form class="mitte" action="/Professor/gruppe/betreuerHinzu">
+            <input type="text" placeholder="Kennung" name="Kennung" id="betHinzu">
+            <input type="submit" name="betHinzu" id="betHinzu">
+        </form>
     </div>
 @endsection

@@ -1,5 +1,5 @@
 @extends('Template.layout')
-@extends('Template.links_professor')
+@extends('Template.links')
 
 @section('main')
 
