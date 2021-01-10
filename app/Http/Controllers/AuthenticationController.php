@@ -108,11 +108,47 @@ class AuthenticationController extends Controller
 
 
     public function konto(Request $request){
+    if ((isset($_SESSION['HiWi_UserId'])))
+    {
         return view('Login.konto',
             ['info'=> $request->info,
                 'fehler_menu'=>$request->fehler_menu
                 ,'title'=>'Mein Konto']);
     }
+
+    elseif((isset($_SESSION['Student_UserId'])))
+    {
+        return view('Login.konto',
+            ['info'=> $request->info,
+                'fehler_menu'=>$request->fehler_menu
+                ,'title'=>'Mein Konto']);
+    }
+
+    elseif((isset($_SESSION['WiMi_UserId'])))
+    {
+        return view('Login.konto',
+            ['info'=> $request->info,
+                'fehler_menu'=>$request->fehler_menu
+                ,'title'=>'Mein Konto']);
+    }
+
+    elseif((isset($_SESSION['Prof_UserId'])))
+    {
+        return view('Login.konto',
+            ['info'=> $request->info,
+                'fehler_menu'=>$request->fehler_menu
+                ,'title'=>'Mein Konto']);
+    }
+
+    elseif((isset($_SESSION['PA_UserId'])))
+    {
+        return view('Login.konto',
+            ['info'=> $request->info,
+                'fehler_menu'=>$request->fehler_menu
+                ,'title'=>'Mein Konto']);
+    }
+    return redirect()->route('login');
+}
 
     public function passwortAendern(Request $request){
         if($request->opassword == NULL || $request->npassword == NULL)
