@@ -12,7 +12,7 @@
 <div id="p2" class="loading">
     <div class="close" onclick="myFunction(p2, 'p2')">X</div>
     <h1>Passwort ändern</h1>
-    <form action="/konto/passwortAendern" method="post">
+    <form action="./konto" method="post">
         @csrf
         <input type="password" placeholder="Altes Passwort" name="opassword">
         <input type="password" placeholder="Neues Passwort" name="npassword"><br><br>

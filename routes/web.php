@@ -36,7 +36,7 @@ Route::middleware('auth')->prefix('pruefungsamt')->group(function(){
 
 
     Route::get('/konto', [AuthenticationController::class, 'konto'])->name('konto');
-    Route::post('/konto/passwortAendern', [AuthenticationController::class, 'passwortAendern'])->name('passwortAendern');
+    Route::post('/konto', [AuthenticationController::class, 'passwortAendern']);
   //  Route::get('/konto', '\App\Http\Controllers\PruefungsamtController@konto')->name('konto');
  //   Route::post('/konto/passwortAendern', '\App\Http\Controllers\PruefungsamtController@passwortAendern');
 });
@@ -54,7 +54,7 @@ Route::middleware('auth')->prefix('Professor')->group(function() {
     Route::post('/gruppe', [ProfessorController::class, 'gruppe']);
 
     Route::get('/konto', [AuthenticationController::class, 'konto'])->name('konto');
-    Route::post('/konto/passwortAendern', [AuthenticationController::class, 'passwortAendern'])->name('passwortAendern');
+    Route::post('/konto', [AuthenticationController::class, 'passwortAendern']);
 });
 
 // student routes
@@ -65,7 +65,7 @@ Route::middleware('auth')->prefix('Student')->group(function() {
     Route::post('/dashboard', [StudentController::class, 'index']);
     Route::post('/dashboard/{testat}', [StudentController::class, 'testat']);
     Route::get('/konto', [AuthenticationController::class, 'konto'])->name('konto');
-    Route::post('/konto/passwortAendern', [AuthenticationController::class, 'passwortAendern'])->name('passwortAendern');
+    Route::post('/konto', [AuthenticationController::class, 'passwortAendern']);
 });
 
 // Tutor routes
@@ -76,6 +76,6 @@ Route::middleware('auth')->prefix('Tutor')->group(function(){
     Route::get('/dashboard/{testatverwaltung}', [TutorController::class, 'testatverwaltung'])->name('Tutor/testatverwaltung');
     Route::post('/dashboard/{testatverwaltung}/{testat}', [TutorController::class, 'testat'])->name('Tutor/testat');
     Route::get('/konto', [AuthenticationController::class, 'konto'])->name('konto');
-    Route::post('/konto/passwortAendern', [AuthenticationController::class, 'passwortAendern'])->name('passwortAendern');
+    Route::post('/konto', [AuthenticationController::class, 'passwortAendern']);
 });
 
