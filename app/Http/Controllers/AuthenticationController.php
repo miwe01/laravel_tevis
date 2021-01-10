@@ -64,7 +64,8 @@ class AuthenticationController extends Controller
                 ->value('Kennung');
             if ($HiwiCheck != NULL){
                 $_SESSION['HiWi_UserId'] = $kennung;
-                return redirect()->route('Tutor/dashboard');
+                $_SESSION['Student_UserId'] = $kennung;
+                return redirect()->route('Student/dashboard');
             }
             // student
             $StudentCheck = DB::table('student')
