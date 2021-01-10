@@ -8,22 +8,37 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use Mockery\Matcher\Not;
 
 class TutorController extends Controller
 {
     public function index()
     {
 
-        $dash = DB::table('tutor')
-            ->leftJoin('benutzer', 'benutzer.kennung', '=', 'tutor.kennung')
-            ->leftJoin('tutorbetreutgruppen', 'tutorbetreutgruppen.TutorID', '=', 'benutzer.kennung')
-            ->RightJoin('gruppe', 'gruppe.Gruppenummer', '=', 'tutorbetreutgruppen.GruppenID')
-            ->leftJoin('modul', 'modul.Modulnummer', '=', 'gruppe.Modulnummer')
-            ->whereColumn( 'modul.Jahr' , '=' ,'gruppe.Jahr')
-            ->where('tutor.kennung',$_SESSION['WiMi_UserId'])
-            ->orderBy('modul.Modulname')
-        ->get();
-
+        if (isset($_SESSION['WiMi_UserId']))
+        {
+            $dash = DB::table('tutor')
+                ->leftJoin('benutzer', 'benutzer.kennung', '=', 'tutor.kennung')
+                ->leftJoin('tutorbetreutgruppen', 'tutorbetreutgruppen.TutorID', '=', 'benutzer.kennung')
+                ->RightJoin('gruppe', 'gruppe.Gruppenummer', '=', 'tutorbetreutgruppen.GruppenID')
+                ->leftJoin('modul', 'modul.Modulnummer', '=', 'gruppe.Modulnummer')
+                ->whereColumn( 'modul.Jahr' , '=' ,'gruppe.Jahr')
+                ->where('tutor.kennung',($_SESSION['WiMi_UserId']))
+                ->orderBy('modul.Modulname')
+                ->get();
+        }
+        else if (isset($_SESSION['HiWi_UserId']))
+        {
+            $dash = DB::table('tutor')
+                ->leftJoin('benutzer', 'benutzer.kennung', '=', 'tutor.kennung')
+                ->leftJoin('tutorbetreutgruppen', 'tutorbetreutgruppen.TutorID', '=', 'benutzer.kennung')
+                ->RightJoin('gruppe', 'gruppe.Gruppenummer', '=', 'tutorbetreutgruppen.GruppenID')
+                ->leftJoin('modul', 'modul.Modulnummer', '=', 'gruppe.Modulnummer')
+                ->whereColumn( 'modul.Jahr' , '=' ,'gruppe.Jahr')
+                ->where('tutor.kennung',($_SESSION['HiWi_UserId']))
+                ->orderBy('modul.Modulname')
+                ->get();
+        }
         return view('Tutor.dashboard',['tutor'=>$dash, 'title'=>'main']);
     }
 
@@ -54,21 +69,77 @@ class TutorController extends Controller
             ->get();
 
 
-        if ($request->submit == 'submit') {
-            DB::table('testatverwaltung')
-                ->where('testatverwaltung.TestatID', $request->TestatID)
-                ->where('testatverwaltung.Matrikelnummer', $request->Matrikelnummer)
-                ->update(['Testat' => $request->Testat, 'Kommentar' => $request->comment]);
+        /*
+               if(isset($request->Testat))
+               {
+               foreach ($request->Testat as $try)
+               {
+
+                   if($request->Testat)
+                   {
+                   DB::table('testatverwaltung')
+                        ->where('testatverwaltung.Matrikelnummer', $request->Matrikelnummer)
+                        ->where('testatverwaltung.TestatID',!$try)
+                        ->update(['testatverwaltung.Testat' => 0]);
+                     }
+                   else
+                   {
+                       DB::table('testatverwaltung')
+                           ->where('testatverwaltung.Matrikelnummer', $request->Matrikelnummer)
+                           ->where('testatverwaltung.TestatID', $try)
+                           ->update(['testatverwaltung.Testat' => 1]);
+
+                   }
+
+               }["11","12","13","14","15"] ["11"]
+               }*/
+
+        if(isset($request->Testat))
+        {  $counter = 0;
+            foreach ($request->Testatcomment as $try)
+            {
+                if(isset($request->Testat[$counter]) && $request->Testat[$counter] == $try)
+                {
+                    DB::table('testatverwaltung')
+                        ->where('testatverwaltung.Matrikelnummer', $request->Matrikelnummer)
+                        ->where('testatverwaltung.TestatID',$try)
+                        ->update(['testatverwaltung.Testat' => 1]);
+                }
+                else
+                {
+                    DB::table('testatverwaltung')
+                        ->where('testatverwaltung.Matrikelnummer', $request->Matrikelnummer)
+                        ->where('testatverwaltung.TestatID', $try)
+                        ->update(['testatverwaltung.Testat' => 0]);
+
+
+                }
+                ++$counter;
+            }
         }
 
-        if ($request->submit == 'submit') {
-            DB::table('testatverwaltung')
-                ->where('testatverwaltung.TestatID', $request->TestatID)
-                ->where('testatverwaltung.Matrikelnummer', $request->Matrikelnummer)
-                ->update(['Testat' => $request->check, 'Kommentar' => $request->comment]);
+
+
+
+        $counter1 = 0;
+        if(isset($request->Testatcomment))
+        {
+            foreach ($request->Testatcomment as $try)
+            {
+
+
+                DB::table('testatverwaltung')
+                    ->where('testatverwaltung.Matrikelnummer', $request->Matrikelnummer)
+                    ->where('testatverwaltung.TestatID', $try)
+                    ->update(['testatverwaltung.Kommentar' => $request->comment[$counter1]]);
+
+
+                $counter1++;
+            }
         }
 
-        return view('Tutor.testat',['testat'=>$testat,'gruppenname' => $request->Gruppenname,   'modulname' => $request->Modulname,'title'=>'testat']);
+
+        return view('Tutor.testat',['testat'=>$testat,'test'=> $request->Testatcomment,'test1'=> $request->Testat, 'gruppenname' => $request->Gruppenname,   'modulname' => $request->Modulname,'title'=>'testat']);
     }
 }
 

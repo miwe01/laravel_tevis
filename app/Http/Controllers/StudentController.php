@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Student;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
@@ -12,12 +11,8 @@ use Illuminate\Support\Facades\DB;
 
 class StudentController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return Application|Factory|View|Response
-     */
-    public function index(Student $Modulnummer)
+
+    public function index(Request $Modulnummer)
     {
 
         $dash = DB::table('student')
@@ -38,16 +33,26 @@ class StudentController extends Controller
     }
 
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Student  $student
-     * @return Application|Factory|View|Response
-     */
-    public function show(Student $student)
+    public function show(Request $student)
     {
-       $testat = DB::table('testat')
+        $modul = DB::table('benutzerhatmodul')
+            ->leftJoin('modul', 'modul.Modulnummer', '=', 'benutzerhatmodul.ModulID')
+            ->whereColumn( 'benutzerhatmodul.Jahr' , '=' ,'modul.Jahr')
+            ->where('benutzerhatmodul.BenutzerID',$_SESSION['Student_UserId'])
+            ->leftJoin('student', 'student.kennung', '=','benutzerhatmodul.BenutzerID')
+            ->leftJoin('testat', 'testat.Modulnummer', '=', 'modul.Modulnummer')
+            ->whereColumn( 'testat.Jahr' , '=' ,'modul.Jahr')
+            ->where('testat.Praktikumsname', '=', 'Endtestat')
+            ->leftJoin('testatverwaltung', 'testatverwaltung.testatID', '=', 'testat.id')
+            ->whereColumn('testatverwaltung.Matrikelnummer','=','student.Matrikelnummer')
+            ->get();
+
+
+
+
+        $testat =     DB::table('testat')
             ->join('testatverwaltung', 'testatverwaltung.testatID', '=', 'testat.id')
+
             ->where('testat.Modulnummer', $student->Modulnummer)
             ->where('testat.Jahr', $student->Jahr)
             ->where('testat.Praktikumsnummer', $student->Gruppennummer)
@@ -55,45 +60,38 @@ class StudentController extends Controller
             ->get();
 
 
-        return view('Student.testatbogen',['testat'=>$testat,  'title'=>'main']);
+        return view('Student.testatbogen',['modul'=>$modul,  'title'=>'main']);
     }
 
-public function testat(Request $request)
-{
-
- if ($request->Gruppenname == "")   return redirect()->route('Student/dashboard', ['fehler'=>'Kein Praktkum vorhanden']);
-     else $gruppenname = $request->Gruppenname;
-
-
-    $testat = DB::table('testat')
-        ->join('testatverwaltung', 'testatverwaltung.testatID', '=', 'testat.id')
-        ->join('modul', 'modul.Modulnummer', '=', 'testat.Modulnummer')
-        ->join('student', 'student.Matrikelnummer', '=', 'testatverwaltung.Matrikelnummer')
-        ->join('benutzer' ,'benutzer.kennung', '=', 'student.kennung')
-        ->where('student.kennung',$_SESSION['Student_UserId'])
-        ->whereColumn('testat.Jahr', '=', 'modul.Jahr')
-         ->where('modul.Modulname',$request->Modulname)
-        ->where('modul.Jahr',$request->Jahr)
-        ->get();
-
- $betreuer = DB::table('tutor')
-     ->leftJoin('benutzer' ,'benutzer.kennung', '=', 'tutor.kennung')
-     ->leftJoin('tutorbetreutgruppen', 'tutorbetreutgruppen.TutorID','=', 'tutor.kennung')
-     ->join('gruppe', 'gruppe.gruppenummer', '=','tutorbetreutgruppen.GruppenID' )
-     ->where('gruppe.gruppenummer',$request->Gruppenummer)
-     ->get();
-
-
-    return view('Student.testat',['testat'=>$testat,'gruppenname' => $gruppenname , 'betreuer'=>$betreuer,'title'=>'testat']);
-}
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Student  $student
-     * @return Response
-     */
-    public function destroy(Student $student)
+    public function testat(Request $request)
     {
-        //
+
+        if ($request->Gruppenname == "")   return redirect()->route('Student/dashboard', ['fehler'=>'Kein Praktkum vorhanden']);
+        else $gruppenname = $request->Gruppenname;
+
+
+        $testat = DB::table('testat')
+            ->join('testatverwaltung', 'testatverwaltung.testatID', '=', 'testat.id')
+            ->join('modul', 'modul.Modulnummer', '=', 'testat.Modulnummer')
+            ->join('student', 'student.Matrikelnummer', '=', 'testatverwaltung.Matrikelnummer')
+            ->join('benutzer' ,'benutzer.kennung', '=', 'student.kennung')
+            ->where('student.kennung',$_SESSION['Student_UserId'])
+            ->whereColumn('testat.Jahr', '=', 'modul.Jahr')
+            ->where('modul.Modulname',$request->Modulname)
+            ->where('modul.Jahr',$request->Jahr)
+            ->get();
+
+        $betreuer = DB::table('tutor')
+            ->leftJoin('benutzer' ,'benutzer.kennung', '=', 'tutor.kennung')
+            ->leftJoin('tutorbetreutgruppen', 'tutorbetreutgruppen.TutorID','=', 'tutor.kennung')
+            ->join('gruppe', 'gruppe.gruppenummer', '=','tutorbetreutgruppen.GruppenID' )
+            ->where('gruppe.gruppenummer',$request->Gruppenummer)
+            ->get();
+
+
+        return view('Student.testat',['testat'=>$testat,'gruppenname' => $gruppenname , 'betreuer'=>$betreuer,'title'=>'testat']);
     }
+
+
+
 }

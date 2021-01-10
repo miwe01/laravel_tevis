@@ -7,14 +7,14 @@
     <nav>
         <ul class="header-ul">
             @yield('links')
-
-            <form action="../logout" method="post">
+            <li class="header-li"><a href="./konto">Mein Konto</a></li>
+            <form action="/logout" method="post">
                 @csrf
-             <li id="logout-li"><button type="submit" href="">Logout</button></li>
+                <li id="logout-li"><button type="submit">Logout</button></li>
             </form>
 
-            <a class="a-img" href="#"><img src="../Images/german.png" alt="dsf" id="german"></a>
-            <a class="a-img" href="#"><img src="../Images/uk.png" alt="dsf" id="uk"></a>
+            <a class="a-img" href="#"><img src="/Images/german.png" alt="dsf" id="german"></a>
+            <a class="a-img" href="#"><img src="/Images/uk.png" alt="dsf" id="uk"></a>
         </ul>
     </nav>
 </header>

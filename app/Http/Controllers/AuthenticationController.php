@@ -106,4 +106,66 @@ class AuthenticationController extends Controller
 
     }
 
+
+    public function konto(Request $request){
+        return view('Login.konto',
+            ['info'=> $request->info,
+                'fehler_menu'=>$request->fehler_menu
+                ,'title'=>'Mein Konto']);
+    }
+
+    public function passwortAendern(Request $request){
+        if($request->opassword == NULL || $request->npassword == NULL)
+            return redirect()->route('konto', ['fehler_menu'=>'Passwort nicht gesetzt']);
+
+        if (isset($_SESSION['PA_UserId']))
+        {
+            $KennungVonPassword = DB::table('benutzer')
+                ->where('Kennung', $_SESSION['PA_UserId'])
+                ->value('Password');
+            $actualuser = $_SESSION['PA_UserId'];
+        }
+        elseif (isset($_SESSION['Student_UserId']))
+        {
+            $KennungVonPassword = DB::table('benutzer')
+                ->where('Kennung', $_SESSION['Student_UserId'])
+                ->value('Password');
+            $actualuser = $_SESSION['Student_UserId'];
+        }
+        elseif (isset($_SESSION['HiWi_UserId']))
+        {
+            $KennungVonPassword = DB::table('benutzer')
+                ->where('Kennung', $_SESSION['HiWi_UserId'])
+                ->value('Password');
+            $actualuser = $_SESSION['HiWi_UserId'];
+        }
+
+        elseif (isset($_SESSION['WiMi_UserId']))
+        {
+            $KennungVonPassword = DB::table('benutzer')
+                ->where('Kennung', $_SESSION['WiMi_UserId'])
+                ->value('Password');
+            $actualuser = $_SESSION['WiMi_UserId'];
+        }
+        elseif (isset($_SESSION['Prof_UserId']))
+        {
+            $KennungVonPassword = DB::table('benutzer')
+                ->where('Kennung', $_SESSION['Prof_UserId'])
+                ->value('Password');
+
+            $actualuser = $_SESSION['Prof_UserId'];
+        }
+
+        if ($request->opassword == $KennungVonPassword) {
+            $newPassword = $request->npassword;
+
+            DB::table('benutzer')
+                ->where('Kennung', $actualuser)
+                ->update(['Password' => $newPassword]);
+            return redirect()->route('konto', ['info'=>'Passwort wurde geändert']);
+        }
+
+        return redirect()->route('konto', ['fehler_menu'=>'Fehler bei Passwort']);
+
+    }
 }

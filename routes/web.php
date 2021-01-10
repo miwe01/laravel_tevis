@@ -34,8 +34,11 @@ Route::middleware('auth')->prefix('pruefungsamt')->group(function(){
     Route::post('/praktikumAnerkennen', [$PC, 'praktikumAnerkennen']);
     Route::post('/Testatbogen', [PruefungsamtController::class, 'Testatbogen']);
 
-    Route::get('/konto', '\App\Http\Controllers\PruefungsamtController@konto')->name('konto');
-    Route::post('/konto/passwortAendern', '\App\Http\Controllers\PruefungsamtController@passwortAendern');
+
+    Route::get('/konto', [AuthenticationController::class, 'konto'])->name('konto');
+    Route::post('/konto/passwortAendern', [AuthenticationController::class, 'passwortAendern'])->name('passwortAendern');
+  //  Route::get('/konto', '\App\Http\Controllers\PruefungsamtController@konto')->name('konto');
+ //   Route::post('/konto/passwortAendern', '\App\Http\Controllers\PruefungsamtController@passwortAendern');
 });
 
 
@@ -49,6 +52,9 @@ Route::middleware('auth')->prefix('Professor')->group(function() {
         return view('/Professor/kurs', ['title'=>'kurs']);
     });
     Route::post('/gruppe', [ProfessorController::class, 'gruppe']);
+
+    Route::get('/konto', [AuthenticationController::class, 'konto'])->name('konto');
+    Route::post('/konto/passwortAendern', [AuthenticationController::class, 'passwortAendern'])->name('passwortAendern');
 });
 
 // student routes
@@ -58,15 +64,18 @@ Route::middleware('auth')->prefix('Student')->group(function() {
     Route::post('/testatbogen', [StudentController::class, 'show']);
     Route::post('/dashboard', [StudentController::class, 'index']);
     Route::post('/dashboard/{testat}', [StudentController::class, 'testat']);
+    Route::get('/konto', [AuthenticationController::class, 'konto'])->name('konto');
+    Route::post('/konto/passwortAendern', [AuthenticationController::class, 'passwortAendern'])->name('passwortAendern');
 });
-Route::get('/passwordtohash', function () {
-    return view('/passwordtohash');});
 
 // Tutor routes
 Route::middleware('auth')->prefix('Tutor')->group(function(){
 
     Route::get('/dashboard', [TutorController::class, 'index'])->name('Tutor/dashboard');
     Route::post('/dashboard/{testatverwaltung}', [TutorController::class, 'testatverwaltung']);
-    Route::post('/dashboard/{testatverwaltung}/{testat}', [TutorController::class, 'testat']);
-
+    Route::get('/dashboard/{testatverwaltung}', [TutorController::class, 'testatverwaltung'])->name('Tutor/testatverwaltung');
+    Route::post('/dashboard/{testatverwaltung}/{testat}', [TutorController::class, 'testat'])->name('Tutor/testat');
+    Route::get('/konto', [AuthenticationController::class, 'konto'])->name('konto');
+    Route::post('/konto/passwortAendern', [AuthenticationController::class, 'passwortAendern'])->name('passwortAendern');
 });
+
