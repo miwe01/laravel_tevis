@@ -57,18 +57,7 @@ class TutorController extends Controller
     }
     public function testat(Request $request)
     {
-        $testat = DB::table('testat')
-            ->join('testatverwaltung', 'testatverwaltung.testatID', '=', 'testat.id')
-            ->join('modul', 'modul.Modulnummer', '=', 'testat.Modulnummer')
-            ->join('student', 'student.Matrikelnummer', '=', 'testatverwaltung.Matrikelnummer')
-            ->join('benutzer' ,'benutzer.kennung', '=', 'student.kennung')
-            ->where('student.Matrikelnummer', $request->Matrikelnummer)
-            ->whereColumn('testat.Jahr', '=', 'modul.Jahr')
-            ->where('modul.Modulname',$request->Modulname)
-            ->where('modul.Jahr',$request->Jahr)
-            ->get();
-
-
+       
         /*
                if(isset($request->Testat))
                {
@@ -138,6 +127,16 @@ class TutorController extends Controller
             }
         }
 
+         $testat = DB::table('testat')
+            ->join('testatverwaltung', 'testatverwaltung.testatID', '=', 'testat.id')
+            ->join('modul', 'modul.Modulnummer', '=', 'testat.Modulnummer')
+            ->join('student', 'student.Matrikelnummer', '=', 'testatverwaltung.Matrikelnummer')
+            ->join('benutzer' ,'benutzer.kennung', '=', 'student.kennung')
+            ->where('student.Matrikelnummer', $request->Matrikelnummer)
+            ->whereColumn('testat.Jahr', '=', 'modul.Jahr')
+            ->where('modul.Modulname',$request->Modulname)
+            ->where('modul.Jahr',$request->Jahr)
+            ->get();
 
         return view('Tutor.testat',['testat'=>$testat,'test'=> $request->Testatcomment,'test1'=> $request->Testat, 'gruppenname' => $request->Gruppenname,   'modulname' => $request->Modulname,'title'=>'testat']);
     }
