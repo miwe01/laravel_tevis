@@ -44,15 +44,16 @@ Route::middleware('auth')->prefix('pruefungsamt')->group(function(){
 
 // professor routes
 Route::middleware('auth')->prefix('Professor')->group(function() {
-    Route::get('/Professor', [ProfessorController::class, 'index'])->name('Professor');;
+    Route::get('/dashboard', [ProfessorController::class, 'index'])->name('Professor');;
     Route::get('/meine_kurse', function () {return view('/Professor/meine_kurse', ['title'=>'meine_kurse']);});
     Route::post('/kurs', function () {return view('/Professor/kurs', ['title'=>'kurs']);});
-    Route::post('/gruppe', [ProfessorController::class, 'gruppe']);
-    Route::post('/gruppe/tutorloeschen', '\App\Http\Controllers\ProfessorController@tutorLoeschen');
-    Route::post('/gruppe/studentloeschen', '\App\Http\Controllers\ProfessorController@studentenAusGruppeLoeschen');
-    Route::post('/gruppe/studentVerschieben', '\App\Http\Controllers\ProfessorController@studentVerschieben');
-    Route::post('/gruppe/studentHinzu', '\App\Http\Controllers\ProfessorController@studentZuGruppe');
-    Route::post('/gruppe/betreuerHinzu', '\App\Http\Controllers\ProfessorController@betreuerZuGruppe');
+    Route::any('/gruppe', [ProfessorController::class, 'gruppe'])->name('gruppe');
+    Route::post('/gruppe/tutorloeschen', [ProfessorController::class, 'tutorLoeschen']);
+    Route::post('/gruppe/studentloeschen', [ProfessorController::class, 'studentenAusGruppeLoeschen']);
+    Route::post('/gruppe/studentVerschieben', [ProfessorController::class, 'studentVerschieben']);
+    Route::post('/gruppe/studentHinzu', [ProfessorController::class, 'studentZuGruppe']);
+    Route::post('/gruppe/betreuerHinzu', [ProfessorController::class, 'betreuerZuGruppe']);
+    Route::post('/gruppe/Hauptbetreuer', [ProfessorController::class, 'ansprechperson']);
 });
 
 // student routes

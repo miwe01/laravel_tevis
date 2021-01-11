@@ -18,18 +18,19 @@
                 <li class ="kurse">{{$kurs->Modulnummer}} {{$kurs->Modulname}} </li>
                 <br>
                 <li class="li1" >{{$kurs->Raum}} </li>
-                <li>Gruppenanzahl</li>
-                <li>Teilnehmerzahl</li>
             </ul>
             <form action="/Professor/kurs" method="post">
                 @csrf
                 <input type="hidden" value="{{$kurs->Modulnummer}}" name="Modulname" id="bearbeiten">
-                <input type="hidden" value="{{$kurs->Jahr}}" name="Modulname" id="bearbeiten">
+                <input type="hidden" value="{{$kurs->Jahr}}" name="Jahr" id="bearbeiten">
                 <input type="submit" name="bearbeiten" id="bearbeiten" value="bearbeiten">
             </form>
         @endforeach
 
 
+        <form>
+            <input type="submit" value="Meine Kurse" id="meinekurse" name="meinekurse">
+        </form>
     </div>
 
     <div class="grid2">Gruppen</div>
@@ -39,8 +40,7 @@
             <ul>
                 <li class ="kurse"> {{$gruppe->Modulname}} {{$gruppe->Gruppenname}} </li>
                 <br>
-                <li class="li1" >Raum </li>
-                <li>Teilnehmer</li>
+                <li class="li1" >{{$gruppe->Jahr}} </li>
                 <li><a href="mailto:betreuer1@alumni.fh-aachen.de">Betreuername</a></li>
                 <li>{{$gruppe->Webex}}</li>
             </ul>
