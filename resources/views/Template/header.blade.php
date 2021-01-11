@@ -7,7 +7,7 @@
     <nav>
         <ul class="header-ul">
             @yield('links')
-            <li class="header-li"><a href="./konto">Mein Konto</a></li>
+            <li class="header-li"><a href="/konto">Mein Konto</a></li>
             <form action="/logout" method="post">
                 @csrf
                 <li id="logout-li"><button type="submit">Logout</button></li>
