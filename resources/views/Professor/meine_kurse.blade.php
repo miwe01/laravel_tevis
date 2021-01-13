@@ -3,49 +3,43 @@
 
 @section('main')
 
-<link rel="stylesheet" href="{{URL::asset("CSS/styleProfessor_mKurse.css")}}">
+    <link rel="stylesheet" href="{{URL::asset("CSS/styleProfessor_mKurse.css")}}">
 
-<h1 class ="meinekurse">Meine Kurse</h1>
-<button class="b2"> neuen kurse anlegen </button>
-
-        <div class="grid1">WiSe19/20</div>
-
-        <div>
-        <ul>
-            <li class ="kurse"><a href="Kurs1.html">Kurse1</a> </li>
-            <br>
-            <li class="li1" >an der veranstaltung </li>
-            <li>menge der gruppen</li>
-            <li>anzahl der tn</li>
-        </ul>
-            <br>
-<ul>
-    <li class ="kurse"><a href="Kurs1.html">Kurse2</a> </li>
-    <br>
-    <li class ="li1">an der Veranstaltung</li>
-    <li>Menge der  gruppen</li>
-    <li>anzahl der tn</li>
-</ul>
-        </div>
-
-<div class="grid2">SoSe20/21</div>
-
-<div>
-    <ul>
-        <li class ="kurse"><a href="Kurs1.html">Kurse1</a> </li>
+    <h1 class ="meinekurse">Meine Kurse</h1>
+    <form class="kform" action="/Professor/meine_kurse/neuer_kurs" method="post">
+        @csrf
+        <input type="submit" class="b2" value="Neuen Kurs anlegen" id="neu">
+        <input type="text" placeholder="Modulname" name="Modulname" id="neu">
+        <input type="number" placeholder="Modulnummer" name="Modulnummer" id="neu">
+        <input type="hidden" name="Jahr" value="2021" id="neu">
+        <input type="hidden" name="Semester" value="WiSe" id="neu">
         <br>
-        <li class="li1" >an der veranstaltung </li>
-        <li> menge der gruppen</li>
-        <li>anzahl der tn</li>
-    </ul>
-    <br>
-    <ul>
-        <li class ="kurse"><a href="Kurs2.html">Kurse2</a> </li>        <br>
-        <li class ="li1">an der Verantaltung</li>
-        <li>Menge der  gruppen</li>
-        <li>anzahl der tn</li>
-    </ul>
-</div>
+    </form>
 
+
+    @foreach($semester as $sem)
+        <div class="table">
+            <div class="grid1">{{$sem->Semester}} {{$sem->Jahr}}</div>
+
+            <div class="grid2">
+                @foreach($kurse as $kurs)
+                    @if($kurs->Jahr==$sem->Jahr && $kurs->Semester==$sem->Semester)
+                        <ul>
+                            <li class ="kurse">{{$kurs->Modulname}}</li>
+                            <br>
+                            <form action="/Professor/kurs_bearbeiten" method="post">
+                                @csrf
+                                <input type="submit" name="bearbeiten" value="bearbeiten" id="bearbeiten">
+                                <input type="hidden" name="Modulnummer" value="{{$kurs->Modulnummer}}" id="bearbeiten">
+                                <input type="hidden" name="Semester" value="{{$kurs->Semester}}" id="bearbeiten">
+                                <input type="hidden" name="Modulnummer" value="{{$kurs->Modulnummer}}" id="bearbeiten">
+                            </form>
+                        </ul>
+                        <br>
+                    @endif
+                @endforeach
+            </div>
+        </div>
+    @endforeach
 
 @endsection
