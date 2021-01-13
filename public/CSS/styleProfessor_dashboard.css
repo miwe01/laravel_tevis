@@ -5,15 +5,8 @@ body{
         .headbutton{
             margin-right: 2cm;
         }
-        button{
-            float:left;
-            background-color: cadetblue;
-            text-align: center ;
-            margin-right: 2cm;
-            transform: translate(30cm,-1.5cm);
-            padding: 10px;
-            width: 4cm;
-        }
+
+
         button.b2{
             background-color: cadetblue;
             text-align: center ;
@@ -42,6 +35,8 @@ body{
             padding-bottom :1cm;
             border-bottom: none;
             background-color: lightblue;
+            max-width: 70%;
+            min-width: 10cm;
         }
         div.grid2{
             margin-left: 6cm;
@@ -53,26 +48,38 @@ body{
             border-style:solid;
             padding-bottom :1cm;
             border-bottom: none;
+            max-width: 70%;
+            min-width: 10cm;
         }
-        div{
+        div.table{
             margin-left: 6cm;
             border-bottom: none;
             border-style: solid;
             padding-bottom: 2cm;
-            min-width: 25cm;
+            min-width: 10cm;
             max-width: 70%;
         }
 
         li.kurse {
 
+            border-left: solid;
+            float: left;
+            list-style: none;
+            margin-right: 0.5cm;
+            padding-left: 1cm;
             list-style: none;
             border-left: none;
             font-family: Calibri;
         }
         li.li1{
+            border-left: solid;
+            float: left;
+            list-style: none;
+            margin-right: 0.5cm;
+            padding-left: 1cm;
             border-left: none;
         }
-        li {
+        li.unten {
             border-left: solid;
             float: left;
             list-style: none;
