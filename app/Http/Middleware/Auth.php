@@ -10,12 +10,17 @@ class Auth
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
+     * @param Request $request
+     * @param Closure $next
      * @return mixed
      */
     public function handle(Request $request, Closure $next)
     {
+        // Wenn Get "language" Parameter gesetzt wurde, speichere langugae in Session
+        // Ändere Sprache um
+        if (isset($_SESSION['language']))
+        \App::setLocale($_SESSION['language']);
+
         // Überprüft ob Session gesetzt wurde
         // Session kann nur gesetzt werden wenn es Benutzer mit dem Passwort gibt
         if (isset($_SESSION['PA_UserId']))

@@ -6,24 +6,35 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 
+use App\Models\benutzer;
+use App\Models\module;
+
+
+
 class PruefungsamtController extends Controller
 {
+    // Dashboard Methode
     public function index(Request $request){
-        $kennung = DB::table('benutzer')->select('Nachname', 'Vorname')->orderBy('erfasst_am', 'desc')->orderBy('Nachname', 'asc')->take(5)->get();
-        $wintermodule = DB::table('modul')->select('Modulnummer', 'Modulname', 'Semester', 'Jahr')->where('Semester', 'WiSe')->get();
-        $sommermodule = DB::table('modul')->select('Modulnummer', 'Modulname', 'Semester', 'Jahr')->where('Semester', 'SoSe')->get();
 
-        return view('Pruefungsamt.dashboard',['fehler'=>$request->fehler, 'info'=>$request->info,'lastAdded'=>$kennung, 'WinterModule'=>$wintermodule, 'SommerModule' =>
-            $sommermodule, 'title'=>'Dashboard']);
+        // letzten 5 Benutzer
+        $benutzer = new benutzer(); $kennung = $benutzer->last5Users();
+//        $passwort = Hash::make('passwort');
+//
+//        echo $passwort;
+
+        // Alle Module aus DB
+        $wintermodule = new module(); $wintermodule = $wintermodule->getWintermodule();
+        $sommermodule = new module(); $sommermodule = $sommermodule->getSommerModule();
+        // Gibt Dashboard zurück mit allen Fehlern/Info, Module und letzten 5 Benutzer
+        return view('Pruefungsamt.dashboard',['lastAdded'=>$kennung, 'WinterModule'=>$wintermodule, 'SommerModule' =>
+            $sommermodule, 'title'=>'Dashboard', 'info'=>$request->info, 'fehler'=>$request->fehler]);
     }
 
 
     public function benutzerAdd(Request $request){
-        // print_r($request->all());
         if ($request->has('addPerson')){
-           // dd($request->all());
             // validation
-             //rules
+            //rules
             $rules = array(
                 'nachname' => 'required',
                 'vorname' => 'required',
@@ -45,70 +56,28 @@ class PruefungsamtController extends Controller
                 return redirect()->route('dashboard')->withErrors($firsterror);
             }
 
-            // Daten sind korrekt jetzt wird überprüft ob es Benutzer schon gibt
+            // Füge Person hinzu. Gibt Fehler zurück wenn es Benutzer schon gibt
+            $uB = new benutzer(); $uniqueBenutzer = $uB->BenutzerAdd($request);
 
-            $kennung = DB::table('benutzer')->where('Kennung', $request->kennung)->first();
-            $email = DB::table('benutzer')->where('Email', $request->email)->first();
+            // Benutzer gibt es schon
+            if ($uniqueBenutzer == 1)
+                return redirect()->route('dashboard', ['fehler'=>trans('Benutzer gibt es schon')]);
+            if ($uniqueBenutzer == 2)
+                return redirect()->route('dashboard', ['fehler'=>trans('Fehler aufgetreten')]);
 
-            if ($kennung != NULL || $email != NULL){
-               return redirect()->route('dashboard')->withErrors("User gibt es schon");
-            }
-
-            // Hashing im Moment ist Standard Passwort 123456
-            $passwort = Hash::make('123456');
-
-            /*check Hash (kommt ins login)
-            if (Hash::check('123456', $matrikelnummer)) {
-                dd("Passwort richtig");
-            }*/
-
-            // insert Benutzer
-            DB::table('benutzer')->insert(
-              ['Kennung'=>$request->kennung, 'Email'=>$request->email, 'Vorname'=>$request->vorname,
-               'Nachname'=>$request->nachname, 'Password'=>$passwort
-              ]
-            );
-
-            $rolle = $request->rolle;
-            if ($rolle == "professor"){
-                DB::table('professor')->insert(
-                    ['Kennung'=>$request->kennung, 'Titel'=>$request->titel]
-                );
-            }
-
-            else if ($rolle == "student"){
-                DB::table('student')->insert(
-                    ['Kennung'=>$request->kennung, 'Studiengang'=>'INF', 'Matrikelnummer'=>$request->matrikelnummer]
-                );
-            }
-
-            else if ($rolle == "wimi"){
-                DB::table('tutor')->insert(
-                    ['Kennung'=>$request->kennung, 'Rolle'=>'WiMi']
-                );
-            }
-
-            else if ($rolle == "hiwi"){
-                DB::table('tutor2')->insert(
-                    ['Kennung'=>$request->kennung, 'Rolle'=>'HiWi']
-                );
-            }
             return redirect()->route('dashboard');
-
         }
     }
 
-    public function fileUpload(Request $request)
-    {
+    public function fileUpload(Request $request){
         $file = $request->file('file');
         if($file->getSize() == 0){
-            return redirect()->route('dashboard', ['fehler'=>'Datei leer']);
+            return redirect()->route('dashboard', ['fehler'=> trans('Datei leer')]);
         }
         if($file->getClientOriginalExtension() != "csv"){
-            return redirect()->route('dashboard', ['fehler'=>'Keine CSV Datei']);
+            return redirect()->route('dashboard', ['fehler'=>trans('Keine CSV Datei')]);
         }
 
-        // $contents = file_get_contents($file->getRealPath());
         $fileArray = [];
         if (($handle = fopen($file->getRealPath(), 'r')) !== FALSE) {
             while (!feof($handle)) {
@@ -116,12 +85,11 @@ class PruefungsamtController extends Controller
                 //dd($line);
                 $str = explode(";", $line);
                 if (count($str) != 7)
-                    return redirect()->route('dashboard', ['fehler'=>'Format soll: Kennung;Email;Nachname;Vorname;Studiengang;Matrielnummer sein']);
+                    return redirect()->route('dashboard', ['fehler'=>trans('Format soll: Kennung;Email;Nachname;Vorname;Studiengang;Matrielnummer sein')]);
                 array_push($fileArray, $str);
             }
 
             for ($i=0;$i<count($fileArray);$i++){
-
                 $kennung = $fileArray[$i][0];
                 $email = $fileArray[$i][1];
                 $passwort = $fileArray[$i][2];
@@ -130,10 +98,10 @@ class PruefungsamtController extends Controller
                 $studiengang = $fileArray[$i][5];
                 $matrikelnummer = $fileArray[$i][6];
 
+
                 //Hashing. Im Moment ist Standard Passwort 123456
                 $passwort = Hash::make('123456');
 
-                echo $matrikelnummer;
                 // ignoriert Duplikate
                 DB::table('benutzer')->insertOrIgnore(
                     ['Kennung'=>$kennung, 'Email'=>$email, 'Vorname'=>$vorname,
@@ -146,60 +114,60 @@ class PruefungsamtController extends Controller
                 );
 
             }
-            return redirect()->route('dashboard', ['info'=>'Datei wurde importiert']);
+            return redirect()->route('dashboard', ['info'=>trans('Datei wurde importiert')]);
         }
         else
-            return redirect()->route('dashboard', ['fehler'=>'Fehler beim Öffnen']);
+            return redirect()->route('dashboard', ['fehler'=>trans('Fehler beim Öffnen')]);
     }
 
     public function klausurZulassung(Request $request){
-
         if ($request->modul == "")
-            return redirect()->route('dashboard', ['fehler'=>'Kein Modul ausgewählt']);
+            return redirect()->route('dashboard', ['fehler'=>trans('Kein Modul ausgewählt')]);
 
         // ist matrikelnummer überhaupt richtig
         $matrikelnummer = DB::table('student')->where('Matrikelnummer', $request->matrikelnummer)->value("Matrikelnummer");
         if($matrikelnummer == NULL)
-            return redirect()->route('dashboard', ['fehler'=>'Matrikelnummer ist falsch']);
+            return redirect()->route('dashboard', ['fehler'=>trans('Matrikelnummer ist falsch')]);
 
         $testatid = DB::table('testat')->where('Modulnummer', $request->modul)->value("ID");
         //kein Testat von Modul => zugelassen
         if ($testatid == NULL){
-            return redirect()->route('dashboard', ['info'=>'Modul hat kein Testat, automatische Klausurzulassung']);
+            return redirect()->route('dashboard', ['info'=>trans('Modul hat kein Testat, automatische Klausurzulassung')]);
         }
         else{
             $matrikelnummer = (int) $request->matrikelnummer;
 
             // checkt ob User Endtestat hat
             $checktestat = DB::table('testat AS t')
-                ->join('testatverwaltung AS tv', 't.ID', '=', 'tv.ID')
+                ->join('testatverwaltung AS tv', 't.ID', '=', 'tv.TestatID')
                 ->where([
                 ['Modulnummer', $request->modul],
                 ['Matrikelnummer', $matrikelnummer],
                 ['Praktikumsname', "Endtestat"],
-                    ['Testat', '1']
-                 ])->value("Matrikelnummer");
+                ['Testat', '1']
+                ])->value("Matrikelnummer");
 
             if ($checktestat == $matrikelnummer){
-                return redirect()->route('dashboard', ['info'=>'Student ist zugelassen']);
+                return redirect()->route('dashboard', ['info'=>trans('Student ist zugelassen')]);
             }
             else{
-                return redirect()->route('dashboard', ['fehler'=>'Student ist nicht zugelassen']);
+                return redirect()->route('dashboard', ['fehler'=>trans('Student ist nicht zugelassen')]);
             }
         }
     }
     public function klausurZulassungen(Request $request){
         // wenn kein Modul ausgewählt wurde
+
         if ($request->modul == NULL){
-            return redirect()->route('dashboard', ['fehler'=>'Kein Modul ausgewählt']);
+            return redirect()->route('dashboard', ['fehler'=>trans('Kein Modul ausgewählt')]);
         }
 
         $file = $request->file('file');
         if($file->getSize() == 0){
-            return redirect()->route('dashboard', ['fehler'=>'Datei leer']);
+            return redirect()->route('dashboard', ['fehler'=>trans('Datei leer')]);
         }
         if($file->getClientOriginalExtension() != "csv"){
-            return redirect()->route('dashboard', ['fehler'=>'Keine CSV Datei']);
+            return redirect()->route('dashboard', ['fehler'=>trans('Keine CSV Datei')]);
         }
 
         $matrikelnummern = [];
@@ -212,132 +180,141 @@ class PruefungsamtController extends Controller
             }
         }
         else
-            return redirect()->route('dashboard', ['fehler'=>'Fehler beim Öffnen']);
+            return redirect()->route('dashboard', ['fehler'=>trans('Fehler beim Öffnen')]);
         fclose($handle);
 
         $matrikelnummern = array_shift($matrikelnummern);
         $matrikelnummern = array_map('intval', $matrikelnummern);
-        //print_r($matrikelnummern);
-        //dd($matrikelnummern);
 
         // modullnummer und das testat
         $testatid = DB::table('testat')->where('Modulnummer', $request->modul)->value('ID');
         //dd($testatid);
         //kein Testat von Modul => zugelassen
         if ($testatid == NULL){
-            return redirect()->route('dashboard', ['info'=>'Alle Studenten sind zugelassen, weil es kein Testat gibt']);
+            return redirect()->route('dashboard', ['info'=>trans('Alle Studenten sind zugelassen, weil es kein Testat gibt')]);
         }
-            //$matrikelnummern=[3252173,125,54];
-            //print_r($matrikelnummern);
-            //dd($matrikelnummern);
-            // noch nicht fertig, weil Problem mit Datenbank
-            $testate = DB::table('testat AS t')
-                ->join('modul AS m', 't.Modulnummer', '=', 'm.Modulnummer')
-                ->join('testatverwaltung AS tv', 't.ID', '=', 'tv.ID')
-                ->whereIn(
-                'Matrikelnummer', $matrikelnummern
-                )
-                ->where(
-                    'Praktikumsname', 'Endtestat'
-                )
-                ->where(
-                    't.Modulnummer', $request->modul
-                )
-                ->get();
-        /*
-        $falseTestat = DB::table('module')
-            ->join('modul', 'testat.Modulnummer', '=', 'modul.Modulnummer')
-            ->where(
-                'Praktikumsname', 'Endtestat'
+        // noch nicht fertig, weil Problem mit Datenbank
+
+        $geschafft = DB::table('testat AS t')
+            ->leftJoin('modul as m', 't.Modulnummer', '=', 'm.Modulnummer')
+            ->whereColumn('t.Jahr', '=', 'm.Jahr')
+            ->join('testatverwaltung AS tv', 't.ID', '=', 'tv.TestatID')
+            ->whereIn(
+            'Matrikelnummer', $matrikelnummern
             )
-        */
-       /* if ($checktestat == NULL)
-            return redirect()->route('dashboard', ['fehler'=>'Kein Student']);
-       */
-        return view('Pruefungsamt.klausurZulassungenListe', ['title'=> 'Testate', 'Testate' => $testate]);
-                dd($trueTestat);
-        /* where in nimmt array
-        //$myArray = explode(',', $array);
-        $array = ["mw","pierre",3];
-        $users = DB::table('benutzer')->select("*")
-            ->whereIn('Kennung', $array)
-            ->get();
+            ->where(
+                't.Praktikumsname', 'like','%Endtestat%'
+            )
+            ->where(
+                't.Modulnummer', $request->modul
+            )
+            ->pluck('Matrikelnummer');
 
-        dd($users);*/
+        // diese Matrikelnummer werden herausgenommen später aus dem Array $matrikelnummers
+        $nichtGeschafft = [];
+        // nimmt Matrikel aus geschafft um später zu finden welche nicht geschafft sind
+        foreach ($geschafft as $testat=>$value){
+            $nichtGeschafft[] = $value;
         }
+        // array => nur int werte
+        $nichtGeschafft = array_map('intval', $nichtGeschafft);
 
-    // noch nicht fertig
+        // löscht jetzt alles Matrikelnummer aus $matrikelnummer und dadurch weiss man welche man noch nicht geschafft hat
+        $nichtGeschafft = array_diff($matrikelnummern, $nichtGeschafft);
+
+        // Modulinformationen
+        $modul = DB::table('modul')->select('Modulname', 'Semester', 'Jahr')->where('Modulnummer', $request->modul)->first();
+
+        return view('Pruefungsamt.klausurZulassungenListe', ['title'=> 'Testate', 'Modul'=> $modul,'Geschafft' => $geschafft, 'NichtGeschafft'=> $nichtGeschafft]);
+
+    }
+
     public function praktikumAnerkennen(Request $request){
         if (!is_numeric($request->matrikelnummer))
-            return redirect()->route('dashboard', ['fehler'=>'Keine Matrikelnummer']);
+            return redirect()->route('dashboard', ['fehler'=>trans('Keine Matrikelnummer')]);
         if ($request->modul == "")
-            return redirect()->route('dashboard', ['fehler'=>'Keine Modul ausgewählt']);
+            return redirect()->route('dashboard', ['fehler'=>trans('Kein Modul ausgewählt')]);
 
         // gibt modulnummer zurück
         // $modulnummer = DB::table("Modul")->where("Modulname", $request->modul)->value("Modulnummer");
         // bekommt Id von Reihe mit "Endtestat" -> wenn fehler dann Modul hat kein Endtestat
         $endtestatid = DB::table('testat')
             ->where('Modulnummer', $request->modul)
+            ->value("ID");
+
+        if($endtestatid == NULL)
+            return redirect()->route('dashboard', ['fehler'=>trans('Modul hat kein Testat')]);
+
+        $endtestatid = DB::table('testat')
+            ->where('Modulnummer', $request->modul)
             ->where('Praktikumsname', 'Endtestat')
             ->value("ID");
+
+        if($endtestatid == NULL)
+            return redirect()->route('dashboard', ['fehler'=>trans('Modul hat kein Endtestat')]);
 
         // ARBK = ID->5
         // DBWT2020 = ID->10
         // DBWT2019 = ID->15
         //dd($endtestatid);
-        if($endtestatid == NULL)
-            return redirect()->route('dashboard', ['fehler'=>'Modul hat kein (End)Testat']);
 
 
 
-/*
- *
- *
- * SELECT * FROM testat AS t
-JOIN testatverwaltung AS tv
-ON t.ID = tv.id
- WHERE Modulnummer=35363
- AND Matrikelnummer=2359263;
- */
-        /*
-        $testatid = DB::table('testatverwaltung')->where('ID', $testatid)->value("ID");
 
-        if ($testatid == NULL)
-            return redirect()->route('dashboard', ['fehler'=>'Fehler aufgetreten']);
-        */
-/* IDEE INSERT Entestat für Schüler
-          DB::table('testatverwaltung')->insertorignore(
-              ['Matrikelnummer'=>$request->matrikelnummer,
-                  'TestatID'=>$endtestatid, 'Testat'=>1,
-                  'Kommentar'=>'Entestat wurde automatisch hinzugefügt vom Prüfungsamt'
-              ]
-          );
-*/
         //dd($endtestatid);
+
         $check = DB::table('testatverwaltung')
-            ->where('ID', $endtestatid)
+            ->where('TestatID', $endtestatid)
+            ->where('Matrikelnummer', $request->matrikelnummer)
+            ->value('Matrikelnummer');
+            if ($check == NULL)
+                return redirect()->route('dashboard', ['fehler'=>trans('Benutzer hat kein Modul mit dem Testat')]);
+
+
+
+        $check = DB::table('testatverwaltung')
+            ->where('TestatID', $endtestatid)
             ->update(['Testat' => 1]);
+
+
         if ($check == 0)
-            return redirect()->route('dashboard', ['info'=>'Testat is schon bestanden, oder Benutzer hat kein Endtestat']);
+            return redirect()->route('dashboard', ['info'=>trans('Testat ist schon bestanden')]);
         //dd($check);
-        return redirect()->route('dashboard', ['info'=>'Testat bestanden']);
+        return redirect()->route('dashboard', ['info'=>trans('Testat bestanden')]);
     }
 
     public function Testatbogen(Request $request){
-        if (!is_numeric($request->matrikelnummer))
-            return redirect()->route('dashboard', ['fehler'=>'Keine Matrikelnummer']);
+        // fehler sonst bei wechseln von Sprache
+        // session erstellt
+        if (isset($request->matrikelnummer)){
+            $_SESSION["testatbogen"] = $request->matrikelnummer;
+        }
+
+        if (!isset($_SESSION["testatbogen"]))
+            return redirect()->route('dashboard', ['fehler'=>trans('Keine Matrikelnummer')]);
 
         /* SELECT * FROM testatverwaltung, testat, modul WHERE Matrikelnummer=2359263 AND testat.ID = testatverwaltung.ID; */
         $testatbogen = DB::table('testat AS t')
-            ->select('t.Modulnummer', 'Modulname', 'Semester', 'Jahr', 'Testat')
-            ->join('modul AS m', 't.Modulnummer', '=', 'm.Modulnummer')
-            ->join('testatverwaltung AS tv', 't.ID', '=', 'tv.TestatID')
-            ->where('tv.Matrikelnummer', $request->matrikelnummer)
+            ->select('t.Modulnummer', 'Modulname', 'Semester', 'm.Jahr', 'Testat')
+            ->leftJoin('modul as m', 't.Modulnummer', '=', 'm.Modulnummer')
+            ->whereColumn('t.Jahr', '=', 'm.Jahr')
+            ->join('testatverwaltung AS tv', 't.ID', 'tv.TestatID')
+            ->where('tv.Matrikelnummer', $_SESSION["testatbogen"])
             ->where('Praktikumsname', 'Endtestat')
+            ->orderBy('Modulname', 'asc')
+            ->orderBy('m.Jahr', 'asc')
+            ->groupBy("m.Modulnummer")
+
             ->get();
 
+
+
+        if ($testatbogen->isEmpty())
+            return redirect()->route('dashboard', ['info'=>trans('Benutzer hat keine Testate')]);
         //dd($testatbogen);
-        return view('Pruefungsamt.testatbogen', ['title'=>'Testatbogen','Testatbogen'=>$testatbogen, 'Student'=>$request->matrikelnummer]);
+
+        //dd($testatbogen);
+        return view('Pruefungsamt.testatbogen', ['title'=>'Testatbogen','Testatbogen'=>$testatbogen, 'Student'=>$_SESSION["testatbogen"]]);
     }
 
 
@@ -351,22 +328,7 @@ ON t.ID = tv.id
 
     public function passwortAendern(Request $request){
         if($request->opassword == NULL || $request->npassword == NULL)
-            return redirect()->route('konto', ['fehler_menu'=>'Passwort nicht gesetzt']);
-
-        // noch nicht ganz fertig
-        // session user id muss noch in select
-        // benutzt werden
-        // dann wird nach session user id gesucht
-        // bekommt passwort zurück passwort wird überprüft
-        // Hashing im Moment ist Standard Passwort 123456
-        //            $passwort = Hash::make('123456');
-        //
-        //            /*check Hash (kommt ins login)
-        //            if (Hash::check('123456', $matrikelnummer)) {
-        //                dd("Passwort richtig");
-        //            }*/
-        //
-        // und dann kann er es ändern
+            return redirect()->route('konto', ['fehler_menu'=>trans('Passwort ist nicht gesetzt')]);
 
         $KennungVonPassword = DB::table('benutzer')
             ->where('Kennung', $_SESSION['PA_UserId'])
@@ -376,15 +338,15 @@ ON t.ID = tv.id
 //       dd($KennungVonPassword);
 //      dd($request->opassword);
         if (Hash::check($request->opassword, $KennungVonPassword)) {
-            $newPassword = Hash::make($request->npassword);
+                $newPassword = Hash::make($request->npassword);
 
             DB::table('benutzer')
                 ->where('Kennung', $_SESSION['PA_UserId'])
                 ->update(['Password' => $newPassword]);
-            return redirect()->route('konto', ['info'=>'Passwort wurde geändert']);
+            return redirect()->route('konto', ['info'=>trans('Passwort wurde geändert')]);
         }
 
-        return redirect()->route('konto', ['fehler_menu'=>'Fehler bei Passwort']);
+        return redirect()->route('konto', ['fehler_menu'=>trans('Fehler bei Passwort')]);
 
     }
 }
