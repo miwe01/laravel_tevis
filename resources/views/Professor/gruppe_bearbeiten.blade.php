@@ -15,9 +15,7 @@
                 <th>Matrikelnummer</th>
                 <th>Vorname</th>
                 <th>Nachname</th>
-                @foreach($testat as $t)
-                    <th>{{$t->Praktikumsname}}</th>
-                @endforeach
+
                 <th>Werkzeuge</th>
             </tr>
             </thead>
@@ -27,9 +25,7 @@
                     <td>{{$student->Matrikelnummer}}</td>
                     <td>{{$student->Vorname}}</td>
                     <td>{{$student->Nachname}}</td>
-                    @foreach($testat as $t)
-                        <th><input type="checkbox"></th>
-                    @endforeach
+
                     <td>
                         <form action="/Professor/gruppe/studentloeschen" method="post">
                             @csrf
@@ -42,15 +38,23 @@
                         <form action="/Professor/gruppe/studentVerschieben" method="post">
                             @csrf
                             <select id="verschieben" name="GruppenID">
-                            @foreach($gruppen as $gruppe)
-                                <option value="{{$gruppe->Gruppenummer}}"> {{$gruppe->Gruppenummer}}</option>
-                            @endforeach
+                                @foreach($gruppen as $gruppe)
+                                    <option value="{{$gruppe->Gruppenummer}}"> {{$gruppe->Gruppenummer}}</option>
+                                @endforeach
                             </select>
                             <input type="hidden" value="{{$gruppeninfo->Gruppenummer}}" name="altGruppenID" id="verschieben">
                             <input type="hidden" value="{{$student->Matrikelnummer}}" name="Matrikelnummer" id="verschieben">
                             <input type="hidden" value="{{$modul->Modulnummer}}" name="Modulnummer" id="verschieben">
                             <input type="hidden" value="{{$modul->Jahr}}" name="Jahr" id="verschieben">
                             <input type="submit" value="Verschieben" name="verschieben" id="verschieben">
+                        </form>
+                        <form action="/Professor/gruppe/testat" method="post">
+                            @csrf
+                            <input type="hidden"  value="{{$student->Matrikelnummer}}" name="Matrikelnummer" id="Testat">
+                            <input type="hidden"  value="{{$gruppeninfo->Gruppenname}} " name="Gruppenname" id="Testat">
+                            <input type="hidden"  value="{{$gruppeninfo->Gruppenummer}} " name="Gruppenummer" id="Testat">
+                            <input type="hidden"  value="{{$modul->Jahr}} " name="Jahr" id="Testat">
+                            <button type="submit"  value="{{$modul->Modulname}} " name="Modulname" id="Testat">Testat</button>
                         </form>
                     </td>
                 </tr>
