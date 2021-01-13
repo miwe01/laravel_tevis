@@ -11,7 +11,7 @@
 
     <div class="grid1">Kurse: WiSe20/21</div>
 
-    <div class="table">
+    <div>
 
         @foreach($kurse as $kurs)
             <ul>
@@ -28,27 +28,20 @@
         @endforeach
 
 
-        <form action="/Professor/meine_kurse" method="post">
-            @csrf
+        <form>
             <input type="submit" value="Meine Kurse" id="meinekurse" name="meinekurse">
         </form>
     </div>
 
     <div class="grid2">Gruppen</div>
 
-    <div class="table">
+    <div>
         @foreach($gruppen as $gruppe)
             <ul>
                 <li class ="kurse"> {{$gruppe->Modulname}} {{$gruppe->Gruppenname}} </li>
                 <br>
                 <li class="li1" >{{$gruppe->Jahr}} </li>
-                @foreach($haupt as $bet)
-                    @if($bet->GruppenID == $gruppe->Gruppenummer)
-                    <li><a href="mailto:{{$bet->Email}}">{{$bet->Vorname}} {{$bet->Nachname}}</a></li>
-                    @else
-                        <li> Kein Hauptbetreuer ausgewählt </li>
-                    @endif
-                @endforeach
+                <li><a href="mailto:betreuer1@alumni.fh-aachen.de">Betreuername</a></li>
                 <li>{{$gruppe->Webex}}</li>
             </ul>
             <form action="/Professor/gruppe" method="post">

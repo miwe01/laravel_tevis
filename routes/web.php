@@ -44,8 +44,8 @@ Route::middleware('auth')->prefix('pruefungsamt')->group(function(){
 
 // professor routes
 Route::middleware('auth')->prefix('Professor')->group(function() {
-    Route::get('/dashboard', [ProfessorController::class, 'index'])->name('Professor');
-    Route::any('/meine_kurse', [ProfessorController::class, 'meineKurse'])->name('meineKurse');
+    Route::get('/dashboard', [ProfessorController::class, 'index'])->name('Professor');;
+    Route::get('/meine_kurse', function () {return view('/Professor/meine_kurse', ['title'=>'meine_kurse']);});
     Route::post('/kurs', function () {return view('/Professor/kurs', ['title'=>'kurs']);});
     Route::any('/gruppe', [ProfessorController::class, 'gruppe'])->name('gruppe');
     Route::post('/gruppe/tutorloeschen', [ProfessorController::class, 'tutorLoeschen']);
@@ -54,7 +54,6 @@ Route::middleware('auth')->prefix('Professor')->group(function() {
     Route::post('/gruppe/studentHinzu', [ProfessorController::class, 'studentZuGruppe']);
     Route::post('/gruppe/betreuerHinzu', [ProfessorController::class, 'betreuerZuGruppe']);
     Route::post('/gruppe/Hauptbetreuer', [ProfessorController::class, 'ansprechperson']);
-    Route::post('/meine_kurse/neuer_kurs', [ProfessorController::class, 'neuer_kurs']);
 });
 
 // student routes

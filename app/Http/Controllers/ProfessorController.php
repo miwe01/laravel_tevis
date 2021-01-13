@@ -36,15 +36,8 @@ class ProfessorController extends Controller
             ->orderBy('gruppe.Gruppenummer')
             ->get();
 
-        $haupt = DB::table('benutzer')
-            ->select('Email', 'Vorname', 'Nachname', 'tutorbetreutgruppen.Hauptbetreuer', 'tutorbetreutgruppen.GruppenID')
-            ->leftJoin('tutorbetreutgruppen','benutzer.Kennung','=','tutorbetreutgruppen.TutorID')
-            ->where('tutorbetreutgruppen.Hauptbetreuer', '=', 1)
-            ->get();
 
-        //dd($haupt);
-
-        return view('Professor.dashboard', ['kurse'=>$kurse, 'gruppen' => $gruppen , 'title' => 'Dashboard', 'haupt' => $haupt]);
+        return view('Professor.dashboard', ['kurse'=>$kurse, 'gruppen' => $gruppen , 'title' => 'Dashboard']);
     }
 
 
@@ -123,26 +116,11 @@ class ProfessorController extends Controller
 
 
     public function meineKurse(Request $request){
-        $kurse = DB::table('professor')
-            ->leftJoin('benutzer', 'benutzer.kennung', '=', 'professor.kennung')
-            ->leftJoin('benutzerhatmodul', 'benutzerhatmodul.BenutzerID', '=', 'benutzer.kennung')
-            ->leftJoin('modul', 'modul.Modulnummer', '=', 'benutzerhatmodul.ModulID')
-            ->whereColumn( 'benutzerhatmodul.Jahr' , '=' ,'modul.Jahr')
-            ->where('professor.kennung',$_SESSION['Prof_UserId'])
-            ->orderBy('modul.Modulname')
+        $kurse = DB::table('modul')
+            ->join('benutzerhatmodul', 'BenutzerID', '=', 'ModulID')
             ->get();
 
-        $semester = DB::table('modul')
-            ->select('modul.Semester', 'modul.Jahr')
-            ->leftJoin('benutzerhatmodul', 'Modulnummer', '=', 'ModulID')
-            ->where('benutzerhatmodul.BenutzerID', $_SESSION['Prof_UserId'])
-            ->distinct()
-            ->orderBy('modul.Jahr', 'desc')
-            ->orderBy('modul.Semester', 'desc')
-            ->get();
-
-
-        return view('Professor.meine_kurse', ['kurse' => $kurse, 'semester' => $semester, 'title' => 'Meine Kurse']);
+        return view('Professor.meine_kurse', ['kurse' => $kurse, 'titel' => 'Meine Kurse']);
     }
 
 
@@ -270,25 +248,5 @@ class ProfessorController extends Controller
             ->update(['Hauptbetreuer' => 1]);
         return redirect()->route('gruppe',['Gruppenummer'=>$request->Gruppennummer, 'Modulnummer'=>$request->Modulnummer,
             'Jahr' => $request-> Jahr]);
-    }
-
-    public function neuer_kurs(Request $request){
-
-        DB::table('modul')
-            ->insert([
-                'Modulnummer' => $request->Modulnummer,
-                'Modulname' => $request->Modulname,
-                'Raum' => 'N/A',
-                'Semester' => $request->Semester,
-                'Jahr' => $request->Jahr
-                ]);
-
-        DB::table('benutzerhatmodul')
-            ->insert([
-                'BenutzerID' => $_SESSION['Prof_UserId'],
-                'ModulID' => $request->Modulnummer,
-                'Jahr' => $request->Jahr
-            ]);
-        return redirect()->route('meineKurse');
     }
 }
