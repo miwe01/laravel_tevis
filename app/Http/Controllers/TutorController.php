@@ -52,6 +52,7 @@ class TutorController extends Controller
             ->where('gruppe.gruppenummer',$request->Gruppenummer)
             ->get();
 
+
         return view('Tutor.testatverwaltung',['studenten'=>$studenten,'gruppenname' => $request->Gruppenname,
             'modulname' => $request->Modulname,'jahr' => $request->Jahr,'title'=>'Gruppe']);
     }
@@ -91,8 +92,6 @@ class TutorController extends Controller
                 }
             }
         }
-
-
 
 
         $counter1 = 0;

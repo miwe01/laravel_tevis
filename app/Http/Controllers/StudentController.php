@@ -15,6 +15,7 @@ class StudentController extends Controller
     public function index(Request $Modulnummer)
     {
 
+
         $dash = DB::table('student')
             ->leftJoin('benutzer', 'benutzer.kennung', '=', 'student.kennung')
             ->leftJoin('benutzerhatmodul', 'benutzerhatmodul.BenutzerID', '=', 'benutzer.kennung')
@@ -22,14 +23,16 @@ class StudentController extends Controller
             ->leftJoin('studenteningruppen', 'studenteningruppen.Matrikelnummer', '=', 'student.Matrikelnummer')
             ->RightJoin('gruppe', 'gruppe.Gruppenummer', '=', 'studenteningruppen.GruppenID')
             ->whereColumn('gruppe.Modulnummer', '=', 'modul.Modulnummer')
-            ->whereColumn( 'benutzerhatmodul.Jahr' , '=' ,'modul.Jahr')
+            ->whereColumn('benutzerhatmodul.Jahr', '=', 'modul.Jahr')
             ->whereColumn('gruppe.Jahr', '=', 'modul.Jahr')
-            ->where('student.kennung',$_SESSION['Student_UserId'])
+            ->where('student.kennung', $_SESSION['Student_UserId'])
             ->orderBy('modul.Modulname')
             ->get();
 
 
-        return view('Student.dashboard',['student'=>$dash,  'title'=>'main']);
+        return view('Student.dashboard', ['student' => $dash, 'title' => 'main']);
+
+
     }
 
 
@@ -37,36 +40,25 @@ class StudentController extends Controller
     {
         $modul = DB::table('benutzerhatmodul')
             ->leftJoin('modul', 'modul.Modulnummer', '=', 'benutzerhatmodul.ModulID')
-            ->whereColumn( 'benutzerhatmodul.Jahr' , '=' ,'modul.Jahr')
-            ->where('benutzerhatmodul.BenutzerID',$_SESSION['Student_UserId'])
-            ->leftJoin('student', 'student.kennung', '=','benutzerhatmodul.BenutzerID')
+            ->whereColumn('benutzerhatmodul.Jahr', '=', 'modul.Jahr')
+            ->where('benutzerhatmodul.BenutzerID', $_SESSION['Student_UserId'])
+            ->leftJoin('student', 'student.kennung', '=', 'benutzerhatmodul.BenutzerID')
             ->leftJoin('testat', 'testat.Modulnummer', '=', 'modul.Modulnummer')
-            ->whereColumn( 'testat.Jahr' , '=' ,'modul.Jahr')
+            ->whereColumn('testat.Jahr', '=', 'modul.Jahr')
             ->where('testat.Praktikumsname', '=', 'Endtestat')
             ->leftJoin('testatverwaltung', 'testatverwaltung.testatID', '=', 'testat.id')
-            ->whereColumn('testatverwaltung.Matrikelnummer','=','student.Matrikelnummer')
+            ->whereColumn('testatverwaltung.Matrikelnummer', '=', 'student.Matrikelnummer')
             ->get();
 
+        $aktuellesJahr = date("Y");
 
-
-
-        $testat =     DB::table('testat')
-            ->join('testatverwaltung', 'testatverwaltung.testatID', '=', 'testat.id')
-
-            ->where('testat.Modulnummer', $student->Modulnummer)
-            ->where('testat.Jahr', $student->Jahr)
-            ->where('testat.Praktikumsnummer', $student->Gruppennummer)
-            ->where('testatverwaltung.Matrikelnummer', $student->Matrikelnummer)
-            ->get();
-
-
-        return view('Student.testatbogen',['modul'=>$modul,  'title'=>'main']);
+        return view('Student.testatbogen', ['modul' => $modul, 'aktJahr' => $aktuellesJahr,'title' => 'main']);
     }
 
     public function testat(Request $request)
     {
 
-        if ($request->Gruppenname == "")   return redirect()->route('Student/dashboard', ['fehler'=>'Kein Praktkum vorhanden']);
+        if ($request->Gruppenname == "") return redirect()->route('Student/dashboard', ['fehler' => 'Kein Praktkum vorhanden']);
         else $gruppenname = $request->Gruppenname;
 
 
@@ -74,24 +66,30 @@ class StudentController extends Controller
             ->join('testatverwaltung', 'testatverwaltung.testatID', '=', 'testat.id')
             ->join('modul', 'modul.Modulnummer', '=', 'testat.Modulnummer')
             ->join('student', 'student.Matrikelnummer', '=', 'testatverwaltung.Matrikelnummer')
-            ->join('benutzer' ,'benutzer.kennung', '=', 'student.kennung')
-            ->where('student.kennung',$_SESSION['Student_UserId'])
+            ->join('benutzer', 'benutzer.kennung', '=', 'student.kennung')
+            ->where('student.kennung', $_SESSION['Student_UserId'])
             ->whereColumn('testat.Jahr', '=', 'modul.Jahr')
-            ->where('modul.Modulname',$request->Modulname)
-            ->where('modul.Jahr',$request->Jahr)
+            ->where('modul.Modulname', $request->Modulname)
+            ->where('modul.Jahr', $request->Jahr)
             ->get();
 
         $betreuer = DB::table('tutor')
-            ->leftJoin('benutzer' ,'benutzer.kennung', '=', 'tutor.kennung')
-            ->leftJoin('tutorbetreutgruppen', 'tutorbetreutgruppen.TutorID','=', 'tutor.kennung')
-            ->join('gruppe', 'gruppe.gruppenummer', '=','tutorbetreutgruppen.GruppenID' )
-            ->where('gruppe.gruppenummer',$request->Gruppenummer)
+            ->leftJoin('benutzer', 'benutzer.kennung', '=', 'tutor.kennung')
+            ->leftJoin('tutorbetreutgruppen', 'tutorbetreutgruppen.TutorID', '=', 'tutor.kennung')
+            ->join('gruppe', 'gruppe.gruppenummer', '=', 'tutorbetreutgruppen.GruppenID')
+            ->where('gruppe.gruppenummer', $request->Gruppenummer)
+            ->get();
+        $betreuerp = DB::table('professor')
+            ->leftJoin('benutzer', 'benutzer.kennung', '=', 'professor.kennung')
+            ->leftJoin('professorbetreutgruppen', 'professorbetreutgruppen.professorID', '=', 'professor.kennung')
+            ->join('gruppe', 'gruppe.gruppenummer', '=', 'professorbetreutgruppen.GruppenID')
+            ->where('gruppe.gruppenummer', $request->Gruppenummer)
             ->get();
 
 
-        return view('Student.testat',['testat'=>$testat,'gruppenname' => $gruppenname , 'betreuer'=>$betreuer,'title'=>'testat']);
+
+        return view('Student.testat', ['testat' => $testat, 'gruppenname' => $gruppenname, 'betreuer' => $betreuer, 'betreuerp' =>$betreuerp,  'title' => 'testat']);
     }
 
-
-
 }
+

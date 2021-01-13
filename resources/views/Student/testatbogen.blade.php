@@ -7,8 +7,6 @@
     <button type="button" align="center">als pdf speichern</button>
     <br>
     <br>
-    <br>
-    @json($modul)
     <table border="2">
         <tr>
             <th>FachNr.</th>
@@ -16,25 +14,28 @@
             <th>Testat erhalten</th>
             <th>Semester</th>
         </tr>
-
         @foreach($modul as $m)
             <tr>
-                <th>{{$m->Modulnummer}}</th>
-                <th>{{$m->Modulname}}</th>
                 @if ($m->Testat == 1)
+                    <th>{{$m->Modulnummer}}</th>
+                    <th>{{$m->Modulname}}</th>
                     <th>&#10004</th>
-                @else
+                    <th>{{$m->Jahr}}</th>
+                @elseif($m->Testat == 0 && $m->Jahr == 2020)
+                    <th>{{$m->Modulnummer}}</th>
+                    <th>{{$m->Modulname}}</th>
                     <th></th>
+                    <th>{{$m->Jahr}}</th>
+                @elseif($m->Testat == 0 && $m->Jahr == $aktJahr)
+                    <th>{{$m->Modulnummer}}</th>
+                    <th>{{$m->Modulname}}</th>
+                    <th></th>
+                    <th>{{$m->Jahr}}</th>
                 @endif
-                <th>{{$m->Jahr}}</th>
             </tr>
         @endforeach
     </table>
     <br>
     <br>
     <a href="/Student/dashboard">Zurück zur Übersicht</a>
-
-
-
-
 @endsection
