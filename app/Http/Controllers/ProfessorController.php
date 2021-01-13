@@ -37,7 +37,7 @@ class ProfessorController extends Controller
             ->get();
 
 
-        return view('Professor.dashboard', ['kurse'=>$kurse, 'gruppen' => $gruppen , 'title' => 'Dashboard']);
+        return view('Professor.dashboard', ['kurse'=> $kurse, 'gruppen' => $gruppen , 'title' => 'Dashboard']);
     }
 
 
@@ -116,11 +116,63 @@ class ProfessorController extends Controller
 
 
     public function meineKurse(Request $request){
-        $kurse = DB::table('modul')
-            ->join('benutzerhatmodul', 'BenutzerID', '=', 'ModulID')
+//        $kurse = DB::table('professor')
+//            ->leftJoin('benutzer', 'benutzer.kennung', '=', 'professor.kennung')
+//            ->leftJoin('benutzerhatmodul', 'benutzerhatmodul.BenutzerID', '=', 'benutzer.kennung')
+//            ->leftJoin('modul', 'modul.Modulnummer', '=', 'benutzerhatmodul.ModulID')
+//            ->whereColumn( 'benutzerhatmodul.Jahr' , '=' ,'modul.Jahr')
+//            ->where('professor.kennung',$_SESSION['Prof_UserId'])
+//            ->orderBy('modul.Modulname')
+//            ->groupBy('modul.Jahr')
+//            ->get();
+        $kurse = DB::table('benutzerhatmodul')
+            ->where('BenutzerID', '=', $_SESSION['Prof_UserId'])
+            ->leftJoin('modul','modul.Modulnummer', '=', 'benutzerhatmodul.ModulID')
+            ->groupBy(['modul.Jahr'])
             ->get();
 
-        return view('Professor.meine_kurse', ['kurse' => $kurse, 'titel' => 'Meine Kurse']);
+        $TNanzahl = DB::table('benutzerhatmodul')
+            ->where('BenutzerID', '=', $_SESSION['Prof_UserId'])
+            ->leftJoin('modul','modul.Modulnummer', '=', 'benutzerhatmodul.ModulID')
+            ->leftJoin('gruppe','gruppe.Modulnummer', '=', 'benutzerhatmodul.ModulID')
+            ->leftJoin('studenteningruppen','studenteningruppen.GruppenID', '=', 'gruppe.Gruppenummer')
+            ->select('studenteningruppen.Matrikelnummer')
+            ->distinct()
+            ->get();
+
+        echo $TNanzahl;
+
+        $gruppen = DB::table('professor')
+            ->leftJoin('benutzer', 'benutzer.kennung', '=', 'professor.kennung')
+            ->leftJoin('benutzerhatmodul', 'benutzerhatmodul.BenutzerID', '=', 'benutzer.kennung')
+            ->leftJoin('modul', 'modul.Modulnummer', '=', 'benutzerhatmodul.ModulID')
+            ->leftJoin('professorbetreutgruppen', 'professorbetreutgruppen.ProfessorID', '=', 'professor.Kennung')
+            ->RightJoin('gruppe', 'gruppe.Gruppenummer', '=', 'professorbetreutgruppen.GruppenID')
+            ->whereColumn('gruppe.Modulnummer', '=', 'modul.Modulnummer')
+            ->whereColumn( 'benutzerhatmodul.Jahr' , '=' ,'modul.Jahr')
+            ->where('modul.Jahr', '=', 2020)
+            ->whereColumn('gruppe.Jahr', '=', 'modul.Jahr')
+            ->where('professor.kennung',$_SESSION['Prof_UserId'])
+            ->orderBy('gruppe.Gruppenummer')
+            ->get();
+
+        for ($i = 0; $i < count($kurse); $i++) {
+            $kursModuleNummer =  $kurse[$i]->Modulnummer;
+            $kurse[$i]->mengeDerGruppen = 0;
+
+            for ($x = 0; $x < count($gruppen); $x++) {
+                $gruppenNummer = $gruppen[$x]->Modulnummer;
+
+                if ($kursModuleNummer == $gruppenNummer) {
+                    $kurse[$i]->mengeDerGruppen++;
+                }
+            }
+        }
+
+
+
+
+        return view('Professor.meine_kurse', ['kurse' => $kurse, 'title' => 'Meine Kurse', 'gruppen' => $gruppen,'TNanzahl'=>$TNanzahl]);
     }
 
 

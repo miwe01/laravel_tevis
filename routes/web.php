@@ -44,8 +44,8 @@ Route::middleware('auth')->prefix('pruefungsamt')->group(function(){
 
 // professor routes
 Route::middleware('auth')->prefix('Professor')->group(function() {
-    Route::get('/dashboard', [ProfessorController::class, 'index'])->name('Professor');;
-    Route::get('/meine_kurse', function () {return view('/Professor/meine_kurse', ['title'=>'meine_kurse']);});
+    Route::get('/dashboard', [ProfessorController::class, 'index'])->name('Professor');
+    Route::get('/meine_kurse', [ProfessorController::class, 'meineKurse']);
     Route::post('/kurs', function () {return view('/Professor/kurs', ['title'=>'kurs']);});
     Route::any('/gruppe', [ProfessorController::class, 'gruppe'])->name('gruppe');
     Route::post('/gruppe/tutorloeschen', [ProfessorController::class, 'tutorLoeschen']);

@@ -26,9 +26,7 @@
                 <input type="submit" name="bearbeiten" id="bearbeiten" value="bearbeiten">
             </form>
         @endforeach
-
-
-        <form>
+        <form action="/Professor/meine_kurse" method="get">
             <input type="submit" value="Meine Kurse" id="meinekurse" name="meinekurse">
         </form>
     </div>
