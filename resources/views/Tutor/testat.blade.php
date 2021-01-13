@@ -16,18 +16,14 @@
                 <th>Nachname</th>
                 @foreach($testat as $t)
                     <th>{{$t->Praktikumsname}}</th>
-
                 @endforeach
             </tr>
             <tr>
                 <th  rowspan="2">        {{$testat[0]->Vorname}}</th>
                 <th  rowspan="2">        {{$testat[0]->Nachname}}</th>
-
-
                 @foreach($testat as $t)
                     <th>
                         <input type="checkbox" id="scales" value="{{$t->TestatID}}" name="Testat[]" {{$t->Testat==1 ? 'checked':''}}>
-                        <input type="hidden" value="{{++$loop->index}}" name="counter">
                     </th>
                 @endforeach
             </tr>
@@ -39,8 +35,6 @@
                     </th>
                 @endforeach
             </tr>
-            @json($test)
-            @json($test1)
 
         </table>
         <input type="hidden"  value="{{$testat[0]->Matrikelnummer}}" name="Matrikelnummer" id="Testat">
