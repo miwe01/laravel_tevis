@@ -1,7 +1,5 @@
 <?php
-if(!isset($_SESSION)){
-    session_start();
-}
+session_start();
 
 use App\Http\Controllers\ProfessorController;
 use App\Http\Controllers\StudentController;
@@ -13,32 +11,39 @@ use App\Http\Controllers\AuthenticationController;
 //$_SESSION['WiMi_UserId'] = 1;
 //$_SESSION['Student_UserId'] = 1;
 
+// Wenn Sprach Get Parameter gesetzt wurde speichere in Session
+// Middleware überprüft ob Session gesetzt wurde und wenn ja
+// ändere sie in entsprechende Sprache
+// Middleware: Auth.php
+if (isset($_GET['language'])){
+    // wenn ungültige Sprache default Sprache ist Deutsch
+    if ($_GET['language'] != "en" && $_GET['language'] != "de")
+        $_SESSION['language'] = 'de';
+    else
+        $_SESSION['language'] = $_GET['language'];
+}
 
-//login/logout route + authentication
+//login/logout route + authentication + konto
 Route::view('/', 'Login.index', [])->name('login');
 Route::post('/authentication', [AuthenticationController::class, 'authenticate']);
 Route::post('/logout', [AuthenticationController::class, 'logout']);
-Route::get('/konto', [AuthenticationController::class, 'konto'])->name('konto');
-Route::post('/konto', [AuthenticationController::class, 'passwortAendern']);
+
+Route::get('/konto', [AuthenticationController::class, 'konto'])->name('konto')->middleware('auth');
+Route::post('/konto', [AuthenticationController::class, 'passwortAendern'])->middleware('auth');
+
 
 //Pruefungsamt routes
 Route::middleware('auth')->prefix('pruefungsamt')->group(function(){
     $PC = PruefungsamtController::class;
 
-//    Route::get('', [$PC, 'index'])->name('dashboard');
     Route::any('', [$PC, 'index'])->name('dashboard');
 
     Route::post('/addPerson', [$PC,  'benutzerAdd']);
     Route::post('/fileUpload', [$PC, 'fileUpload']);
     Route::post('/klausurZulassung', [$PC, 'klausurZulassung']);
-    Route::post('/klausurZulassungen',[$PC, 'klausurZulassungen']);
+    Route::any('/klausurZulassungen',[$PC, 'klausurZulassungen']);
     Route::post('/praktikumAnerkennen', [$PC, 'praktikumAnerkennen']);
-    Route::post('/Testatbogen', [PruefungsamtController::class, 'Testatbogen']);
-
-
-
-  //  Route::get('/konto', '\App\Http\Controllers\PruefungsamtController@konto')->name('konto');
- //   Route::post('/konto/passwortAendern', '\App\Http\Controllers\PruefungsamtController@passwortAendern');
+    Route::any('/Testatbogen', [$PC, 'Testatbogen']);
 });
 
 
@@ -58,6 +63,46 @@ Route::middleware('auth')->prefix('Professor')->group(function() {
     Route::post('/gruppe/testat', [ProfessorController::class, 'testat']);
 });
 
+// HiWi routes
+Route::middleware('auth')->prefix('HiWi')->group(function(){
+
+    Route::get('/main_HiWi', function () {
+        return view('/HiWi/main_HiWi', ['title'=>'HiWi']);
+    })->name('HiWi');
+
+    Route::get('/HiWi', function () {
+        return view('/HiWi/HiWi', ['title'=>'HiWi']);
+    });
+    Route::get('/testSWE', function () {
+        return view('/HiWi/testSWE_HiWi', ['title'=>'testSWE']);
+    });
+    Route::get('/test', function () {
+        return view('/HiWi/HiWiTestGruppeA1', ['title'=>'TestGruppeA1']);
+    });
+    Route::get('/konto_HiWi', function () {
+        return view('/HiWi/konto_HiWi', ['title'=>'Konto']);
+    });
+    Route::get('/testatbogen_HiWi', function () {
+        return view('/HiWi/Testatbogen_HiWi', ['title'=>'Testatbogen']);
+    });
+});
+
+// WiMi routes
+Route::middleware('auth')->prefix('WiMi')->group(function(){
+Route::get('/test', function () {
+    return view('test', ['title'=>'Test']);
+});
+Route::get('/main_WiMi', function () {
+    return view('/WiMi/main_WiMi', ['title'=>'WiMi']);
+})->name('Wimi');
+Route::get('/konto_WiMi', function () {
+    return view('/WiMi/konto_WiMi', ['title'=>'Konto']);
+});
+Route::get('/test', function () {
+    return view('/WiMi/TestGruppeA1', ['title'=>'TestGruppeA1']);
+});
+});
+
 // student routes
 Route::middleware('auth')->prefix('Student')->group(function() {
 
@@ -66,7 +111,7 @@ Route::middleware('auth')->prefix('Student')->group(function() {
     Route::post('/dashboard', [StudentController::class, 'index']);
     Route::post('/dashboard/{testat}', [StudentController::class, 'testat']);
 
-});
+    });
 
 // Tutor routes
 Route::middleware('auth')->prefix('Tutor')->group(function(){

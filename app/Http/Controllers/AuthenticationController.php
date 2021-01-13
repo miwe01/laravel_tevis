@@ -199,10 +199,10 @@ class AuthenticationController extends Controller
             DB::table('benutzer')
                 ->where('Kennung', $actualuser)
                 ->update(['Password' => $newPassword]);
-            return redirect()->route('konto', ['info'=>'Passwort wurde geändert']);
+            return redirect()->route('konto', ['info'=>trans('Passwort wurde geändert')]);
         }
 
-        return redirect()->route('konto', ['fehler_menu'=>'Fehler bei Passwort']);
+        return redirect()->route('konto', ['fehler_menu'=>trans('Fehler bei Passwort')]);
 
     }
 }
