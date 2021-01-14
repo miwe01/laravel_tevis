@@ -37,12 +37,8 @@
     @endforeach
 
 
+    <a href="/Student/testatbogen">Testatbogen</a>
 
-    <form action="/Student/testatbogen" method="post">
-        @csrf<button type="submit"  value={{$s->Modulnummer}} name="Testatbogen" id="Testatbogen">Testatbogen</button>
-
-
-    </form>
 
 @endsection
 
