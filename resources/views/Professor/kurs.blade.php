@@ -5,38 +5,44 @@
 
 <link rel="stylesheet" href="{{URL::asset("CSS/styleProfessor_kurs.css")}}">
 
-<h1 class ="meinekurse">Grundlagen der Programmierung</h1>
+<h1 class ="meinekurse">{{$gruppe[0]->Modulname}}<</h1>
 
 <button class="b2"> neuen kurse anlegen </button>
 <div class="grid-container">
     <div class="grid-item1"></div>
-    <div class="grid-itemtitel">Gruppe</div>
+    <div class="grid-itemtitel">{{$gruppe[0]->Modulname}}</div>
     <div class="grid-itemtitel">Online Meeting über </div>
 
-    <div class="grid-item1"><a href="#d"><button class="button"><span>+</span></button></a></div>
-    <div class="grid-item"><a href="gruppebearbeiten.php">Gruppe1</a>-Tag XX.YY-Raum-Anzahl der Teilnehmer</div>
-    <div class="grid-item1"> <a href="link">Webx.com</a> </div>
+    @foreach($gruppe as $gr)
+        <div class="grid-item1"><a href="#d"><button class="button"><span>+</span></button></a></div>
+        <div class="grid-item">
+            <a href="gruppebearbeiten.php">{{$gr->Gruppenname}}</a> - Raum: {{$gr->Raum}} -  Anzahl der Teilnehmer :{{count($TNanzahl)}}
+        </div>
+        <div class="grid-item1">
+            <a href="link">{{$gr->Webex}}</a>
+        </div>
+    @endforeach
 
-    <div class="grid-item1"><a href="#d"><button class="button"><span>+</span></button></a></div>
-    <div class="grid-item"><a href="gruppebearbeiten.php">Gruppe2</a>-Tag XX.YY-Raum-Anzahl der Teilnehmer</div>
-    <div class="grid-item1"> <a href="link">Webx.com </a></div>
-
-    <div class="grid-item1"><a href="#d"><button class="button"><span>+</span></button></a></div>
-    <div class="grid-item"><a href="gruppebearbeiten.php">Gruppe3</a>-Tag XX.YY-Raum-Anzahl der Teilnehmer</div>
-    <div class="grid-item1"> <a href="link">Webx.com</a></div>
-
-    <div class="grid-item1"><a href="#d"><button class="button"><span>+</span></button></a></div>
-    <div class="grid-item"><a href="gruppebearbeiten.php">Gruppe4</a>-Tag XX.YY-Raum-Anzahl der Teilnehmer</div>
-    <div class="grid-item1"> <a href="link">Webx.com</a> </div>
 
 </div>
-<a href="#d0"><button class="button3" type="submit" value="Gruppe hinzufügen"> Gruppe Hinzufügen</button></a> <br>
-<button class="button2" type="submit" value="Beteiligten Prof">Beteiligten Prof</button><br>
-<button class="button1" type="submit" value="Kurs löschen">Kurs löschen</button><br>
+
+<a href="/Professor/kurs/new/group">Neue Gruppe</a>
+<br>
+<a href="/Professor/kurs/BeteiligProf">Beteiligte Professor </a>
+
+
+@foreach($gruppe as $gr)
+    <form  action="/Professor/kurs/KursLoeschen" method="post" >
+        @csrf
+        <input type="hidden" value="{{$gr->Modulnummer}}" name="GruppenID" id="sloeschen">
+        <button type="submit">Delete kurs</button>
+    </form>
+@endforeach
+
 
 <div id="d0" class="style_gruppe_hinzufügen">
-    <form method="post">
-        <label style="font-weight: bolder; font-family: Verdana,serif;color: darkslategrey;" for="name">Ihr Name:</label>
+
+    <label style="font-weight: bolder; font-family: Verdana,serif;color: darkslategrey;" for="name">Ihr Name:</label>
         <label style="margin-left: 5cm ;font-weight: bolder; font-family: Verdana,serif;color: darkslategrey;" for="Raum">Raum</label> <br>
         <input  class ="style1 " name="name" id="name" value="" >
         <input class ="style1 " name="Raum" id="Raum" type="number" value=""><br>
@@ -58,7 +64,6 @@
         <input  style=" background-color: aliceblue; border-color: #0f6674;width: 5cm; text-align: center;" id="Termin_Anzahl " name="Termin_Anzahl" type="number"><br>
         <br>
         <button style="margin-left:-26cm; margin-top:2cm; width: 7cm;height: 1cm;background-color: #00b5ad;border-color: #0f6674;font-weight: 30;" type="submit"> Gruppe Hinzufügen </button>
-    </form>
     <a class="close" id="a1" href="Kurs1.html" title="schließen">schließen</a>
 
 </div>
