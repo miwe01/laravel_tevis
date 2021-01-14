@@ -13,6 +13,15 @@ use App\Http\Controllers\AuthenticationController;
 //$_SESSION['WiMi_UserId'] = 1;
 //$_SESSION['Student_UserId'] = 1;
 
+if (isset($_GET['language'])){
+    // wenn ungültige Sprache default Sprache ist Deutsch
+    if ($_GET['language'] != "en" && $_GET['language'] != "de")
+        $_SESSION['language'] = 'de';
+    else
+        $_SESSION['language'] = $_GET['language'];
+}
+
+
 
 //login/logout route + authentication
 Route::view('/', 'Login.index', [])->name('login');

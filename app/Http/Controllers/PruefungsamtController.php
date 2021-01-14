@@ -16,7 +16,6 @@ class PruefungsamtController extends Controller
     // Dashboard Methode
     public function index(Request $request){
 
-
         // letzten 5 Benutzer
         $benutzer = new benutzer(); $kennung = $benutzer->last5Users();
 //        $passwort = Hash::make('passwort');
