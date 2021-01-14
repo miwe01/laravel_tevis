@@ -1,21 +1,10 @@
 @extends('Template.layout')
 @section('main')
     @extends('Template.links')
-
     <link rel="stylesheet" href="{{URL::asset("CSS/styleHiWi.css")}}">
-
-
     <br>
     <h1 align="center">  {{$modulname}}{{$jahr}}</h1>
     <h1 align="center"> {{$gruppenname}}</h1>
-    <br>
-    <br>
-    <form action="/Tutor/dashboard/{{$modulname}}_{{$gruppenname}}" method="post">
-        @csrf
-        <input type="text" name="Suche" id="Testat">
-
-        <button type="submit"  value="submit" name="submit" id="submit">Suchen</button>
-    </form>
     <br>
     <br>
     <table border="2">
@@ -49,7 +38,6 @@
                         <input type="hidden"  value="{{$s->Jahr}} " name="Jahr" id="Testat">
                         <button type="submit"  value="{{$modulname}} " name="Modulname" id="Testat">Anzeigen</button>
                     </form></th>
-
             </tr>
         @endforeach
     </table>

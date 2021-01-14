@@ -18,8 +18,8 @@
             <br>
             <li class="li1" >an der veranstaltung </li>
             <li>
-                menge der gruppen : {{$kurs->mengeDerGruppen}} </li>
-            <li> Anzahl der Teilnehmer : {{count($TNanzahl)}}</li>
+                {{$kurs->mengeDerGruppen}} menge der gruppen</li>
+            <li>anzahl der tn</li>
 
         </ul>
     </div>

@@ -21,6 +21,28 @@ a{
 input:hover, input:focus{
 
 }
+#message-div{
+    position: relative;
+    margin: 0px auto;
+    max-width: 1100px;
+    padding: 15px 10px;
+    border-bottom: 1px solid black;
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+    border-collapse: collapse;
+
+    cursor: pointer;
+
+    color: white;
+}
+.error{
+    background-color: red;
+}
+.info{
+    background-color: #00B5AD;
+}
+
+
 
 
 #wrapper{
@@ -28,7 +50,7 @@ input:hover, input:focus{
     display: grid;
 }
 #p1{
-    height: 270px;
+    height: auto;
 }
 #p2{
     height: 200px;
@@ -41,7 +63,7 @@ input:hover, input:focus{
 
     top: 50px;
     padding: 20px;
-    width: 50%;
+    width: auto;
 
     background-color: darkgray;
     border-radius: 5px;
@@ -49,12 +71,34 @@ input:hover, input:focus{
 }
 .close{
     position: absolute;
-    right: 30px;
+    right: 20px;
     font-size: 50px;
-    top: 10px;
+    top: 5px;
     color: red;
     font-weight: bold;
+    cursor: pointer;
 }
+
+h1{
+    margin-top: 0px;
+}
+#person-table td, #konto-table td{
+    padding-right: 15px;
+}
+.top-padding-td{
+    padding-top: 10px;
+}
+.bottom-td{
+    position: relative;
+    bottom: -5px;
+}
+#rollen{
+    width: 100%;
+}
+#matrikelnummer4{
+    width: 100%;
+}
+
 
 
 
@@ -85,16 +129,22 @@ form div{
     align-items: center;
     justify-items: center;
 }
-
-form label{
+/* alle Labels in Dashboard ausser bei Person hinzufügen */
+.form-label{
     font-size: 12px;
     align-self: flex-start;
     padding-left: 10%;
 }
+/* label Person hinzufügen */
+.person-label{
+    font-size: 12px;
+    padding-left: 2px;
+}
+
 /**/
 
 
-input[type="number"], select, input[type="file"]{
+.matrikelnummer-input, .select-form, input[type="file"]{
     width: 80%;
     margin-bottom: 8px;
     height: 22px;
@@ -131,8 +181,16 @@ button{
     border: 1px solid black;
     outline: none;
     display: block;
+}
+.full-width-button{
+    width: 100%;
+}
+
+#error-div{
 
 }
+
+
 /**/
 /* input file */
 #col-1-fileUpload form{
@@ -206,8 +264,9 @@ input[type="file"] {
 
 
 /* desktop query start */
+
 @media(min-width: 1030px) {
-    header, #wrapper{
+    header, #wrapper, #message-div{
         max-width: 1100px;
     }
     #wrapper {
@@ -235,6 +294,9 @@ input[type="file"] {
     body{
         margin-bottom: 40px;
     }
+    #message-div{
+        width: 85%;
+    }
     #wrapper{
         grid-template-columns: 1fr 1fr;
         grid-template-rows: 350px;
@@ -256,7 +318,8 @@ input[type="file"] {
     body{
         margin-bottom: 40px;
     }
-    header, #wrapper{
+
+    header, #wrapper, #message-div{
         width: 95%;
     }
     #wrapper{
@@ -281,9 +344,20 @@ input[type="file"] {
 /* tablet query end */
 /* mobile query start */
 @media (max-width: 610px){
+    h1{
+        font-size: 15px;
+    }
+    .close{
+        top:10px;
+        font-size: 30px;
+    }
+    td{
+        display: block;
+    }
     body{
     }
-    header, #wrapper{
+
+    header, #wrapper, #message-div{
         width: 100%;
     }
     #wrapper{

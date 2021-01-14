@@ -52,10 +52,10 @@ class TutorController extends Controller
             ->where('gruppe.gruppenummer',$request->Gruppenummer)
             ->get();
 
+
         return view('Tutor.testatverwaltung',['studenten'=>$studenten,'gruppenname' => $request->Gruppenname,
             'modulname' => $request->Modulname,'jahr' => $request->Jahr,'title'=>'Gruppe']);
     }
-
     public function testat(Request $request)
     {
         $testat = DB::table('testat')
@@ -68,6 +68,7 @@ class TutorController extends Controller
             ->where('modul.Modulname',$request->Modulname)
             ->where('modul.Jahr',$request->Jahr)
             ->get();
+
 
         if(isset($request->Testat))
         {
@@ -91,6 +92,7 @@ class TutorController extends Controller
                 }
             }
         }
+
 
         $counter1 = 0;
         if(isset($request->Testatcomment))
@@ -119,7 +121,7 @@ class TutorController extends Controller
             ->get();
 
 
-        return view('Tutor.testat',['testat'=>$testat,'test'=> $request->Testatcomment,'test1'=> $request->Testat, 'gruppenname' => $request->Gruppenname,   'modulname' => $request->Modulname,'title'=>'testat']);
+        return view('Tutor.testat',['testat'=>$testat, 'gruppenname' => $request->Gruppenname,   'modulname' => $request->Modulname,'title'=>'testat']);
     }
 }
 

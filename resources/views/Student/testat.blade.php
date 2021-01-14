@@ -33,11 +33,20 @@
     <br>
     <table border="2">
         <tr>
+            <th style="background-color: #eaeaea">Rolle</th>
             <th style="background-color: #eaeaea">Betreuer</th>
             <th style="background-color: #eaeaea">email</th>
         </tr>
+        @foreach($betreuerp as $b)
+            <tr>
+                <th>Professor</th>
+                <th>{{$b->Titel}} {{$b->Vorname}}{{$b->Nachname}}</th>
+                <th>{{$b->Email}}</th>
+            </tr>
+        @endforeach
         @foreach($betreuer as $b)
             <tr>
+                <th>{{$b->Rolle}}</th>
                 <th>{{$b->Vorname}}{{$b->Nachname}}</th>
                 <th>{{$b->Email}}</th>
             </tr>

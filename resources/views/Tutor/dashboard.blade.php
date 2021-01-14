@@ -1,11 +1,7 @@
 @extends('Template.layout')
 @section('main')
     @extends('Template.links')
-
-
     <link rel="stylesheet" href="{{URL::asset("CSS/styleHiWi.css")}}">
-
-
     <br>
     <h1 align="center">Betreute Kurse</h1>
     <br>

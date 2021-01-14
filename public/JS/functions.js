@@ -30,7 +30,7 @@ function checkType(Name){
 
     if(extension != "csv"){
         document.getElementById(Name).value = "";
-        alert("Keine CSV Datei");
+        alert("No CSV File");
     }
 }
 
@@ -53,4 +53,8 @@ function myFunction(elem, elem2) {
         }
         x.style.visibility = "hidden";
     }
+}
+
+function close(){
+
 }

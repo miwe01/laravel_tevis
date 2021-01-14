@@ -1,51 +1,51 @@
- body{
-            max-width: 90%;
-        }
+body{
+    max-width: 90%;
+}
 
-        h1{
-            font-family: Verdana;
-            font-weight: 50;
-            margin-left: 2cm;
-        }
-        .b1{
-            float:left;
-            background-color: cadetblue;
-            text-align: center ;
-            margin-right: 2cm;
-            transform: translate(1000%,-1.5cm);
-            padding: 10px;
-            width: 4cm;
-        }
-        .grid-container{
-            margin-left: 6cm;
-        }
-        h1.meinekurse{
-            text-align: initial;
-            color: cadetblue;
-            font-family: Verdana;
-            font-weight: 90;
-            margin-top: 1mm;
-        }
-        table{
-            position: center;
-            border: solid black 1px;
-            align-content: center;
-            text-align: center;
-            min-width: 15cm;
-            width: 100%;
-        }
-        thead{
-            background-color: cadetblue;
-            font-size: larger;
-        }
-        tr:nth-child(even) {background-color: powderblue}
-        .mitte{
-            float:left;
-            background-color: cadetblue;
-            text-align: center ;
-            width: 4cm;
-            margin-left: 50%;
-            margin-top: 10px;
-            margin-bottom: 15px;
-            padding: 5px;
-        }
+h1{
+    font-family: Verdana;
+    font-weight: 50;
+    margin-left: 2cm;
+}
+.b1{
+    float:left;
+    background-color: cadetblue;
+    text-align: center ;
+    margin-right: 2cm;
+    transform: translate(1000%,-1.5cm);
+    padding: 10px;
+    width: 4cm;
+}
+.grid-container{
+    margin-left: 6cm;
+}
+h1.meinekurse{
+    text-align: initial;
+    color: cadetblue;
+    font-family: Verdana;
+    font-weight: 90;
+    margin-top: 1mm;
+}
+table{
+    position: center;
+    border: solid black 1px;
+    align-content: center;
+    text-align: center;
+    min-width: 15cm;
+    width: 100%;
+}
+thead{
+    background-color: cadetblue;
+    font-size: larger;
+}
+tr:nth-child(even) {background-color: powderblue}
+.mitte{
+    float:left;
+    background-color: cadetblue;
+    text-align: center ;
+    width: 5cm;
+    margin-left: 50%;
+    margin-top: 10px;
+    margin-bottom: 15px;
+    padding: 5px;
+}
