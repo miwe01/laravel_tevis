@@ -21,6 +21,7 @@ class Auth
         if (isset($_SESSION['language']))
         \App::setLocale($_SESSION['language']);
 
+
         // Überprüft ob Session gesetzt wurde
         // Session kann nur gesetzt werden wenn es Benutzer mit dem Passwort gibt
         if (isset($_SESSION['PA_UserId']))

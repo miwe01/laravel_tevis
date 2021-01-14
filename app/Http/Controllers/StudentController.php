@@ -25,10 +25,9 @@ class StudentController extends Controller
             ->whereColumn('gruppe.Modulnummer', '=', 'modul.Modulnummer')
             ->whereColumn('benutzerhatmodul.Jahr', '=', 'modul.Jahr')
             ->whereColumn('gruppe.Jahr', '=', 'modul.Jahr')
-            ->where('student.kennung', $_SESSION['Student_UserId'])
+            ->where('student.Kennung', $_SESSION['Student_UserId'])
             ->orderBy('modul.Modulname')
             ->get();
-
 
         return view('Student.dashboard', ['student' => $dash, 'title' => 'main']);
 

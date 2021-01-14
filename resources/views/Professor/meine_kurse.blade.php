@@ -5,21 +5,21 @@
 
 <link rel="stylesheet" href="{{URL::asset("CSS/styleProfessor_mKurse.css")}}">
 
-<h1 class ="meinekurse">Meine Kurse</h1>
-<button class="b2"> neuen kurse anlegen </button>
+<h1 class ="meinekurse">{{__("Meine Kurse")}}</h1>
+<button class="b2">{{__("Neuen Kurs anlegen")}}  </button>
 
 @foreach($kurse as $kurs)
 
     <div class="grid2">{{ $kurs->Semester }} {{ $kurs->Jahr }}</div>
 
-    <div>
+    <div class="table">
         <ul>
             <li class ="kurse"><a href="Kurs1.html">{{$kurs->Modulname}}</a> </li>
             <br>
-            <li class="li1" >an der veranstaltung </li>
+            <li class="li1" >{{__("an der Veranstaltung")}}</li>
             <li>
-                {{$kurs->mengeDerGruppen}} menge der gruppen</li>
-            <li>anzahl der tn</li>
+                {{__("Anzahl der Gruppen")}}: {{$kurs->mengeDerGruppen}}}</li>
+            <li>{{__("Anzahl der Teilnehmer")}}: </li>
 
         </ul>
     </div>

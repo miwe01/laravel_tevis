@@ -6,15 +6,15 @@
     @extends('Template.links')
 
 <link rel="stylesheet" href="{{URL::asset("CSS/dashboard.css")}}">
-    <style>
-        .password-change-button{
-            background-color: #5C5C5C;
-        }
+<style>
+    .password-change-button{
+        background-color: #5C5C5C;
+    }
 
-        .password-change-button:hover{
-            background-color: #00B5AD;
-        }
-    </style>
+    .password-change-button:hover{
+        background-color: #00B5AD;
+    }
+</style>
 
 
 

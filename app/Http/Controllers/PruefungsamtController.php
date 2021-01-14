@@ -16,6 +16,7 @@ class PruefungsamtController extends Controller
     // Dashboard Methode
     public function index(Request $request){
 
+
         // letzten 5 Benutzer
         $benutzer = new benutzer(); $kennung = $benutzer->last5Users();
 //        $passwort = Hash::make('passwort');
@@ -183,6 +184,7 @@ class PruefungsamtController extends Controller
             return redirect()->route('dashboard', ['fehler'=>trans('Fehler beim Öffnen')]);
         fclose($handle);
 
+        // alle Matrikelnummern
         $matrikelnummern = array_shift($matrikelnummern);
         $matrikelnummern = array_map('intval', $matrikelnummern);
 
@@ -193,22 +195,26 @@ class PruefungsamtController extends Controller
         if ($testatid == NULL){
             return redirect()->route('dashboard', ['info'=>trans('Alle Studenten sind zugelassen, weil es kein Testat gibt')]);
         }
-        // noch nicht fertig, weil Problem mit Datenbank
+
+        //dd($matrikelnummern);
+
 
         $geschafft = DB::table('testat AS t')
-            ->leftJoin('modul as m', 't.Modulnummer', '=', 'm.Modulnummer')
+            ->leftJoin('modul as m', 't.Modulnummer', 'm.Modulnummer')
             ->whereColumn('t.Jahr', '=', 'm.Jahr')
-            ->join('testatverwaltung AS tv', 't.ID', '=', 'tv.TestatID')
+            ->join('testatverwaltung AS tv', 't.ID', 'tv.TestatID')
             ->whereIn(
-            'Matrikelnummer', $matrikelnummern
+            'tv.Matrikelnummer', $matrikelnummern
             )
-            ->where(
-                't.Praktikumsname', 'like','%Endtestat%'
-            )
+            ->where('Praktikumsname', 'Endtestat')
             ->where(
                 't.Modulnummer', $request->modul
             )
+            ->where('Testat', 1)
             ->pluck('Matrikelnummer');
+
+        $geschafft = $geschafft->unique();
+        //dd($geschafft);
 
         // diese Matrikelnummer werden herausgenommen später aus dem Array $matrikelnummers
         $nichtGeschafft = [];
@@ -223,9 +229,9 @@ class PruefungsamtController extends Controller
         $nichtGeschafft = array_diff($matrikelnummern, $nichtGeschafft);
 
         // Modulinformationen
-        $modul = DB::table('modul')->select('Modulname', 'Semester', 'Jahr')->where('Modulnummer', $request->modul)->first();
+        $modul = DB::table('modul')->select('Modulname')->where('Modulnummer', $request->modul)->first();
 
-        return view('Pruefungsamt.klausurZulassungenListe', ['title'=> 'Testate', 'Modul'=> $modul,'Geschafft' => $geschafft, 'NichtGeschafft'=> $nichtGeschafft]);
+        return view('Pruefungsamt.klausurZulassungenListe', ['title'=> 'Testate', 'Modul'=> $modul->Modulname,'Geschafft' => $geschafft, 'NichtGeschafft'=> $nichtGeschafft]);
 
     }
 
@@ -303,8 +309,7 @@ class PruefungsamtController extends Controller
             ->where('Praktikumsname', 'Endtestat')
             ->orderBy('Modulname', 'asc')
             ->orderBy('m.Jahr', 'asc')
-            ->groupBy("m.Modulnummer")
-
+            //->groupBy("m.Modulnummer")
             ->get();
 
 

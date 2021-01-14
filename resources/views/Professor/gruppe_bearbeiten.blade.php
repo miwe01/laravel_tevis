@@ -13,10 +13,10 @@
             <thead>
             <tr>
                 <th>Matrikelnummer</th>
-                <th>Vorname</th>
-                <th>Nachname</th>
+                <th>{{__("Vorname")}}</th>
+                <th>{{__("Nachname")}}</th>
 
-                <th>Werkzeuge</th>
+                <th>{{__("Werkzeuge")}}</th>
             </tr>
             </thead>
             <tbody>
@@ -80,10 +80,10 @@
         <table class="mitglieder">
             <thead>
             <tr>
-                <th>Betreuername</th>
-                <th>E-Mail Adresse</th>
-                <th>Webex Raum</th>
-                <th>Werkzeug</th>
+                <th>{{__("Betreuername")}}</th>
+                <th>{{__("E-Mail Adresse")}}</th>
+                <th>{{__("Webex Raum")}}</th>
+                <th>{{__("Werkzeug")}}</th>
             </tr>
             </thead>
             <tbody>

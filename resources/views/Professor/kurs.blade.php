@@ -7,7 +7,7 @@
 
 <h1 class ="meinekurse">{{$gruppe[0]->Modulname}}<</h1>
 
-<button class="b2"> neuen kurse anlegen </button>
+<button class="b2">{{__("Neuen kurse anlegen")}} </button>
 <div class="grid-container">
     <div class="grid-item1"></div>
     <div class="grid-itemtitel">{{$gruppe[0]->Modulname}}</div>
@@ -48,19 +48,19 @@
         <input class ="style1 " name="Raum" id="Raum" type="number" value=""><br>
         <br>
 
-        <label style="margin-left: 0;font-weight: bolder; font-family: Verdana,serif;color: darkslategrey;" for="Start"> Start Termin am </label>
-        <label style="margin-left: 3cm;font-weight: bolder; font-family: Verdana,serif;color: darkslategrey;" for="Uhrzeit"> Uhrzeit </label><br>
+        <label style="margin-left: 0;font-weight: bolder; font-family: Verdana,serif;color: darkslategrey;" for="Start">{{__("Start Termin am")}}  </label>
+        <label style="margin-left: 3cm;font-weight: bolder; font-family: Verdana,serif;color: darkslategrey;" for="Uhrzeit">{{__("Uhrzeit")}}  </label><br>
         <input style="margin-right: 1cm; background-color: aliceblue; border-color: #0f6674;width: 5cm" id="Start" name="Start" type="date">
         <input   style=" background-color: aliceblue; border-color: #0f6674;width: 3cm; text-align: center;" id="Uhrzeit" name="Uhrzeit" type="time"><br>
         <br>
-        <label style="font-weight: bolder; font-family: Verdana,serif;color: darkslategrey;" for="Interval">Intervall </label><br>
+        <label style="font-weight: bolder; font-family: Verdana,serif;color: darkslategrey;" for="Interval">{{__("Intervall")}} </label><br>
         <select style=" margin-bottom:0.5cm;background-color: aliceblue; border-color: #0f6674;width: 5cm; text-align: center;"  id="Interval" name="Interval">
-            <option value="tag">Tag</option>
-            <option value="woche" selected>Woche</option>
-            <option value="monat">Monat</option>
+            <option value="tag">{{__("Tag")}}</option>
+            <option value="woche" selected>{{__("Woche")}}</option>
+            <option value="monat">{{__("Monat")}}</option>
         </select>
         <br>
-        <label style="font-weight: bolder; font-family: Verdana,serif;color: darkslategrey;" for="Termin_Anzahl ">Termin Anzahl</label><br>
+        <label style="font-weight: bolder; font-family: Verdana,serif;color: darkslategrey;" for="Termin_Anzahl ">{{__("Termin Anzahl")}}</label><br>
         <input  style=" background-color: aliceblue; border-color: #0f6674;width: 5cm; text-align: center;" id="Termin_Anzahl " name="Termin_Anzahl" type="number"><br>
         <br>
         <button style="margin-left:-26cm; margin-top:2cm; width: 7cm;height: 1cm;background-color: #00b5ad;border-color: #0f6674;font-weight: 30;" type="submit"> Gruppe Hinzufügen </button>
@@ -70,12 +70,12 @@
 <div id="d" class="detaild">
     <label>
         <select size="3" name="top5" class="selec">
-            <option value="Neue/n Betreuer/in Hinzufügen" selected>Gruppe Hinzufügen</option>
-            <option value="Gruppe Löschen"> Gruppe Löschen</option>
-            <option value="Teilnehmer der Gruppe anschauen">Teilnehmer der Gruppe anschauen</option>
+            <option value="Neue/n Betreuer/in Hinzufügen" selected>{{__("Gruppe Hinzufügen")}}</option>
+            <option value="Gruppe Löschen">{{__("Gruppe Löschen")}}</option>
+            <option value="Teilnehmer der Gruppe anschauen">{{__("Teilnehmer der Gruppe anschauen")}}</option>
         </select>
     </label>
-    <a class="close" id="b1" href="Kurs1.html" title="schließen">schließen</a>
+    <a class="close" id="b1" href="Kurs1.html" title="schließen">{{__("Schließen")}}</a>
 </div>
 
 <div class="btn-group" >

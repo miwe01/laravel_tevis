@@ -12,8 +12,8 @@
         <table border="2">
             <tr style="background-color: #eaeaea">
 
-                <th>Vorname</th>
-                <th>Nachname</th>
+                <th>{{__("Vorname")}}</th>
+                <th>{{__("Nachname")}}</th>
                 @foreach($testat as $t)
                     <th>{{$t->Praktikumsname}}</th>
                 @endforeach
