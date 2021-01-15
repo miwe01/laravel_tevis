@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use function PHPUnit\Framework\isEmpty;
 use function PHPUnit\Framework\isNull;
+use function Symfony\Component\Translation\t;
 
 class ProfessorController extends Controller
 {
@@ -255,7 +256,22 @@ class ProfessorController extends Controller
             ->where('GruppenID', '=', $request->altGruppenID)
             ->where('Matrikelnummer', '=', $request->Matrikelnummer)
             ->delete();
-        $this->studentZuGruppe($request);
+
+        $test=DB::table('studenteningruppen')
+            ->where('GruppenID', $request->GruppenID)
+            ->where('Matrikelnummer',$request->Matrikelnummer)
+            ->get();
+
+        if(sizeof($test)==0){
+            DB::table('studenteningruppen')
+                ->insert([
+                    'GruppenID' => $request->GruppenID,
+                    'Matrikelnummer' => $request->Matrikelnummer
+                ]);
+        }
+
+        return redirect()->route('gruppe',['Gruppenummer'=>$request->altGruppenID, 'Modulnummer'=>$request->Modulnummer,
+            'Jahr' => $request-> Jahr]);
     }
 
 
