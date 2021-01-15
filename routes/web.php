@@ -69,7 +69,7 @@ Route::middleware('auth')->prefix('Professor')->group(function() {
 Route::middleware('auth')->prefix('Student')->group(function() {
 
     Route::get('/dashboard', [StudentController::class, 'index'])->name('Student/dashboard');
-    Route::post('/testatbogen', [StudentController::class, 'show'])->name('Student/testatbogen');
+    Route::get('/testatbogen', [StudentController::class, 'show'])->name('Student/testatbogen');
     Route::post('/dashboard', [StudentController::class, 'index']);
     Route::post('/dashboard/{testat}', [StudentController::class, 'testat']);
     Route::post('/testatbogen', [StudentController::class, 'show']);
