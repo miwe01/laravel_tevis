@@ -22,10 +22,10 @@
             </tr>
             <tr>
                 @if (isset($_SESSION['WiMi_UserId']))
-                <th  rowspan="2">        {{$testat[0]->Matrikelnummer}}</th>
+                    <th  rowspan="2">        {{$testat[0]->Matrikelnummer}}</th>
                 @endif
-                <th  rowspan="2">        {{$testat[0]->Vorname}}</th>
-                <th  rowspan="2">        {{$testat[0]->Nachname}}</th>
+                <th  rowspan="3">        {{$testat[0]->Vorname}}</th>
+                <th  rowspan="3">        {{$testat[0]->Nachname}}</th>
                 @foreach($testat as $t)
                     <th>
                         <input type="checkbox" id="scales" value="{{$t->TestatID}}" name="Testat[]" {{$t->Testat==1 ? 'checked':''}}>
@@ -33,14 +33,24 @@
                 @endforeach
             </tr>
             <tr>
-                @foreach($testat as $t)
+                @forelse($testat as $t)
                     <th>
                         <textarea name="comment[]">{{$t->Kommentar}}</textarea>
                         <input type="hidden" value="{{$t->TestatID}}" name="Testatcomment[]">
                     </th>
-                @endforeach
+                @empty
+                    <li>Keine Daten vorhanden.</li>
+                @endforelse
             </tr>
-
+            <tr>
+                @forelse($testat as $t)
+                    <th>
+                        <input type="number"   value={{$t->Benotung}} step="any" name="note[]">
+                    </th>
+                @empty
+                    <li>Keine Daten vorhanden.</li>
+                @endforelse
+            </tr>
         </table>
         <input type="hidden"  value="{{$testat[0]->Matrikelnummer}}" name="Matrikelnummer" id="Testat">
         <input type="hidden"  value="{{$gruppenname}} " name="Gruppenname" id="Testat">
