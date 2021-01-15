@@ -22,7 +22,7 @@
             </tr>
             <tr>
                 @if (isset($_SESSION['WiMi_UserId']))
-                    <th  rowspan="2">        {{$testat[0]->Matrikelnummer}}</th>
+                    <th  rowspan="3">        {{$testat[0]->Matrikelnummer}}</th>
                 @endif
                 <th  rowspan="3">        {{$testat[0]->Vorname}}</th>
                 <th  rowspan="3">        {{$testat[0]->Nachname}}</th>
