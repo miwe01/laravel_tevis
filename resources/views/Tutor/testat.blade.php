@@ -11,7 +11,9 @@
         @csrf
         <table border="2">
             <tr style="background-color: #eaeaea">
-
+                @if (isset($_SESSION['WiMi_UserId']))
+                    <th >Matrikelnumer</th>
+                @endif
                 <th>Vorname</th>
                 <th>Nachname</th>
                 @foreach($testat as $t)
@@ -19,6 +21,9 @@
                 @endforeach
             </tr>
             <tr>
+                @if (isset($_SESSION['WiMi_UserId']))
+                <th  rowspan="2">        {{$testat[0]->Matrikelnummer}}</th>
+                @endif
                 <th  rowspan="2">        {{$testat[0]->Vorname}}</th>
                 <th  rowspan="2">        {{$testat[0]->Nachname}}</th>
                 @foreach($testat as $t)
