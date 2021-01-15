@@ -6,7 +6,7 @@
     <h1 align="center">Meine Kurse</h1>
     <br>
     <br>
-    @foreach($student as $s)
+    @forelse($student as $s)
         <div style= "margin-bottom:20px;border:2px solid black;background-color: #d6d6d6;">
             <div><h4 align="center">  {{$s->Semester}}{{$s->Jahr}}</h4></div>
             <div class="abstand clearfix">
@@ -34,7 +34,9 @@
 
             </div>
         </div>
-    @endforeach
+    @empty
+        <li>Keine Daten vorhanden.</li>
+    @endforelse
 
 
     <a href="/Student/testatbogen">Testatbogen</a>

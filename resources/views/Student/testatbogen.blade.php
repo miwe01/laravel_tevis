@@ -4,7 +4,6 @@
 
     <h1 align="center">Testatbogen</h1>
     <br>
-    <button type="button" align="center">als pdf speichern</button>
     <br>
     <br>
     <table border="2">
@@ -14,7 +13,7 @@
             <th>Testat erhalten</th>
             <th>Semester</th>
         </tr>
-        @foreach($modul as $m)
+        @forelse($modul as $m)
             <tr>
                 @if ($m->Testat == 1)
                     <th>{{$m->Modulnummer}}</th>
@@ -33,9 +32,15 @@
                     <th>{{$m->Jahr}}</th>
                 @endif
             </tr>
-        @endforeach
+        @empty
+            <li>Keine Daten vorhanden.</li>
+        @endforelse
     </table>
     <br>
+    <form action="/Student/testatbogen" method="post">
+        @csrf
+        <button type="submit" name="pdf_submit" value="pdf_submit">als pdf speichern </button>
+    </form>
     <br>
     <a href="/Student/dashboard">Zurück zur Übersicht</a>
 @endsection
