@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\DB;
 class StudentController extends Controller
 {
 
-    public function index(Request $Modulnummer)
+    public function index(Request $request)
     {
 
 
@@ -27,9 +27,10 @@ class StudentController extends Controller
             ->whereColumn('gruppe.Modulnummer', '=', 'modul.Modulnummer')
             ->whereColumn('benutzerhatmodul.Jahr', '=', 'modul.Jahr')
             ->whereColumn('gruppe.Jahr', '=', 'modul.Jahr')
-            ->where('student.Kennung', $_SESSION['Student_UserId'])
+            ->where('student.kennung', $_SESSION['Student_UserId'])
             ->orderBy('modul.Modulname')
             ->get();
+
 
         return view('Student.dashboard', ['student' => $dash, 'title' => 'main']);
 
@@ -37,7 +38,7 @@ class StudentController extends Controller
     }
 
 
-    public function show(Request $student)
+    public function show(Request $request)
     {
         $modul = DB::table('benutzerhatmodul')
             ->leftJoin('modul', 'modul.Modulnummer', '=', 'benutzerhatmodul.ModulID')
@@ -50,11 +51,26 @@ class StudentController extends Controller
             ->leftJoin('testatverwaltung', 'testatverwaltung.testatID', '=', 'testat.id')
             ->whereColumn('testatverwaltung.Matrikelnummer', '=', 'student.Matrikelnummer')
             ->get();
-
         $aktuellesJahr = date("Y");
 
-        return view('Student.testatbogen', ['modul' => $modul, 'aktJahr' => $aktuellesJahr,'title' => 'main']);
+        if ($request->pdf_submit)
+        {
+
+
+            $data = [
+                'modul' => $modul,
+                'aktJahr' => $aktuellesJahr
+            ];
+
+
+            $pdf = PDF::loadView('Student/pdf_download', $data);
+
+            return $pdf->download('testatbogen.pdf');
+        }
+        return view('Student.testatbogen', ['modul' => $modul, 'aktJahr' => $aktuellesJahr,'title' => 'Testatbogen']);
     }
+
+
 
     public function testat(Request $request)
     {
