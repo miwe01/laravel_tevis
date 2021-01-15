@@ -16,9 +16,11 @@
                 @endif
                 <th>{{__("Vorname")}}</th>
                 <th>{{__("Nachname")}}</th>
-                @foreach($testat as $t)
+                @forelse($testat as $t)
                     <th>{{$t->Praktikumsname}}</th>
-                @endforeach
+                @empty
+                    <li>Keine Daten vorhanden.</li>
+                @endforelse
             </tr>
             <tr>
                 @if (isset($_SESSION['WiMi_UserId']))
@@ -26,11 +28,13 @@
                 @endif
                 <th  rowspan="3">        {{$testat[0]->Vorname}}</th>
                 <th  rowspan="3">        {{$testat[0]->Nachname}}</th>
-                @foreach($testat as $t)
+                @forelse($testat as $t)
                     <th>
                         <input type="checkbox" id="scales" value="{{$t->TestatID}}" name="Testat[]" {{$t->Testat==1 ? 'checked':''}}>
                     </th>
-                @endforeach
+                @empty
+                    <li>Keine Daten vorhanden.</li>
+                @endforelse
             </tr>
             <tr>
                 @forelse($testat as $t)
@@ -56,7 +60,17 @@
         <input type="hidden"  value="{{$gruppenname}} " name="Gruppenname" id="Testat">
         <input type="hidden"  value="{{$testat[0]->Jahr}} " name="Jahr" id="Testat">
         <input type="hidden"  value="{{$modulname}} " name="Modulname" id="Testat">
-        <button type="submit"  value="submit" name="submit" id="Testat">Submit</button>
+        <br>
+        <button type="submit"  value="submit" name="submittestat" id="Testat">Submit</button>
+    </form>
+    <br>    <br>    <br>
+
+    <form action="/Tutor/dashboard/{{$modulname}}_{{$gruppenname}}" method="post">
+        @csrf
+        <input type="hidden"  value="{{$gruppenname}}" name="Gruppenname" id="Testat">
+        <input type="hidden"  value="{{$Gruppennummer}} " name="Gruppenummer" id="Testat">
+        <input type="hidden"  value="{{$t->Jahr}} " name="Jahr" id="Testat">
+        <button type="submit"  value="{{$t->Modulname}} " name="Modulname" id="Testat">{{__("Testverwaltung")}}</button>
     </form>
     <br>
 @endsection
