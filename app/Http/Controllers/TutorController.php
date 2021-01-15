@@ -60,29 +60,26 @@ class TutorController extends Controller
     {
 
 
+        if(isset($request->Testatcomment)) {
+            $counter = 0;
+            foreach ($request->Testatcomment as $try) {
+                if ((isset($request->Testat[$counter])) && ($request->Testat[$counter] == $try)) {
+                    DB::table('testatverwaltung')
+                        ->where('testatverwaltung.Matrikelnummer', $request->Matrikelnummer)
+                        ->where('testatverwaltung.TestatID', $try)
+                        ->update(['testatverwaltung.Testat' => 1]);
 
+                    $counter++;
 
-        $counter = 0;
-        foreach ($request->Testatcomment as $try)
-        {
-            if((isset($request->Testat[$counter])) && ($request->Testat[$counter] == $try))
-            {
-                DB::table('testatverwaltung')
-                    ->where('testatverwaltung.Matrikelnummer', $request->Matrikelnummer)
-                    ->where('testatverwaltung.TestatID',$try)
-                    ->update(['testatverwaltung.Testat' => 1]);
-                $counter++;
+                } else {
 
-            }
-            else
-            {
-                DB::table('testatverwaltung')
-                    ->where('testatverwaltung.Matrikelnummer', $request->Matrikelnummer)
-                    ->where('testatverwaltung.TestatID', $try)
-                    ->update(['testatverwaltung.Testat' => 0]);
+                    DB::table('testatverwaltung')
+                        ->where('testatverwaltung.Matrikelnummer', $request->Matrikelnummer)
+                        ->where('testatverwaltung.TestatID', $try)
+                        ->update(['testatverwaltung.Testat' => 0]);
+                }
             }
         }
-
 
 
         $counter1 = 0;
