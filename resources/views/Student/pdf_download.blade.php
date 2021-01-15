@@ -1,13 +1,13 @@
 <body>
-<h1 align="center">Testatbogen</h1>
+<h1 align="center">{{__("Testatbogen")}}</h1>
 <br>
 <br>
 <br>
 <table border="2">
     <tr>
-        <th>FachNr.</th>
-        <th>Bezeichnung</th>
-        <th>Testat erhalten</th>
+        <th>{{__("FachNr.")}}</th>
+        <th>{{__("Bezeichnung")}}</th>
+        <th>{{__("Testat erhalten")}}</th>
         <th>Semester</th>
     </tr>
     @forelse($modul as $m)
@@ -15,7 +15,7 @@
             @if ($m->Testat == 1)
                 <th>{{$m->Modulnummer}}</th>
                 <th>{{$m->Modulname}}</th>
-                <th>Bestanden</th>
+                <th>{{__("Bestanden")}}</th>
                 <th>{{$m->Jahr}}</th>
             @elseif($m->Testat == 0 && $m->Jahr == 2020)
                 <th>{{$m->Modulnummer}}</th>
@@ -30,7 +30,7 @@
             @endif
         </tr>
     @empty
-        <li>Keine Daten vorhanden.</li>
+        <li>{{__("Keine Daten vorhanden")}}.</li>
     @endforelse
 </table>
 </body>

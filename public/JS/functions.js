@@ -2,17 +2,16 @@
 function showMatrikel(){
     let student = document.getElementById("rollen").value;
     if(student == "student")
-        document.getElementById("matrikelnummer").removeAttribute("disabled");
+        document.getElementById("matrikelnummer4").removeAttribute("disabled");
     else
-        document.getElementById("matrikelnummer").setAttribute("disabled","");
+        document.getElementById("matrikelnummer4").setAttribute("disabled","");
 }
-/*
+
 // Überprüft ob Rolle ausgewählt wurde wenn nicht => Submit Button disabled
 function CheckRolle(){
     let check = document.getElementById("rollen");
     let button = document.getElementById("addPerson");
-
-    console.log("hallo");
+    console.log(check);
     if (check.value == "") {
         document.getElementById("addPerson").setAttribute("disabled", "");
         button.style.opacity = 0.5;
@@ -22,7 +21,7 @@ function CheckRolle(){
         button.style.opacity = 1;
     }
 }
-*/
+
 /* Überprüft ob es eine CSV Datei ist wenn nicht akzeptiert */
 function checkType(Name){
     var fileName = document.getElementById(Name).value;

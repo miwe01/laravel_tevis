@@ -75,7 +75,26 @@ form button{
     border: 1px solid black;
     outline: none;
     font-size: 16px;
+
+    cursor: pointer;
 }
+.error{
+    position: relative;
+    margin: 0px auto;
+    width: 100vw;
+    padding: 15px 10px;
+    border-bottom: 1px solid black;
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+    border-collapse: collapse;
+
+    background-color: red;
+    cursor: pointer;
+
+    color: white;
+
+}
+
 
 
 .link-wrapper{
@@ -96,5 +115,5 @@ form button{
 }
 
 .link-wrapper a:hover{
-  
+
 }

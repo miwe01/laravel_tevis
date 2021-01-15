@@ -14,9 +14,9 @@
                 @if (isset($_SESSION['WiMi_UserId']))
                     <th style="background-color: #eaeaea">Matrikelnummer</th>
                 @endif
-                <th style="background-color: #eaeaea">Vorname</th>
-                <th style="background-color: #eaeaea">Nachname</th>
-                <th style="background-color: #eaeaea">Bearbeiten</th>
+                <th style="background-color: #eaeaea">{{__("Vorname")}}</th>
+                <th style="background-color: #eaeaea">{{__("Nachname")}}</th>
+                <th style="background-color: #eaeaea">{{__("bearbeiten")}}</th>
 
 
             </tr>
@@ -36,13 +36,13 @@
                         <input type="hidden"  value="{{$s->Gruppenname}} " name="Gruppenname" id="Testat">
                         <input type="hidden"  value="{{$s->Gruppenummer}} " name="Gruppenummer" id="Testat">
                         <input type="hidden"  value="{{$s->Jahr}} " name="Jahr" id="Testat">
-                        <button type="submit"  value="{{$modulname}} " name="Modulname" id="Testat">Anzeigen</button>
+                        <button type="submit"  value="{{$modulname}} " name="Modulname" id="Testat">{{__("Anzeigen")}}</button>
                     </form></th>
             </tr>
         @endforeach
     </table>
     <br>
-    <a href="/Tutor/dashboard">Zurück zur Übersicht</a>
+    <a href="/Tutor/dashboard">{{__("Zurück zur Übersicht")}}</a>
 
 
 @endsection

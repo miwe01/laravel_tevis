@@ -3,7 +3,7 @@
     @extends('Template.links')
     <link rel="stylesheet" href="{{URL::asset("CSS/styleHiWi.css")}}">
     <br>
-    <h1 align="center">Betreute Kurse</h1>
+    <h1 align="center">{{__("Betreute Kurse")}}</h1>
     <br>
     <br>
     @foreach($tutor as $t)
@@ -19,7 +19,7 @@
                 </p>
 
                 <p>
-                    Raum: {{$t->Raum}}
+                    {{__("Raum")}}: {{$t->Raum}}
                 </p>
 
 
@@ -28,7 +28,7 @@
                     <input type="hidden"  value="{{$t->Gruppenname}} " name="Gruppenname" id="Testat">
                     <input type="hidden"  value="{{$t->Gruppenummer}} " name="Gruppenummer" id="Testat">
                     <input type="hidden"  value="{{$t->Jahr}} " name="Jahr" id="Testat">
-                    <button type="submit"  value="{{$t->Modulname}} " name="Modulname" id="Testat">Testatverwaltung</button>
+                    <button type="submit"  value="{{$t->Modulname}} " name="Modulname" id="Testat">{{__("Testverwaltung")}}</button>
                 </form>
 
             </div>

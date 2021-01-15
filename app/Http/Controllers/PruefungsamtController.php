@@ -56,6 +56,13 @@ class PruefungsamtController extends Controller
                 return redirect()->route('dashboard')->withErrors($firsterror);
             }
 
+            // checkt ob Matrikelnummer schon gibt
+            $check = DB::table('Student')
+                ->where('Matrikelnummer', $request->matrikelnummer)
+                ->first();
+            if ($check != NULL)
+                return redirect()->route('dashboard', ['fehler'=>trans('Benutzer gibt es schon')]);
+
             // Füge Person hinzu. Gibt Fehler zurück wenn es Benutzer schon gibt
             $uB = new benutzer(); $uniqueBenutzer = $uB->BenutzerAdd($request);
 
@@ -65,7 +72,7 @@ class PruefungsamtController extends Controller
             if ($uniqueBenutzer == 2)
                 return redirect()->route('dashboard', ['fehler'=>trans('Fehler aufgetreten')]);
 
-            return redirect()->route('dashboard');
+            return redirect()->route('dashboard', ['info'=>trans('Benutzer hinzugefügt')]);
         }
     }
 
@@ -157,10 +164,8 @@ class PruefungsamtController extends Controller
     }
     public function klausurZulassungen(Request $request){
         // wenn kein Modul ausgewählt wurde
-
-        if ($request->modul == NULL){
+        if ($request->modul == NULL)
             return redirect()->route('dashboard', ['fehler'=>trans('Kein Modul ausgewählt')]);
-        }
 
         $file = $request->file('file');
         if($file->getSize() == 0){
@@ -240,33 +245,20 @@ class PruefungsamtController extends Controller
         if ($request->modul == "")
             return redirect()->route('dashboard', ['fehler'=>trans('Kein Modul ausgewählt')]);
 
-        // gibt modulnummer zurück
-        // $modulnummer = DB::table("Modul")->where("Modulname", $request->modul)->value("Modulnummer");
-        // bekommt Id von Reihe mit "Endtestat" -> wenn fehler dann Modul hat kein Endtestat
-        $endtestatid = DB::table('testat')
-            ->where('Modulnummer', $request->modul)
-            ->value("ID");
 
-        if($endtestatid == NULL)
-            return redirect()->route('dashboard', ['fehler'=>trans('Modul hat kein Testat')]);
+        // in Value steht Modulnummer;Jahr wird in Array geschrieben $modul
+        $modul = explode(';', $request->modul);
 
+        // Nimmt ID von Endtestat (Where Jahr und Nummer)
         $endtestatid = DB::table('testat')
-            ->where('Modulnummer', $request->modul)
+            ->where('Modulnummer', $modul[0])
+            ->where('Jahr', $modul[1])
             ->where('Praktikumsname', 'Endtestat')
             ->value("ID");
 
         if($endtestatid == NULL)
             return redirect()->route('dashboard', ['fehler'=>trans('Modul hat kein Endtestat')]);
 
-        // ARBK = ID->5
-        // DBWT2020 = ID->10
-        // DBWT2019 = ID->15
-        //dd($endtestatid);
-
-
-
-
-        //dd($endtestatid);
 
         $check = DB::table('testatverwaltung')
             ->where('TestatID', $endtestatid)

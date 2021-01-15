@@ -14,8 +14,8 @@
                 @if (isset($_SESSION['WiMi_UserId']))
                     <th >Matrikelnumer</th>
                 @endif
-                <th>Vorname</th>
-                <th>Nachname</th>
+                <th>{{__("Vorname")}}</th>
+                <th>{{__("Nachname")}}</th>
                 @foreach($testat as $t)
                     <th>{{$t->Praktikumsname}}</th>
                 @endforeach
