@@ -11,24 +11,29 @@
         <th>Semester</th>
     </tr>
     @forelse($modul as $m)
-        <tr>
+        
             @if ($m->Testat == 1)
+                <tr>
                 <th>{{$m->Modulnummer}}</th>
                 <th>{{$m->Modulname}}</th>
                 <th>{{__("Bestanden")}}</th>
                 <th>{{$m->Jahr}}</th>
+                </tr>
             @elseif($m->Testat == 0 && $m->Jahr == 2020)
+                <tr>
                 <th>{{$m->Modulnummer}}</th>
                 <th>{{$m->Modulname}}</th>
                 <th></th>
                 <th>{{$m->Jahr}}</th>
+                </tr>
             @elseif($m->Testat == 0 && $m->Jahr == $aktJahr)
+                <tr>
                 <th>{{$m->Modulnummer}}</th>
                 <th>{{$m->Modulname}}</th>
                 <th></th>
                 <th>{{$m->Jahr}}</th>
+                </tr>
             @endif
-        </tr>
     @empty
         <li>{{__("Keine Daten vorhanden")}}.</li>
     @endforelse
