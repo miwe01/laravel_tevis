@@ -54,9 +54,21 @@ class TutorController extends Controller
             ->get();
 
 
-        return view('Tutor.testatverwaltung',['studenten'=>$studenten,'gruppenname' => $request->Gruppenname,
+        $testat = DB::table('testat')
+            ->join('testatverwaltung', 'testatverwaltung.testatID', '=', 'testat.id')
+            ->join('modul', 'modul.Modulnummer', '=', 'testat.Modulnummer')
+            ->join('student', 'student.Matrikelnummer', '=', 'testatverwaltung.Matrikelnummer')
+            ->join('benutzer' ,'benutzer.kennung', '=', 'student.kennung')
+            ->whereColumn('testat.Jahr', '=', 'modul.Jahr')
+            ->where('modul.Modulname',$request->Modulname)
+            ->where('modul.Jahr',$request->Jahr)
+            ->get();
+
+        return view('Tutor.testatverwaltung',['testat'=>$testat,'studenten'=>$studenten,'gruppenname' => $request->Gruppenname,
             'modulname' => $request->Modulname,'jahr' => $request->Jahr,'title'=>'Gruppe']);
     }
+
+
     public function testat(Request $request)
     {
 
