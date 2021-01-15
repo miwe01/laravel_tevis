@@ -8,6 +8,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redirect;
 use Mockery\Matcher\Not;
 
 class TutorController extends Controller
@@ -96,22 +97,26 @@ class TutorController extends Controller
                 $counter1++;
             }
         }
-
-        $counter2 = 0;
-        if(isset($request->Testatcomment))
-        {
-            foreach ($request->Testatcomment as $try)
+        DB::beginTransaction();
+        try {
+            $counter2 = 0;
+            if(isset($request->Testatcomment))
             {
+                foreach ($request->Testatcomment as $try)
+                {
 
-                DB::table('testatverwaltung')
-                    ->where('testatverwaltung.Matrikelnummer', $request->Matrikelnummer)
-                    ->where('testatverwaltung.TestatID', $try)
-                    ->update(['testatverwaltung.Benotung' => $request->note[$counter2]]);
+                    DB::table('testatverwaltung')
+                        ->where('testatverwaltung.Matrikelnummer', $request->Matrikelnummer)
+                        ->where('testatverwaltung.TestatID', $try)
+                        ->update(['testatverwaltung.Benotung' => $request->note[$counter2]]);
 
-                $counter2++;
+                    $counter2++;
+                }
             }
+        } catch (\Exception $e) {
+            DB::rollback();
         }
-
+        DB::commit();
 
 
         $testat = DB::table('testat')
