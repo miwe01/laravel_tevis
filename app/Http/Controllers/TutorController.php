@@ -58,40 +58,31 @@ class TutorController extends Controller
     }
     public function testat(Request $request)
     {
-        $testat = DB::table('testat')
-            ->join('testatverwaltung', 'testatverwaltung.testatID', '=', 'testat.id')
-            ->join('modul', 'modul.Modulnummer', '=', 'testat.Modulnummer')
-            ->join('student', 'student.Matrikelnummer', '=', 'testatverwaltung.Matrikelnummer')
-            ->join('benutzer' ,'benutzer.kennung', '=', 'student.kennung')
-            ->where('student.Matrikelnummer', $request->Matrikelnummer)
-            ->whereColumn('testat.Jahr', '=', 'modul.Jahr')
-            ->where('modul.Modulname',$request->Modulname)
-            ->where('modul.Jahr',$request->Jahr)
-            ->get();
 
 
-        if(isset($request->Testat))
+
+
+        $counter = 0;
+        foreach ($request->Testatcomment as $try)
         {
-            $counter = 0;
-            foreach ($request->Testatcomment as $try)
+            if((isset($request->Testat[$counter])) && ($request->Testat[$counter] == $try))
             {
-                if((isset($request->Testat[$counter])) && ($request->Testat[$counter] == $try))
-                {
-                    DB::table('testatverwaltung')
-                        ->where('testatverwaltung.Matrikelnummer', $request->Matrikelnummer)
-                        ->where('testatverwaltung.TestatID',$try)
-                        ->update(['testatverwaltung.Testat' => 1]);
-                    ++$counter;
-                }
-                else
-                {
-                    DB::table('testatverwaltung')
-                        ->where('testatverwaltung.Matrikelnummer', $request->Matrikelnummer)
-                        ->where('testatverwaltung.TestatID', $try)
-                        ->update(['testatverwaltung.Testat' => 0]);
-                }
+                DB::table('testatverwaltung')
+                    ->where('testatverwaltung.Matrikelnummer', $request->Matrikelnummer)
+                    ->where('testatverwaltung.TestatID',$try)
+                    ->update(['testatverwaltung.Testat' => 1]);
+                $counter++;
+
+            }
+            else
+            {
+                DB::table('testatverwaltung')
+                    ->where('testatverwaltung.Matrikelnummer', $request->Matrikelnummer)
+                    ->where('testatverwaltung.TestatID', $try)
+                    ->update(['testatverwaltung.Testat' => 0]);
             }
         }
+
 
 
         $counter1 = 0;
@@ -108,6 +99,23 @@ class TutorController extends Controller
                 $counter1++;
             }
         }
+
+        $counter2 = 0;
+        if(isset($request->Testatcomment))
+        {
+            foreach ($request->Testatcomment as $try)
+            {
+
+                DB::table('testatverwaltung')
+                    ->where('testatverwaltung.Matrikelnummer', $request->Matrikelnummer)
+                    ->where('testatverwaltung.TestatID', $try)
+                    ->update(['testatverwaltung.Benotung' => $request->note[$counter2]]);
+
+                $counter2++;
+            }
+        }
+
+
 
         $testat = DB::table('testat')
             ->join('testatverwaltung', 'testatverwaltung.testatID', '=', 'testat.id')
