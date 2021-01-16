@@ -94,7 +94,7 @@
             font-family: Verdana,serif;
         }
         button.button1{
-            margin-left: -24cm;
+            margin-left: -25cm;
             margin-top: 1cm;
             margin-bottom: 2cm;
             width: 6cm;
@@ -103,17 +103,17 @@
             font-family: Verdana,serif;
         }
         button.button3{
-            margin-left: -31cm;
-            width: 6cm;
+            margin-left: -25cm;
+        width: 6cm;
             height: 1cm;
             font-weight: 20;
             font-family: Verdana,serif;
         }
         div.info1{
-            width: 6cm;
+            width: 8cm;
             height: 1cm;
             font-family: Verdana,serif;
-            font-weight: 20;
+            font-weight: 100;
             text-align: center;
             border-style: solid;
             background-color: lightblue;
@@ -121,7 +121,7 @@
         }
 
         div.info{
-            width: 6cm;
+            width: 10cm;
             border-style: solid;
             border-color: #0c5460;
             border-top: none;
@@ -133,7 +133,7 @@
         }
 
         .infos {
-            transform: translate(5cm,-15cm);
+            transform: translate(5cm);
             background-color: lightsteelblue; /* Green background */
             border: 1px solid dodgerblue; /* Green border */
             color: white; /* White text */
@@ -152,7 +152,23 @@
         .btn-group button:hover {
             background-color: #0c5460 ;
         }
+ thead{
+     background-color: cadetblue;
+     font-size: larger;
+     border: solid black 1px;
 
+
+ }
+
+ table{
+     position: center;
+     border: solid black 1px;
+     align-content: center;
+     text-align: center;
+     margin-left: 5cm;
+     min-width: 10cm;
+     width: 50%;
+ }
 
 
         .close {
@@ -180,50 +196,53 @@
             padding: 0.2em 0 0 0;
         }
         .details {
-            position: center;
+            position: relative;
             right: 1em;
             top: 1em;
             background-color: #F1F3F4;
             border: 0.1em solid #3983ab;
             border-radius: 0 8px 8px;
             padding: 1em 1em .2em;
-            width: 22em;
-            max-height: 20em;
-            overflow: auto;
-            display: block;
-            opacity: 0;
-            z-index: -10;
-        }
-        .detaild{
-            position:initial;
-            right: 1em;
-            top: 1em;
-            background-color: #F1F3F4;
-            border: 0.1em solid #3983ab;
-            border-radius: 0 8px 8px;
-            padding:1em 1em .2em;
-            width:20em;
+            width: 30em;
             max-height: 30em;
             overflow: auto;
             display: block;
             opacity: 0;
             z-index: -10;
         }
-        .detaild:target {
-            transform: translate(16cm,-12cm);
+        .detailg{
+             position:relative;
+            margin-left: 20cm;
+             right: 1em;
+            top: 1em;
+            background-color: #F1F3F4;
+            border: 0.1em solid #3983ab;
+           /* border-radius: 0 8px 8px;*/
+          /* padding:1em 1em .2em;*/
+            width:20em;
+            max-height: 30em;
+           overflow: auto;
+            display: block;
+            opacity: 0;
+            z-index: -10;
+
+        }
+        .detailg:target {
+           /* transform: translate(0cm,-10cm);*/
             opacity: 1;
             z-index: 10;
             height: 5cm;
             width: 10cm;
-            position: relative;
+           position: relative;
+
         }
 
         .details:target {
-            transform: translate(4cm,-23cm);
+            transform: translate(4cm);
             opacity: 1;
             z-index: 10;
-            height: 5cm;
-            width: 7cm;
+            height: 10cm;
+            width: 8cm;
             position: page;
         }
         a{
