@@ -39,7 +39,7 @@
             <tr>
                 @forelse($testat as $t)
                     <th>
-                        <textarea name="comment[]">{{$t->Kommentar}}</textarea>
+                        <textarea name="comment[]" placeholder="Kommentar" >{{$t->Kommentar}}</textarea>
                         <input type="hidden" value="{{$t->TestatID}}" name="Testatcomment[]">
                     </th>
                 @empty
@@ -49,7 +49,7 @@
             <tr>
                 @forelse($testat as $t)
                     <th>
-                        <input type="number"   value={{$t->Benotung}} step="any" name="note[]">
+                        <input type="number"  min="1" max="5" step="0.1" value="{{$t->Benotung}}" name="note[]">
                     </th>
                 @empty
                     <th>Keine Daten vorhanden.</th>
