@@ -19,14 +19,18 @@
 
 
 <div id="d" class="detailg">
-    <a href="/Professor/kurs/new/group">Neuer Betreuer hinfügen</a>
+    <a href="/Professor/gruppe/betreuerHinzu">Neuer Betreuer hinfügen</a>
+    <form  action="/Professor/gruppe/betreuerHinzu" method="post" >
+        @csrf
+        <input type="hidden" value="{{$gruppe[0]->GruppenID}}" name="GruppenID" >
+        <button   type="submit">Neuer Betreuer hinzufügen</button>
+    </form>
     <br>
     <br>
     <form  action="/Professor/kurs/GruppeLoeschen" method="post" >
         @csrf
-        <h1>  {{$gruppe[0]->GruppenID}}</h1>
         <input type="hidden" value="{{$gruppe[0]->GruppenID}}" name="GruppenID" >
-        <button class="button1"  type="submit">Delete grouppe</button>
+        <button   type="submit">Delete grouppe</button>
     </form>
     <br>
     <br>
