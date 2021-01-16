@@ -77,11 +77,10 @@ Route::middleware('auth')->prefix('Student')->group(function() {
 
 // Tutor routes
 Route::middleware('auth')->prefix('Tutor')->group(function(){
-
     Route::get('/dashboard', [TutorController::class, 'index'])->name('Tutor/dashboard');
-    Route::post('/dashboard/{testatverwaltung}', [TutorController::class, 'testatverwaltung']);
-    Route::get('/dashboard/{testatverwaltung}', [TutorController::class, 'testatverwaltung'])->name('Tutor/testatverwaltung');
-    Route::any('/dashboard/{testatverwaltung}/{testat}', [TutorController::class, 'testat'])->name('Tutor/testat');
+    Route::post('/dashboard/testatverwaltung', [TutorController::class, 'testatverwaltung']);
+    Route::get('/dashboard/testatverwaltung', [TutorController::class, 'testatverwaltung'])->name('Tutor/testatverwaltung');
+    Route::post('/dashboard/testatverwaltung/testat', [TutorController::class, 'testat'])->name('Tutor/testat');
 
 });
 

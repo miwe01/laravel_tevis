@@ -157,7 +157,7 @@ class TutorController extends Controller
             ->get();
 
 
-        return view('Tutor.testat',['testat'=>$testat, 'gruppenname' => $request->Gruppenname, 'Gruppennummer'=>$request->Gruppennummer,  'modulname' => $request->Modulname,'title'=>'testat']);
+        return view('Tutor.testat',['testat'=>$testat, 'gruppenname' => $request->Gruppenname, 'Gruppenummer'=>$request->Gruppenummer,  'modulname' => $request->Modulname,'title'=>'testat']);
 
 
     }

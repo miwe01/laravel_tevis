@@ -20,7 +20,7 @@
     </form>
     <br>
     <table border="2">
-        @foreach($studenten as $s)
+        @forelse($studenten as $s)
 
             <tr>
                 @if (isset($_SESSION['WiMi_UserId']))
@@ -61,16 +61,18 @@
                     <th>Keine Daten vorhanden.</th>
                 @endforelse
 
-                <th><form action="/Tutor/dashboard/{{$modulname}}_{{$s->Gruppenname}}/testat" method="post">
+                <th><form action="/Tutor/dashboard/testatverwaltung/testat" method="post">
                         @csrf
                         <input type="hidden"  value="{{$s->Matrikelnummer}}" name="Matrikelnummer" id="Testat">
                         <input type="hidden"  value="{{$s->Gruppenname}} " name="Gruppenname" id="Testat">
-                        <input type="hidden"  value="{{$s->Gruppenummer}} " name="Gruppennummer" id="Testat">
+                        <input type="hidden"  value="{{$s->Gruppenummer}} " name="Gruppenummer" id="Testat">
                         <input type="hidden"  value="{{$s->Jahr}} " name="Jahr" id="Testat">
                         <button type="submit"  value="{{$modulname}} " name="Modulname" id="Testat">{{__("Anzeigen")}}</button>
                     </form></th>
             </tr>
-        @endforeach
+        @empty
+            <th>Keine Daten vorhanden.</th>
+        @endforelse
     </table>
     <br>
     <a href="/Tutor/dashboard">{{__("Zurück zur Übersicht")}}</a>

@@ -7,7 +7,7 @@
     <h1 align="center">  {{$testat[0]->Modulname}}{{$testat[0]->Jahr}}</h1>
     <h1 align="center"> {{$gruppenname}}</h1>
     <br>
-    <form action="/Tutor/dashboard/{{$testat[0]->Modulname}}_{{$gruppenname}}/testat" method="post">
+    <form action="/Tutor/dashboard/testatverwaltung/testat" method="post">
         @csrf
         <table border="2">
             <tr style="background-color: #eaeaea">
@@ -19,7 +19,7 @@
                 @forelse($testat as $t)
                     <th>{{$t->Praktikumsname}}</th>
                 @empty
-                    <li>Keine Daten vorhanden.</li>
+                    <th>Keine Daten vorhanden.</th>
                 @endforelse
             </tr>
             <tr>
@@ -33,7 +33,7 @@
                         <input type="checkbox" id="scales" value="{{$t->TestatID}}" name="Testat[]" {{$t->Testat==1 ? 'checked':''}}>
                     </th>
                 @empty
-                    <li>Keine Daten vorhanden.</li>
+                    <th>Keine Daten vorhanden.</th>
                 @endforelse
             </tr>
             <tr>
@@ -43,7 +43,7 @@
                         <input type="hidden" value="{{$t->TestatID}}" name="Testatcomment[]">
                     </th>
                 @empty
-                    <li>Keine Daten vorhanden.</li>
+                    <th>Keine Daten vorhanden.</th>
                 @endforelse
             </tr>
             <tr>
@@ -52,12 +52,13 @@
                         <input type="number"   value={{$t->Benotung}} step="any" name="note[]">
                     </th>
                 @empty
-                    <li>Keine Daten vorhanden.</li>
+                    <th>Keine Daten vorhanden.</th>
                 @endforelse
             </tr>
         </table>
         <input type="hidden"  value="{{$testat[0]->Matrikelnummer}}" name="Matrikelnummer" id="Testat">
         <input type="hidden"  value="{{$gruppenname}} " name="Gruppenname" id="Testat">
+        <input type="hidden"  value="{{$Gruppenummer}} " name="Gruppenummer" id="Testat">
         <input type="hidden"  value="{{$testat[0]->Jahr}} " name="Jahr" id="Testat">
         <input type="hidden"  value="{{$modulname}} " name="Modulname" id="Testat">
         <br>
@@ -65,10 +66,10 @@
     </form>
     <br>    <br>    <br>
 
-    <form action="/Tutor/dashboard/{{$modulname}}_{{$gruppenname}}" method="post">
+    <form action="/Tutor/dashboard/testatverwaltung" method="post">
         @csrf
         <input type="hidden"  value="{{$gruppenname}}" name="Gruppenname" id="Testat">
-        <input type="hidden"  value="{{$Gruppennummer}} " name="Gruppenummer" id="Testat">
+        <input type="hidden"  value="{{$Gruppenummer}} " name="Gruppenummer" id="Testat">
         <input type="hidden"  value="{{$t->Jahr}} " name="Jahr" id="Testat">
         <button type="submit"  value="{{$t->Modulname}} " name="Modulname" id="Testat">{{__("Testverwaltung")}}</button>
     </form>
