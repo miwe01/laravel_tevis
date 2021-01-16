@@ -19,7 +19,7 @@
                 <br>
                 <li class="li1" >{{$kurs->Raum}} </li>
             </ul>
-            <form action="/Professor/kurs" method="post">
+            <form action="/Professor/kurs" method="get">
                 @csrf
                 <input type="hidden" value="{{$kurs->Modulnummer}}" name="Modulname" id="bearbeiten">
                 <input type="hidden" value="{{$kurs->Jahr}}" name="Jahr" id="bearbeiten">
@@ -28,7 +28,7 @@
         @endforeach
 
 
-        <form action="/Professor/meine_kurse" method="post">
+        <form action="/Professor/meine_kurse" method="get">
             @csrf
             <input type="submit" value="Meine Kurse" id="meinekurse" name="meinekurse">
         </form>
