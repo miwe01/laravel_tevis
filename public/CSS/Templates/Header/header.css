@@ -64,10 +64,6 @@ nav{
     margin: 0;
 }
 
-.a-img{
-    position: absolute;
-    top:0;
-}
 a:visited, a:link{
     color: black;
 }
@@ -124,18 +120,6 @@ a{
     background-color: #00B5AD;
 }
 
-
-
-/* */
-
-/* Flags */
-#german{
-    margin-right: 36px;
-}
-#uk{
-
-}
-/* */
 
 
 /* mobile Users */

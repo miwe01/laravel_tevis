@@ -32,7 +32,12 @@
                        echo htmlentities($_SESSION['kennung']);?>"
                    required>
             <input type="password" name="passwort" placeholder="Passwort" required>
-            <button type="submit" class="big-buttons" name="einloggen">Einloggen</button>
+
+            <select name="sprache" id="sprache">
+                <option value="de">Deutsch</option>
+                <option value="en">Englisch</option>
+            </select>
+            <button type="submit" class="big-buttons" name="einloggen">Login</button>
         </form>
 </div>
 

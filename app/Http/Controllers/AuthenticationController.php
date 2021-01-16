@@ -15,6 +15,7 @@ class AuthenticationController extends Controller
     public function authenticate(Request $request){
         $kennung = $request->kennung;
         $passwort = $request->passwort;
+        $sprache = $request->sprache;
         $_SESSION['kennung'] = $kennung;
 
         //Wenn Felder sind
@@ -39,6 +40,12 @@ class AuthenticationController extends Controller
         if ($kennungCheck == NULL){
             $_SESSION['fehler'] = 'Kennung oder Passwort falsch';
             return redirect()->route('login');
+        }
+
+
+        if (isset($sprache)){
+            $_SESSION["language"] = $sprache;
+
         }
 
         //Wenn Benutzer stimmt
@@ -153,6 +160,9 @@ class AuthenticationController extends Controller
     public function passwortAendern(Request $request){
         if($request->opassword == NULL || $request->npassword == NULL)
             return redirect()->route('konto', ['fehler_menu'=>'Passwort nicht gesetzt']);
+
+
+
 
         if (isset($_SESSION['PA_UserId']))
         {

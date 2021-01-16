@@ -12,9 +12,6 @@
                 @csrf
                 <li id="logout-li"><button type="submit">Logout</button></li>
             </form>
-
-            <a class="a-img" href="?language=de"><img src="/Images/german.png" alt="dsf" id="german"></a>
-            <a class="a-img" href="?language=en"><img src="/Images/uk.png" alt="dsf" id="uk"></a>
         </ul>
     </nav>
 </header>
