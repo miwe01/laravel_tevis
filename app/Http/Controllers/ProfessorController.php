@@ -144,7 +144,7 @@ class ProfessorController extends Controller
             ->orderBy('gruppe.Gruppenummer')
             ->get();
 
-       echo $gruppe;
+      // echo $gruppe;
         $TNanzahl = DB::table('benutzerhatmodul')
             ->where('BenutzerID', '=', $_SESSION['Prof_UserId'])
             ->leftJoin('gruppe','gruppe.Modulnummer', '=', 'benutzerhatmodul.ModulID')
@@ -165,7 +165,7 @@ class ProfessorController extends Controller
             ->groupBy('benutzer.Kennung')
             ->get();
 
-        echo $haupt;
+        //echo $haupt;
 
         return view('Professor.kurs', ['titel' => 'Modul', 'gruppeninfos' => $gruppeninfos,'haupt' => $haupt, 'Modulnummer' => $request->Modulnummer,'jahr' => $request->Jahr,'gruppennummer' => $request->Gruppenummer,'module'=>$module, 'gruppen' => $gruppen,'gruppe'=>$gruppe,'TNanzahl'=>$TNanzahl]);
     }
