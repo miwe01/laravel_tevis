@@ -45,14 +45,27 @@ class TutorController extends Controller
 
     public function testatverwaltung(Request $request)
     {
-
-        $studenten = DB::table('student')
-            ->leftJoin('benutzer' ,'benutzer.kennung', '=', 'student.kennung')
-            ->leftJoin('studenteningruppen', 'studenteningruppen.Matrikelnummer','=', 'student.Matrikelnummer')
-            ->join('gruppe', 'gruppe.gruppenummer', '=','studenteningruppen.GruppenID' )
-            ->where('gruppe.gruppenummer',$request->Gruppenummer)
-            ->get();
-
+        if(isset($request->search))
+        {
+            $studenten = DB::table('student')
+                ->leftJoin('benutzer' ,'benutzer.kennung', '=', 'student.kennung')
+                ->leftJoin('studenteningruppen', 'studenteningruppen.Matrikelnummer','=', 'student.Matrikelnummer')
+                ->join('gruppe', 'gruppe.gruppenummer', '=','studenteningruppen.GruppenID' )
+                ->where('gruppe.gruppenummer',$request->Gruppenummer)
+                ->where(function($q) use ($request) {
+                    $q->where("Vorname", "LIKE", "%{$request->term}%")
+                        ->orWhere("Nachname", "LIKE", "%{$request->term}%");
+                })
+                ->get();
+        }
+        else{
+            $studenten = DB::table('student')
+                ->leftJoin('benutzer' ,'benutzer.kennung', '=', 'student.kennung')
+                ->leftJoin('studenteningruppen', 'studenteningruppen.Matrikelnummer','=', 'student.Matrikelnummer')
+                ->join('gruppe', 'gruppe.gruppenummer', '=','studenteningruppen.GruppenID' )
+                ->where('gruppe.gruppenummer',$request->Gruppenummer)
+                ->get();
+        }
 
         $testat = DB::table('testat')
             ->join('testatverwaltung', 'testatverwaltung.testatID', '=', 'testat.id')
@@ -63,6 +76,7 @@ class TutorController extends Controller
             ->where('modul.Modulname',$request->Modulname)
             ->where('modul.Jahr',$request->Jahr)
             ->get();
+
 
         return view('Tutor.testatverwaltung',['testat'=>$testat,'studenten'=>$studenten,'gruppenname' => $request->Gruppenname,
             'modulname' => $request->Modulname,'jahr' => $request->Jahr,'title'=>'Gruppe']);
@@ -144,6 +158,8 @@ class TutorController extends Controller
 
 
         return view('Tutor.testat',['testat'=>$testat, 'gruppenname' => $request->Gruppenname, 'Gruppennummer'=>$request->Gruppennummer,  'modulname' => $request->Modulname,'title'=>'testat']);
+
+
     }
 }
 

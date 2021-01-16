@@ -3,9 +3,21 @@
     @extends('Template.links')
     <link rel="stylesheet" href="{{URL::asset("CSS/styleHiWi.css")}}">
     <br>
-    <h1 align="center">  {{$modulname}}{{$jahr}}</h1>
-    <h1 align="center"> {{$gruppenname}}</h1>
+    <h1 align="center">{{$modulname}}{{$jahr}}</h1>
+    <h1 align="center">{{$gruppenname}}</h1>
     <br>
+    <br>
+
+
+    <form action="/Tutor/dashboard/{{$modulname}}_{{$gruppenname}}" method="post">
+        @csrf
+        <input type="text"  name="term" id="term">
+        <input type="hidden"  value="{{$gruppenname}}" name="Gruppenname" id="search">
+        <input type="hidden"  value="{{$studenten[0]->Gruppenummer}}" name="Gruppenummer" id="search">
+        <input type="hidden"  value="{{$jahr}}" name="Jahr" id="search">
+        <input type="hidden"  value="{{$modulname}}" name="Modulname" id="search">
+        <button type="submit"  value="search" name="search" id="search">Suche</button>
+    </form>
     <br>
     <table border="2">
         @foreach($studenten as $s)
@@ -21,7 +33,7 @@
                         <th>{{$t->Praktikumsname}}</th>
                     @endif
                 @empty
-                    <li>Keine Daten vorhanden.</li>
+                    <th>Keine Daten vorhanden.</th>
                 @endforelse
 
                 <th style="background-color: #eaeaea">{{__("bearbeiten")}}</th>
