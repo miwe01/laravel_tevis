@@ -141,7 +141,7 @@ a{
 /* mobile Users */
 @media (max-width: 610px){
     .bild > img{
-        width: 100px;
+        width: 90px;
         height: auto;
     }
     .header-li a{

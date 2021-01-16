@@ -30,8 +30,11 @@
     "Jahr": "Year",
     "Ja": "Yes",
     "Nein": "No",
+    "Prüfungsamt": "Examination Office",
 
+    "Benutzer hinzufügen": "Add user",
     "Benutzer gibt es schon": "User already exists",
+    "Benutzer hinzugefügt": "User added",
     "Datei leer": "Empty file",
     "Keine CSV Datei": "No CSV File",
     "Format soll: Kennung;Email;Nachname;Vorname;Studiengang;Matrielnummer sein": "The format should be: Kennung;Email;LastName;FirstName;CourseOfStudy;Matrikelnummer",
@@ -54,6 +57,8 @@
     "Passwort wurde geändert": "Password was changed",
     "Fehler bei Passwort": "Password error",
     "Fehler aufgetreten": "Error occurred",
+    "Betreute Kurse":"Supervised courses",
+    "Testverwaltung":"Group management",
 
     "Kurse":"Courses",
     "bearbeiten":"edit",
@@ -72,11 +77,18 @@
     "Start Termin am": "Start date on",
     "Uhrzeit": "Time",
     "Intervall": "Interval",
+    "Betreuer":"Supervisor",
+    "FachNr.":"ModuleNo.",
+    "Bezeichnung": "Description",
+    "Testat erhalten": "Certificate received",
+    "als pdf speichern": "save as pdf",
+    "Bestanden": "Passed",
 
     "Werkzeuge":"Tools",
     "Löschen":"Delete",
     "Verschieben":"Move Groups",
-    "Testat":"Confirm Certificate",
+    "Testat":"Certificate",
+    "Testatbogen": "Certificate sheet",
     "Betreuername":"Supervisor",
     "E-Mail Adresse":"E-mail address",
     "Meeting Raum":"Meeting Room",
@@ -85,8 +97,10 @@
     "Kurs löschen": "Delete course",
     "Beteiligten Prof": "Participating Prof",
     "an der Veranstaltung": "at the event",
+    "Keine Daten vorhanden": "No data available",
 
     "Neuen Kurs anlegen":"Add new course",
     "Anzahl der Gruppen":"Number of groups",
-    "Anzahl der Teilnehmer":"Number of participants"
+    "Anzahl der Teilnehmer":"Number of participants",
+    "Zurück zur Übersicht": "Back to Dashboard"
 }

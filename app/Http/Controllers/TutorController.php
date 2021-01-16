@@ -8,6 +8,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redirect;
 use Mockery\Matcher\Not;
 
 class TutorController extends Controller
@@ -44,45 +45,68 @@ class TutorController extends Controller
 
     public function testatverwaltung(Request $request)
     {
+        if(isset($request->search))
+        {
+            $studenten = DB::table('student')
+                ->leftJoin('benutzer' ,'benutzer.kennung', '=', 'student.kennung')
+                ->leftJoin('studenteningruppen', 'studenteningruppen.Matrikelnummer','=', 'student.Matrikelnummer')
+                ->join('gruppe', 'gruppe.gruppenummer', '=','studenteningruppen.GruppenID' )
+                ->where('gruppe.gruppenummer',$request->Gruppenummer)
+                ->where(function($q) use ($request) {
+                    $q->where("Vorname", "LIKE", "%{$request->term}%")
+                        ->orWhere("Nachname", "LIKE", "%{$request->term}%");
+                })
+                ->get();
+        }
+        else{
+            $studenten = DB::table('student')
+                ->leftJoin('benutzer' ,'benutzer.kennung', '=', 'student.kennung')
+                ->leftJoin('studenteningruppen', 'studenteningruppen.Matrikelnummer','=', 'student.Matrikelnummer')
+                ->join('gruppe', 'gruppe.gruppenummer', '=','studenteningruppen.GruppenID' )
+                ->where('gruppe.gruppenummer',$request->Gruppenummer)
+                ->get();
+        }
 
-        $studenten = DB::table('student')
-            ->leftJoin('benutzer' ,'benutzer.kennung', '=', 'student.kennung')
-            ->leftJoin('studenteningruppen', 'studenteningruppen.Matrikelnummer','=', 'student.Matrikelnummer')
-            ->join('gruppe', 'gruppe.gruppenummer', '=','studenteningruppen.GruppenID' )
-            ->where('gruppe.gruppenummer',$request->Gruppenummer)
+        $testat = DB::table('testat')
+            ->join('testatverwaltung', 'testatverwaltung.testatID', '=', 'testat.id')
+            ->join('modul', 'modul.Modulnummer', '=', 'testat.Modulnummer')
+            ->join('student', 'student.Matrikelnummer', '=', 'testatverwaltung.Matrikelnummer')
+            ->join('benutzer' ,'benutzer.kennung', '=', 'student.kennung')
+            ->whereColumn('testat.Jahr', '=', 'modul.Jahr')
+            ->where('modul.Modulname',$request->Modulname)
+            ->where('modul.Jahr',$request->Jahr)
             ->get();
 
 
-        return view('Tutor.testatverwaltung',['studenten'=>$studenten,'gruppenname' => $request->Gruppenname,
+        return view('Tutor.testatverwaltung',['testat'=>$testat,'studenten'=>$studenten,'gruppenname' => $request->Gruppenname,
             'modulname' => $request->Modulname,'jahr' => $request->Jahr,'title'=>'Gruppe']);
     }
+
+
     public function testat(Request $request)
     {
 
 
+        if(isset($request->Testatcomment)) {
+            $counter = 0;
+            foreach ($request->Testatcomment as $try) {
+                if ((isset($request->Testat[$counter])) && ($request->Testat[$counter] == $try)) {
+                    DB::table('testatverwaltung')
+                        ->where('testatverwaltung.Matrikelnummer', $request->Matrikelnummer)
+                        ->where('testatverwaltung.TestatID', $try)
+                        ->update(['testatverwaltung.Testat' => 1]);
 
+                    $counter++;
 
-        $counter = 0;
-        foreach ($request->Testatcomment as $try)
-        {
-            if((isset($request->Testat[$counter])) && ($request->Testat[$counter] == $try))
-            {
-                DB::table('testatverwaltung')
-                    ->where('testatverwaltung.Matrikelnummer', $request->Matrikelnummer)
-                    ->where('testatverwaltung.TestatID',$try)
-                    ->update(['testatverwaltung.Testat' => 1]);
-                $counter++;
+                } else {
 
-            }
-            else
-            {
-                DB::table('testatverwaltung')
-                    ->where('testatverwaltung.Matrikelnummer', $request->Matrikelnummer)
-                    ->where('testatverwaltung.TestatID', $try)
-                    ->update(['testatverwaltung.Testat' => 0]);
+                    DB::table('testatverwaltung')
+                        ->where('testatverwaltung.Matrikelnummer', $request->Matrikelnummer)
+                        ->where('testatverwaltung.TestatID', $try)
+                        ->update(['testatverwaltung.Testat' => 0]);
+                }
             }
         }
-
 
 
         $counter1 = 0;
@@ -99,22 +123,26 @@ class TutorController extends Controller
                 $counter1++;
             }
         }
-
-        $counter2 = 0;
-        if(isset($request->Testatcomment))
-        {
-            foreach ($request->Testatcomment as $try)
+        DB::beginTransaction();
+        try {
+            $counter2 = 0;
+            if(isset($request->Testatcomment))
             {
+                foreach ($request->Testatcomment as $try)
+                {
 
-                DB::table('testatverwaltung')
-                    ->where('testatverwaltung.Matrikelnummer', $request->Matrikelnummer)
-                    ->where('testatverwaltung.TestatID', $try)
-                    ->update(['testatverwaltung.Benotung' => $request->note[$counter2]]);
+                    DB::table('testatverwaltung')
+                        ->where('testatverwaltung.Matrikelnummer', $request->Matrikelnummer)
+                        ->where('testatverwaltung.TestatID', $try)
+                        ->update(['testatverwaltung.Benotung' => $request->note[$counter2]]);
 
-                $counter2++;
+                    $counter2++;
+                }
             }
+        } catch (\Exception $e) {
+            DB::rollback();
         }
-
+        DB::commit();
 
 
         $testat = DB::table('testat')
@@ -129,7 +157,9 @@ class TutorController extends Controller
             ->get();
 
 
-        return view('Tutor.testat',['testat'=>$testat, 'gruppenname' => $request->Gruppenname,   'modulname' => $request->Modulname,'title'=>'testat']);
+        return view('Tutor.testat',['testat'=>$testat, 'gruppenname' => $request->Gruppenname, 'Gruppenummer'=>$request->Gruppenummer,  'modulname' => $request->Modulname,'title'=>'testat']);
+
+
     }
 }
 

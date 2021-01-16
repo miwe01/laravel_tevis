@@ -104,7 +104,6 @@ class AuthenticationController extends Controller
             return redirect()->route('login');
         }
 
-
     }
 
 

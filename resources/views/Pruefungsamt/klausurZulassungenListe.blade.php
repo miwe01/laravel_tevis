@@ -2,9 +2,14 @@
 @extends('Template.links')
 
 @section('main')
-    <link rel="stylesheet" href="{{URL::asset("CSS/dashboard.css")}}">
+
 
     <style>
+        @media (max-width: 610px){
+            h1{
+                font-size: 25px;
+            }
+        }
         h1{
             text-align: center;
         }

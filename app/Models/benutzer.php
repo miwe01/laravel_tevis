@@ -14,12 +14,45 @@ class benutzer extends Model
 
     // letzten 5 Benutzer geordnet
     public function last5Users(){
-        return $this
-            ->select('Nachname', 'Vorname')
+//        return $this
+            $benutzer = Benutzer::select('Kennung', 'Nachname', 'Vorname')
             ->orderBy('erfasst_am', 'desc')
             ->orderBy('Nachname', 'asc')
             ->take(5)
             ->get();
+        $tbname = "";
+        $array = [];
+
+        foreach ($benutzer as $user) {
+            $array[] = $user->Nachname;
+            $array[] = $user->Vorname;
+
+            // Checkt in PA/Professor/Student/Tutor Tabelle um zu überprüfen welche Rolle der Benutzer hat
+            $kennung = DB::table('pruefungsamt')
+            ->select('Kennung')
+            ->where('Kennung', $user->Kennung)
+            ->first();
+            if ($kennung == NULL){
+                $kennung = DB::table('professor')
+                    ->select('Kennung')
+                    ->where('Kennung', $user->Kennung)
+                    ->first();
+                if ($kennung == NULL){
+                    $kennung = DB::table('student')
+                        ->select('Kennung')
+                        ->where('Kennung', $user->Kennung)
+                        ->first();
+                    if ($kennung == NULL){
+                        $tbname = "(WiMi)";
+                    } else $tbname = "(Student)";
+                }else $tbname = "(Professor)";
+            }else $tbname="(" .  trans('Prüfungsamt') . ")";
+            $array[] = $tbname;
+
+        }
+
+        return $array;
+
     }
 
     public function BenutzerAdd($request){
@@ -64,9 +97,9 @@ class benutzer extends Model
                     ['Kennung'=>$request->kennung, 'Rolle'=>'WiMi']
                 );
                 break;
-            case "hiwi":
-                DB::table('tutor')->insert(
-                    ['Kennung'=>$request->kennung, 'Rolle'=>'HiWi']
+            case "pruefungsamt":
+                DB::table('pruefungsamt')->insert(
+                    ['Kennung'=>$request->kennung]
                 );
                 break;
             default:

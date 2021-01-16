@@ -19,7 +19,7 @@ class Auth
         // Wenn Get "language" Parameter gesetzt wurde, speichere langugae in Session
         // Ändere Sprache um
         if (isset($_SESSION['language']))
-        \App::setLocale($_SESSION['language']);
+            \App::setLocale($_SESSION['language']);
 
 
         // Überprüft ob Session gesetzt wurde

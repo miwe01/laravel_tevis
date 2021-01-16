@@ -3,7 +3,7 @@
     @extends('Template.links')
     <link rel="stylesheet" href="{{URL::asset("CSS/styleHiWi.css")}}">
     <br>
-    <h1 align="center">Meine Kurse</h1>
+    <h1 align="center">{{__("Meine Kurse")}}</h1>
     <br>
     <br>
     @forelse($student as $s)
@@ -17,7 +17,7 @@
                     {{$s->Gruppenname}}
                 </p>
                 <p>
-                    Raum: {{$s->Raum}}
+                    {{__("Raum")}}: {{$s->Raum}}
                 </p>
                 <p>
                     Webexlink: {{$s->Webex}}
@@ -29,17 +29,17 @@
                     <input type="hidden"  value="{{$s->Gruppenname}} " name="Gruppenname" id="Testat">
                     <input type="hidden"  value="{{$s->Gruppenummer}} " name="Gruppenummer" id="Testat">
                     <input type="hidden"  value="{{$s->Jahr}} " name="Jahr" id="Testat">
-                    <button type="submit"  value="{{$s->Modulname}} " name="Modulname" id="Testat">Testat</button>
+                    <button type="submit"  value="{{$s->Modulname}} " name="Modulname" id="Testat">{{__("Testat")}}</button>
                 </form>
 
             </div>
         </div>
     @empty
-        <li>Keine Daten vorhanden.</li>
+        <li>{{__("Keine Daten vorhanden")}}.</li>
     @endforelse
 
 
-    <a href="/Student/testatbogen">Testatbogen</a>
+    <a href="/Student/testatbogen">{{__("Testatbogen")}}</a>
 
 
 @endsection

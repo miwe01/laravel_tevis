@@ -28,6 +28,18 @@
         </div>
     @endif
 
+    @if($errors->first('rolle'))
+        <div id="message-div" class="error" onclick="document.getElementById('message-div').style.display = 'none';">
+            <span>Keine Rolle ausgewählt</span>
+{{--            <script> myFunction(p1, 'p1'); </script>--}}
+        </div>
+
+    @elseif($errors->any())
+        <div id="message-div" class="error" onclick="document.getElementById('message-div').style.display = 'none';">
+            {{$errors->first()}}
+        </div>
+    @endif
+
 
     <div id="wrapper">
         {{--
@@ -35,7 +47,7 @@
         --}}
         <div id="p1" class="loading">
             <div class="close" onclick="myFunction(p1, 'p1')">X</div>
-            <h1>{{__("Student hinzufügen")}}</h1>
+            <h1>{{__("Benutzer hinzufügen")}}</h1>
             <form action="/pruefungsamt/addPerson" method="post">
                 @csrf
                 <table id="person-table">
@@ -93,12 +105,12 @@
                     </tr>
                     <tr>
                         <td>
-                            <select name="rolle" id="rollen" onchange="showMatrikel()">
+                            <select name="rolle" id="rollen" onchange="showMatrikel()" required>
                                 <option value="">{{__("Rolle auswählen")}}</option>
                                 <option value="student">Student</option>
                                 <option value="professor">Professor</option>
                                 <option value="wimi">WiMi</option>
-                                <option value="hiwi">HiWi</option>
+                                <option value="pruefungsamt">{{__("Prüfungsamt")}}</option>
                             </select>
                         </td>
                         <td>
@@ -118,13 +130,7 @@
         {{--
             Wenn Fehler bei Validierung von Benutzer hinzufügen passiert
         --}}
-        @if($errors->first('rolle'))
-            {{phpAlert("Keine Rolle ausgewählt")}}
-            <script> myFunction(p1, 'p1'); </script>
-        @elseif($errors->any())
-            {{phpAlert($errors->first())}}
-            <script> myFunction(p1, 'p1'); </script>
-    @endif
+
 
 
 
@@ -145,12 +151,14 @@
                 </form>
             </div>
             <!-- zeigt letzten 5 Benutzer an -->
+
             <div id="col-1-last-added">
                 <h3>{{ __("Zuletzt hinzugefügt")}}</h3>
-                <ul>
-                    @foreach($lastAdded as $elm)
-                        <li>{{$elm->Nachname}} {{$elm->Vorname}}</li>
-                    @endforeach
+
+                <ul class="last-added-ul">
+                @for ($i = 0; $i < count($lastAdded)-1; $i+=3)
+                    <li class="last-added-li">{{$lastAdded[$i] . ' ' . $lastAdded[$i+1] . ' ' . $lastAdded[$i+2]}}</li>
+                @endfor
                 </ul>
             </div>
         </div>
@@ -194,7 +202,7 @@
                     <div>
                         <input type="file" id="file2" name="file" onchange="checkType('file2')" required>
                         <select class="select-form" name="modul">
-                            <option>{{ __("Modul auswählen")}}</option>
+                            <option value="">{{ __("Modul auswählen")}}</option>
                             <optgroup label="WiSe">
                                 <!-- Module werden reingeladen aus DB und werden unterteilt in Wintermodule und Sommermodule -->
                                 @foreach($WinterModule as $m)
@@ -222,20 +230,20 @@
                 <form action="/pruefungsamt/praktikumAnerkennen" method="post">
                     @csrf
                     <div>
-                        <label for="matrikelnummer2" class="form-label">Matrikelnummer</label>
-                        <input type="number" class="matrikelnummer-input" id="matrikelnummer2" name="matrikelnummer" placeholder="XXXXXX" min="1111111" max="9999999">
+                        <label for="matrikelnummer2" class="form-label" >Matrikelnummer</label>
+                        <input type="number" class="matrikelnummer-input" id="matrikelnummer2" name="matrikelnummer" placeholder="XXXXXX" min="1111111" max="9999999" value="3553355" required>
                         <select class="select-form" name="modul">
                             <option value="">{{__("Modul auswählen")}}</option>
                             <optgroup label="WiSe">
                                 <!-- Module werden reingeladen aus DB und werden unterteilt in Wintermodule und Sommermodule -->
                                 @foreach($WinterModule as $m)
-                                    <option value={{$m->Modulnummer}}>{{$m->Modulname}} ({{$m->Jahr}})</option>
+                                    <option value={{$m->Modulnummer}};{{$m->Jahr}}>{{$m->Modulname}} ({{$m->Jahr}})</option>
                                 @endforeach
 
                             </optgroup>
                             <optgroup label="SoSe">
                                 @foreach($SommerModule as $m)
-                                    <option value={{$m->Modulnummer}}>{{$m->Modulname}} ({{$m->Jahr}})</option>
+                                    <option value={{$m->Modulnummer}};{{$m->Jahr}}>{{$m->Modulname}} ({{$m->Jahr}})</option>
                                 @endforeach
                             </optgroup>
                         </select>
@@ -252,7 +260,7 @@
                     <h3>{{__("Testatbogen anzeigen")}}</h3>
                     <div>
                         <label for="matrikelnummer3" class="form-label">Matrikelnummer</label>
-                        <input type="number" class="matrikelnummer-input" id="matrikelnummer3" name="matrikelnummer" value="4444446" placeholder="XXXXXXX" min="1111111" max="9999999">
+                        <input type="number" class="matrikelnummer-input" id="matrikelnummer3" name="matrikelnummer" value="4444446" placeholder="XXXXXXX" min="1111111" max="9999999" required>
                         <button type="submit" class="form-button" name="matrikel-anzeigen">{{__("Anzeigen")}}</button>
                     </div>
                 </form>
