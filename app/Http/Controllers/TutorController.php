@@ -45,6 +45,8 @@ class TutorController extends Controller
 
     public function testatverwaltung(Request $request)
     {
+
+        $msg = null;
         if(isset($request->search))
         {
             $studenten = DB::table('student')
@@ -58,15 +60,19 @@ class TutorController extends Controller
                 })
                 ->get();
         }
-        else{
+        if($studenten->isEmpty())
+        {
             $studenten = DB::table('student')
-                ->leftJoin('benutzer' ,'benutzer.kennung', '=', 'student.kennung')
-                ->leftJoin('studenteningruppen', 'studenteningruppen.Matrikelnummer','=', 'student.Matrikelnummer')
-                ->join('gruppe', 'gruppe.gruppenummer', '=','studenteningruppen.GruppenID' )
-                ->where('gruppe.gruppenummer',$request->Gruppenummer)
+                ->leftJoin('benutzer', 'benutzer.kennung', '=', 'student.kennung')
+                ->leftJoin('studenteningruppen', 'studenteningruppen.Matrikelnummer', '=', 'student.Matrikelnummer')
+                ->join('gruppe', 'gruppe.gruppenummer', '=', 'studenteningruppen.GruppenID')
+                ->where('gruppe.gruppenummer', $request->Gruppenummer)
                 ->get();
+            if(isset($request->search))
+            {
+                $msg = "Gesuchter Student ist nicht vorhanden";
+            }
         }
-
         $testat = DB::table('testat')
             ->join('testatverwaltung', 'testatverwaltung.testatID', '=', 'testat.id')
             ->join('modul', 'modul.Modulnummer', '=', 'testat.Modulnummer')
@@ -79,7 +85,7 @@ class TutorController extends Controller
 
 
         return view('Tutor.testatverwaltung',['testat'=>$testat,'studenten'=>$studenten,'gruppenname' => $request->Gruppenname,
-            'modulname' => $request->Modulname,'jahr' => $request->Jahr,'title'=>'Gruppe']);
+            'modulname' => $request->Modulname,'jahr' => $request->Jahr,'msg'=>$msg , 'title'=>'Gruppe']);
     }
 
 
@@ -123,6 +129,7 @@ class TutorController extends Controller
                 $counter1++;
             }
         }
+
         DB::beginTransaction();
         try {
             $counter2 = 0;
@@ -130,12 +137,10 @@ class TutorController extends Controller
             {
                 foreach ($request->Testatcomment as $try)
                 {
-
                     DB::table('testatverwaltung')
                         ->where('testatverwaltung.Matrikelnummer', $request->Matrikelnummer)
                         ->where('testatverwaltung.TestatID', $try)
                         ->update(['testatverwaltung.Benotung' => $request->note[$counter2]]);
-
                     $counter2++;
                 }
             }
@@ -155,6 +160,7 @@ class TutorController extends Controller
             ->where('modul.Modulname',$request->Modulname)
             ->where('modul.Jahr',$request->Jahr)
             ->get();
+
 
 
         return view('Tutor.testat',['testat'=>$testat, 'gruppenname' => $request->Gruppenname, 'Gruppenummer'=>$request->Gruppenummer,  'modulname' => $request->Modulname,'title'=>'testat']);

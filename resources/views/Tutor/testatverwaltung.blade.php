@@ -8,8 +8,7 @@
     <br>
     <br>
 
-
-    <form action="/Tutor/dashboard/{{$modulname}}_{{$gruppenname}}" method="post">
+    <form action="/Tutor/dashboard/testatverwaltung" method="post">
         @csrf
         <input type="text"  name="term" id="term">
         <input type="hidden"  value="{{$gruppenname}}" name="Gruppenname" id="search">
@@ -18,8 +17,12 @@
         <input type="hidden"  value="{{$modulname}}" name="Modulname" id="search">
         <button type="submit"  value="search" name="search" id="search">Suche</button>
     </form>
+    @if(isset($msg))
+        <h6>{{$msg}}</h6>
+    @endif
     <br>
     <table border="2">
+
         @forelse($studenten as $s)
 
             <tr>
@@ -73,6 +76,8 @@
         @empty
             <th>Keine Daten vorhanden.</th>
         @endforelse
+
+
     </table>
     <br>
     <a href="/Tutor/dashboard">{{__("Zurück zur Übersicht")}}</a>
