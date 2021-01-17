@@ -21,6 +21,7 @@ class StudentAuth
 
         if (!isset($_SESSION['Student_UserId']))
         {
+            session_destroy();
             return redirect()->route('login');
         }
         return $next($request);

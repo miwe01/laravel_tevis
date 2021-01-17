@@ -21,6 +21,7 @@ class ProfAuth
 
         if (!isset($_SESSION['Prof_UserId']))
         {
+            session_destroy();
             return redirect()->route('login');
         }
         return $next($request);
