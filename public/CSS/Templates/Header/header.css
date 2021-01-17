@@ -64,10 +64,6 @@ nav{
     margin: 0;
 }
 
-.a-img{
-    position: absolute;
-    top:0;
-}
 a:visited, a:link{
     color: black;
 }
@@ -126,22 +122,10 @@ a{
 
 
 
-/* */
-
-/* Flags */
-#german{
-    margin-right: 36px;
-}
-#uk{
-
-}
-/* */
-
-
 /* mobile Users */
 @media (max-width: 610px){
     .bild > img{
-        width: 100px;
+        width: 90px;
         height: auto;
     }
     .header-li a{

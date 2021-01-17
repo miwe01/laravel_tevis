@@ -2,10 +2,18 @@
 @extends('Template.links')
 
 @section('main')
-    {{-- Paar basic Styles von Dashboard Css --}}
-    <link rel="stylesheet" href="{{URL::asset("CSS/dashboard.css")}}">
-
     <style>
+        @media (max-width: 610px) {
+            h1{
+                font-size: 25px;
+            }
+        }
+
+        #wrapper{
+            width: 100%;
+            overflow-x: auto;
+        }
+
         h1{
             text-align: center;
         }
@@ -19,6 +27,7 @@
     </style>
 
     <h1>{{__("Testat(e) vom Stundent")}} {{$Student}}</h1>
+    <div id="wrapper">
     <table><tr><th>{{__("Modulnummer")}}</th><th>{{__("Modulname")}}</th><th>Semester</th><th>{{__("Jahr")}}</th><th>Endtestat</th></tr>
         @foreach($Testatbogen as $t)
             <tr><td>{{$t->Modulnummer}}</td><td>{{$t->Modulname}}</td><td>{{$t->Semester}}</td><td>{{$t->Jahr}}</td>
@@ -32,5 +41,6 @@
             </tr>
         @endforeach
     </table>
+    </div>
 
 @endsection

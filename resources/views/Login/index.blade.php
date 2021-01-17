@@ -1,6 +1,10 @@
 <!-- Wenn Fehler auftritt -->
+
+
 @if(isset($_SESSION['fehler']))
-{{phpAlert($_SESSION['fehler'])}}
+    <div id="message-div" class="error" onclick="document.getElementById('message-div').style.display = 'none';">
+        {{$_SESSION['fehler']}}
+    </div>
 @endif
     <!DOCTYPE html>
 <html lang="en">
@@ -28,15 +32,15 @@
                        echo htmlentities($_SESSION['kennung']);?>"
                    required>
             <input type="password" name="passwort" placeholder="Passwort" required>
-            <button type="submit" class="big-buttons" name="einloggen">Einloggen</button>
-        </form>
-    </div>
 
-    <!-- Links für FAQ und Impressum -->
-    <div class="link-wrapper">
-        <a class="links-a" href="#">FAQ</a>
-        <a class="links-a" href="#">Impressum</a>
-    </div>
+            <select name="sprache" id="sprache">
+                <option value="de">Deutsch</option>
+                <option value="en">Englisch</option>
+            </select>
+            <button type="submit" class="big-buttons" name="einloggen">Login</button>
+        </form>
+</div>
+
 </div>
 </body>
 </html>

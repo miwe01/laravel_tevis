@@ -9,7 +9,7 @@
 
     <h1 class ="dashboard">Dashboard</h1>
 
-    <div class="grid1">Kurse: WiSe20/21</div>
+    <div class="grid1">{{__("Kurse")}}: WiSe20/21</div>
 
     <div class="table">
 
@@ -23,18 +23,18 @@
                 @csrf
                 <input type="hidden" value="{{$kurs->Modulnummer}}" name="Modulname" id="bearbeiten">
                 <input type="hidden" value="{{$kurs->Jahr}}" name="Jahr" id="bearbeiten">
-                <input type="submit" name="bearbeiten" id="bearbeiten" value="bearbeiten">
+                <input type="submit" name="bearbeiten" id="bearbeiten" value="{{__("bearbeiten")}}">
             </form>
         @endforeach
 
 
         <form action="/Professor/meine_kurse" method="get">
             @csrf
-            <input type="submit" value="Meine Kurse" id="meinekurse" name="meinekurse">
+            <input type="submit" value="{{__("Meine Kurse")}}" id="meinekurse" name="meinekurse">
         </form>
     </div>
 
-    <div class="grid2">Gruppen</div>
+    <div class="grid2">{{__("Gruppen")}}</div>
 
     <div class="table">
         @foreach($gruppen as $gruppe)
@@ -55,7 +55,7 @@
                     <input type="hidden" value="{{$gruppe->Modulnummer}}" name="Modulnummer" id="bearbeiten">
                     <input type="hidden" value="{{$gruppe->Jahr}}" name="Jahr" id="bearbeiten">
                     <input type="hidden" value="{{$gruppe->Gruppenummer}}" name="Gruppenummer" id="bearbeiten">
-                    <input type="submit" name="bearbeiten" id="bearbeiten" value="bearbeiten">
+                    <input type="submit" name="bearbeiten" id="bearbeiten" value="{{__("bearbeiten")}}">
                 </form>
 
             </ul>

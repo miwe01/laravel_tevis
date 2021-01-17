@@ -2,13 +2,16 @@
 
 namespace App\Http;
 
-use App\Http\Middleware\Auth;
+use App\Http\Middleware\PAAuth;
 use App\Http\Middleware\EncryptCookies;
 use App\Http\Middleware\PreventRequestsDuringMaintenance;
+use App\Http\Middleware\ProfAuth;
 use App\Http\Middleware\RedirectIfAuthenticated;
+use App\Http\Middleware\StudentAuth;
 use App\Http\Middleware\TrimStrings;
 use App\Http\Middleware\TrustHosts;
 use App\Http\Middleware\TrustProxies;
+use App\Http\Middleware\TutorAuth;
 use App\Http\Middleware\VerifyCsrfToken;
 use Fruitcake\Cors\HandleCors;
 use Illuminate\Auth\Middleware\AuthenticateWithBasicAuth;
@@ -75,7 +78,10 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $routeMiddleware = [
-        'auth' => Auth::class,
+        'PAAuth' => PAAuth::class,
+        'StudentAuth' => StudentAuth::class,
+        'TutorAuth' => TutorAuth::class,
+        'ProfAuth' => ProfAuth::class,
         'auth.basic' => AuthenticateWithBasicAuth::class,
         'cache.headers' => SetCacheHeaders::class,
         'can' => Authorize::class,

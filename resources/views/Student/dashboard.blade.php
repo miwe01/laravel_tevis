@@ -3,10 +3,10 @@
     @extends('Template.links')
     <link rel="stylesheet" href="{{URL::asset("CSS/styleHiWi.css")}}">
     <br>
-    <h1 align="center">Meine Kurse</h1>
+    <h1 align="center">{{__("Meine Kurse")}}</h1>
     <br>
     <br>
-    @foreach($student as $s)
+    @forelse($student as $s)
         <div style= "margin-bottom:20px;border:2px solid black;background-color: #d6d6d6;">
             <div><h4 align="center">  {{$s->Semester}}{{$s->Jahr}}</h4></div>
             <div class="abstand clearfix">
@@ -17,7 +17,7 @@
                     {{$s->Gruppenname}}
                 </p>
                 <p>
-                    Raum: {{$s->Raum}}
+                    {{__("Raum")}}: {{$s->Raum}}
                 </p>
                 <p>
                     Webexlink: {{$s->Webex}}
@@ -29,20 +29,18 @@
                     <input type="hidden"  value="{{$s->Gruppenname}} " name="Gruppenname" id="Testat">
                     <input type="hidden"  value="{{$s->Gruppenummer}} " name="Gruppenummer" id="Testat">
                     <input type="hidden"  value="{{$s->Jahr}} " name="Jahr" id="Testat">
-                    <button type="submit"  value="{{$s->Modulname}} " name="Modulname" id="Testat">Testat</button>
+                    <button type="submit"  value="{{$s->Modulname}} " name="Modulname" id="Testat">{{__("Testat")}}</button>
                 </form>
 
             </div>
         </div>
-    @endforeach
+    @empty
+        <li>{{__("Keine Daten vorhanden")}}.</li>
+    @endforelse
 
 
+    <a href="/Student/testatbogen">{{__("Testatbogen")}}</a>
 
-    <form action="/Student/testatbogen" method="post">
-        @csrf<button type="submit"  value={{$s->Modulnummer}} name="Testatbogen" id="Testatbogen">Testatbogen</button>
-
-
-    </form>
 
 @endsection
 

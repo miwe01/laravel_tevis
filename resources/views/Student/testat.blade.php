@@ -8,8 +8,8 @@
     <table border="2">
         <tr style="background-color: #eaeaea">
             <th>Matrikelnummer</th>
-            <th>Vorname</th>
-            <th>Nachname</th>
+            <th>{{__("Vorname")}}</th>
+            <th>{{__("Nachname")}}</th>
             @foreach($testat as $t)
                 <th>{{$t->Praktikumsname}}</th>
             @endforeach
@@ -33,9 +33,9 @@
     <br>
     <table border="2">
         <tr>
-            <th style="background-color: #eaeaea">Rolle</th>
-            <th style="background-color: #eaeaea">Betreuer</th>
-            <th style="background-color: #eaeaea">email</th>
+            <th style="background-color: #eaeaea">{{__("Rolle")}}</th>
+            <th style="background-color: #eaeaea">{{__("Betreuer")}}</th>
+            <th style="background-color: #eaeaea">{{__("Email-Adresse")}}</th>
         </tr>
         @foreach($betreuerp as $b)
             <tr>
@@ -56,5 +56,5 @@
 
     </table>
     <br>
-    <a href="/Student/dashboard">Zurück zur Übersicht</a>
+    <a href="/Student/dashboard">{{__("Zurück zur Übersicht")}}</a>
 @endsection
