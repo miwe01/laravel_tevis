@@ -4,7 +4,7 @@
 <head>
     <meta name="viewport" content="width=device-width,initial-scale=1" charset="UTF-8">
     <!-- Titel der mitgeschickt wird per Parameter -->
-    <title></title>
+    <title>{{$title}}</title>
 </head>
 <body>
 <!-- header include -->

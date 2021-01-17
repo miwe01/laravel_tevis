@@ -22,7 +22,7 @@ Route::get('/konto', [AuthenticationController::class, 'konto'])->name('konto');
 Route::post('/konto', [AuthenticationController::class, 'passwortAendern']);
 
 //Pruefungsamt routes
-Route::middleware('auth')->prefix('pruefungsamt')->group(function(){
+Route::middleware('PAAuth')->prefix('pruefungsamt')->group(function(){
     $PC = PruefungsamtController::class;
 
 //    Route::get('', [$PC, 'index'])->name('dashboard');
@@ -43,7 +43,7 @@ Route::middleware('auth')->prefix('pruefungsamt')->group(function(){
 
 
 // professor routes
-Route::middleware('auth')->prefix('Professor')->group(function() {
+Route::middleware('ProfAuth')->prefix('Professor')->group(function() {
     Route::get('/dashboard', [ProfessorController::class, 'index'])->name('Professor');
     Route::get('/meine_kurse', [ProfessorController::class, 'meineKurse']);
     Route::post('/kurs', function () {return view('/Professor/kurs', ['title'=>'kurs']);});
@@ -57,7 +57,7 @@ Route::middleware('auth')->prefix('Professor')->group(function() {
 });
 
 // student routes
-Route::middleware('auth')->prefix('Student')->group(function() {
+Route::middleware('StudentAuth')->prefix('Student')->group(function() {
 
     Route::get('/dashboard', [StudentController::class, 'index'])->name('Student/dashboard');
     Route::post('/testatbogen', [StudentController::class, 'show']);
@@ -67,7 +67,7 @@ Route::middleware('auth')->prefix('Student')->group(function() {
 });
 
 // Tutor routes
-Route::middleware('auth')->prefix('Tutor')->group(function(){
+Route::middleware('TutorAuth')->prefix('Tutor')->group(function(){
 
     Route::get('/dashboard', [TutorController::class, 'index'])->name('Tutor/dashboard');
     Route::post('/dashboard/{testatverwaltung}', [TutorController::class, 'testatverwaltung']);
