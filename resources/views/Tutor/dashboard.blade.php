@@ -10,18 +10,9 @@
         <div style= "margin-bottom:20px;border:2px solid black;background-color: #d6d6d6;">
             <div><h4 align="center">  {{$t->Modulnummer}}  {{$t->Modulname}}   {{$t->Semester}}  {{$t->Jahr}}</h4></div>
             <div class="abstand clearfix">
-                <p>
-                    {{$t->Gruppenname}}
-                </p>
-                <p>
-                    Webexlink: {{$t->Webex}}
-
-                </p>
-
-                <p>
-                    {{__("Raum")}}: {{$t->Raum}}
-                </p>
-
+                <p>{{$t->Gruppenname}}</p>
+                <p>Webexlink: {{$t->Webex}}</p>
+                <p>{{__("Raum")}}: {{$t->Raum}}</p>
 
                 <form action="/Tutor/dashboard/testatverwaltung" method="post">
                     @csrf
@@ -30,7 +21,6 @@
                     <input type="hidden"  value="{{$t->Jahr}} " name="Jahr" id="Testat">
                     <button type="submit"  value="{{$t->Modulname}} " name="Modulname" id="Testat">{{__("Testverwaltung")}}</button>
                 </form>
-
             </div>
         </div>
     @empty

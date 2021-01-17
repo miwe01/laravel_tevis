@@ -19,7 +19,7 @@
                 @forelse($testat as $t)
                     <th>{{$t->Praktikumsname}}</th>
                 @empty
-                    <th>Keine Daten vorhanden.</th>
+                    <th>{{__("Keine Daten vorhanden")}}.</th>
                 @endforelse
             </tr>
             <tr>
@@ -33,7 +33,7 @@
                         <input type="checkbox" id="scales" value="{{$t->TestatID}}" name="Testat[]" {{$t->Testat==1 ? 'checked':''}}>
                     </th>
                 @empty
-                    <th>Keine Daten vorhanden.</th>
+                    <th>{{__("Keine Daten vorhanden")}}.</th>
                 @endforelse
             </tr>
             <tr>
@@ -43,7 +43,7 @@
                         <input type="hidden" value="{{$t->TestatID}}" name="Testatcomment[]">
                     </th>
                 @empty
-                    <th>Keine Daten vorhanden.</th>
+                    <th>{{__("Keine Daten vorhanden")}}.</th>
                 @endforelse
             </tr>
             <tr>
@@ -52,26 +52,30 @@
                         <input type="number"  min="1" max="5" step="0.1" value="{{$t->Benotung}}" name="note[]">
                     </th>
                 @empty
-                    <th>Keine Daten vorhanden.</th>
+                    <th>{{__("Keine Daten vorhanden")}}.</th>
                 @endforelse
             </tr>
         </table>
+
         <input type="hidden"  value="{{$testat[0]->Matrikelnummer}}" name="Matrikelnummer" id="Testat">
         <input type="hidden"  value="{{$gruppenname}} " name="Gruppenname" id="Testat">
         <input type="hidden"  value="{{$Gruppenummer}} " name="Gruppenummer" id="Testat">
         <input type="hidden"  value="{{$testat[0]->Jahr}} " name="Jahr" id="Testat">
         <input type="hidden"  value="{{$modulname}} " name="Modulname" id="Testat">
         <br>
-        <button type="submit"  value="submit" name="submittestat" id="Testat">Submit</button>
+        <div class="link">
+            <button type="submit"  value="submit" name="submittestat" id="Testat">Submit</button>
+        </div>
     </form>
     <br>    <br>    <br>
+    <div class="link">
+        <form action="/Tutor/dashboard/testatverwaltung" method="post">
+            @csrf
+            <input type="hidden"  value="{{$gruppenname}}" name="Gruppenname" id="Testat">
+            <input type="hidden"  value="{{$Gruppenummer}} " name="Gruppenummer" id="Testat">
+            <input type="hidden"  value="{{$t->Jahr}} " name="Jahr" id="Testat">
+            <button type="submit"  value="{{$t->Modulname}} " name="Modulname" id="Testat">{{__("Testverwaltung")}}</button>
+        </form>
+    </div>
 
-    <form action="/Tutor/dashboard/testatverwaltung" method="post">
-        @csrf
-        <input type="hidden"  value="{{$gruppenname}}" name="Gruppenname" id="Testat">
-        <input type="hidden"  value="{{$Gruppenummer}} " name="Gruppenummer" id="Testat">
-        <input type="hidden"  value="{{$t->Jahr}} " name="Jahr" id="Testat">
-        <button type="submit"  value="{{$t->Modulname}} " name="Modulname" id="Testat">{{__("Testverwaltung")}}</button>
-    </form>
-    <br>
 @endsection

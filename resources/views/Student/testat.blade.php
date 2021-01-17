@@ -1,6 +1,7 @@
 @extends ('Template.layout')
 @section('main')
     @extends('Template.links')
+    <link rel="stylesheet" href="{{URL::asset("CSS/styleHiWi.css")}}">
     <br>
     <h1 align="center">  {{$testat[0]->Modulname}} {{$testat[0]->Jahr}}</h1>
     <h1 align="center"> {{$gruppenname}}</h1>
@@ -10,9 +11,11 @@
             <th>Matrikelnummer</th>
             <th>{{__("Vorname")}}</th>
             <th>{{__("Nachname")}}</th>
-            @foreach($testat as $t)
+            @forelse($testat as $t)
                 <th>{{$t->Praktikumsname}}</th>
-            @endforeach
+            @empty
+                <th>{{__("Keine Daten vorhanden")}}.</th>
+            @endforelse
         </tr>
         <tr>
             <th>
@@ -20,13 +23,15 @@
             </th>
             <th>        {{$testat[0]->Vorname}}</th>
             <th>        {{$testat[0]->Nachname}}</th>
-            @foreach($testat as $t)
+            @forelse($testat as $t)
                 @if ($t->Testat == 1)
                     <th>&#10004</th>
                 @else
-                    <th></th>
+                    <th>&#10006</th>
                 @endif
-            @endforeach
+            @empty
+                <th>{{__("Keine Daten vorhanden")}}.</th>
+            @endforelse
         </tr>
     </table>
     <br>
@@ -51,10 +56,6 @@
                 <th>{{$b->Email}}</th>
             </tr>
         @endforeach
-
-
-
     </table>
-    <br>
-    <a href="/Student/dashboard">{{__("Zurück zur Übersicht")}}</a>
+
 @endsection

@@ -7,19 +7,20 @@
     <h1 align="center">{{$gruppenname}}</h1>
     <br>
     <br>
-
-    <form action="/Tutor/dashboard/testatverwaltung" method="post">
-        @csrf
-        <input type="text"  name="term" id="term">
-        <input type="hidden"  value="{{$gruppenname}}" name="Gruppenname" id="search">
-        <input type="hidden"  value="{{$studenten[0]->Gruppenummer}}" name="Gruppenummer" id="search">
-        <input type="hidden"  value="{{$jahr}}" name="Jahr" id="search">
-        <input type="hidden"  value="{{$modulname}}" name="Modulname" id="search">
-        <button type="submit"  value="search" name="search" id="search">Suche</button>
-    </form>
-    @if(isset($msg))
-        <h6>{{$msg}}</h6>
-    @endif
+    <div class="link">
+        <form action="/Tutor/dashboard/testatverwaltung" method="post">
+            @csrf
+            <input type="text"  name="term" id="term">
+            <input type="hidden"  value="{{$gruppenname}}" name="Gruppenname" id="search">
+            <input type="hidden"  value="{{$studenten[0]->Gruppenummer}}" name="Gruppenummer" id="search">
+            <input type="hidden"  value="{{$jahr}}" name="Jahr" id="search">
+            <input type="hidden"  value="{{$modulname}}" name="Modulname" id="search">
+            <button type="submit"  value="search" name="search" id="search">Suche</button>
+        </form>
+        @if(isset($msg))
+            <h6>{{$msg}}</h6>
+        @endif
+    </div>
     <br>
     <table border="2">
 
@@ -57,7 +58,7 @@
                         @if ($t->Testat == 1)
                             <th>&#10004</th>
                         @else
-                            <th></th>
+                            <th>&#10006</th>
                         @endif
                     @endif
                 @empty
@@ -74,13 +75,14 @@
                     </form></th>
             </tr>
         @empty
-            <th>Keine Daten vorhanden.</th>
+            <th>{{__("Keine Daten vorhanden")}}.</th>
         @endforelse
 
 
     </table>
     <br>
-    <a href="/Tutor/dashboard">{{__("Zurück zur Übersicht")}}</a>
-
+    <div class="link">
+        <a href="/Tutor/dashboard">{{__("Zurück zur Übersicht")}}</a>
+    </div>
 
 @endsection
