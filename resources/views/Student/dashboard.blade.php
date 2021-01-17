@@ -38,12 +38,5 @@
     @empty
         <li>{{__("Keine Daten vorhanden")}}.</li>
     @endforelse
-
-    <div class="link">
-        <a href="/Student/testatbogen">{{__("Testatbogen")}}</a>
-    </div>
-
-
-
 @endsection
 
