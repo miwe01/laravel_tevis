@@ -16,15 +16,16 @@
     <div class="grid2">{{ $kurs->Semester }} {{ $kurs->Jahr }}</div>
 
     <div>
-        <ul>
-            <li class ="kurse"><a href="Kurs1.html">{{$kurs->Modulname}}</a> </li>
-            <br>
-            <li class="li1" >an der veranstaltung </li>
+        <ul style="text-align: center">
+            <li style="margin-left: 10cm">{{$kurs->Modulname}}</li>
             <li>
-                {{$kurs->mengeDerGruppen}} menge der gruppen</li>
-            <li>anzahl der tn</li>
+                Anzahl der Gruppen : {{$kurs->mengeDerGruppen}}</li>
+            <li>Anzahl der Teilnehmer : {{count($TNanzahl)}}</li>
 
         </ul>
     </div>
+    <br>
+    <br>
 @endforeach
+
 @endsection

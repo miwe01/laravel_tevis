@@ -20,7 +20,7 @@
         <br>
         <br>
 
-        <label style="font-weight: bolder" for="moduleNumber">Module number</label>
+        <label style="font-weight: bolder" for="moduleNumber">Modul Nummer </label>
         <input type="number" id="moduleNumber" name="moduleNumber">
         <br>
         <br>

@@ -6,9 +6,9 @@
 <link rel="stylesheet" href="{{URL::asset("CSS/styleProfessor_kurs.css")}}">
 
 <h1 class ="meinekurse">{{$gruppe[0]->Modulname}}</h1>
-<h4 style="font-family: Verdana">Beteiligter Prof:
+<h4 style="font-family: Verdana">Beteiligter Professor :
     @foreach($haupt as $prof)
-        <ul style="font-family: Verdana">{{$prof->Vorname}}</ul>
+        <ul style="font-family: Verdana">Herr {{$prof->Vorname}}</ul>
     @endforeach
 </h4>
 <form  action="/Professor/kurs/new" method="get" >
@@ -18,34 +18,19 @@
 </form>
 
 
-<div id="d" class="detailg">
-    <a href="/Professor/gruppe/betreuerHinzu">Neuer Betreuer hinfügen</a>
-    <form  action="/Professor/gruppe/betreuerHinzu" method="post" >
-        @csrf
-        <input type="hidden" value="{{$gruppe[0]->GruppenID}}" name="GruppenID" >
-        <button   type="submit">Neuer Betreuer hinzufügen</button>
-    </form>
-    <br>
-    <br>
-    <form  action="/Professor/kurs/GruppeLoeschen" method="post" >
-        @csrf
-        <input type="hidden" value="{{$gruppe[0]->GruppenID}}" name="GruppenID" >
-        <button   type="submit">Delete grouppe</button>
-    </form>
-    <br>
-    <br>
-    <a class="close" id="b1" href="/Professor/kurs" title="schließen">schließen</a>
-</div>
-
 
 
 <div class="grid-container">
     <div class="grid-item1"></div>
     <div class="grid-itemtitel">{{$gruppe[0]->Modulname}}</div>
     <div class="grid-itemtitel">Online Meeting über </div>
-
     @foreach($gruppe as $gr)
-        <div class="grid-item1"><a href="#d"><button class="button"><span>+</span></button></a></div>
+        <div class="grid-item1"><a href="#d">
+                <input type="hidden" value="{{$gr->GruppenID}}" id="GruppenID" name="GruppenID">
+                <input type="hidden" value="{{$gr->Modulnummer}}" id="GruppenID" name="Modulnummer">
+                <input type="hidden" value="{{$gr->Jahr}}" id="GruppenID" name="Jahr">
+                <button class="button" type="submit" name="GruppenID" id="GruppenID"><span>+</span></button></a></div>
+
         <div class="grid-item">
             <a href="gruppebearbeiten.php">{{$gr->Gruppenname}}</a> - Raum: {{$gr->Raum}} -  Anzahl der Teilnehmer :{{count($TNanzahl)}}
         </div>
@@ -54,8 +39,31 @@
         </div>
     @endforeach
 
-
 </div>
+<div id="d" class="detailg">
+    <br>
+    <br>
+
+    <form  action="/Professor/kurs/betreuerHinzufu" method="post" >
+        @csrf
+        <input type="text" placeholder="Kennung" name="TutorID" id="betHinzu">
+        <input type="hidden" name="GruppenID" id="betHinzu">
+        <input type="hidden" name="Modulnummer" id="betHinzu">
+        <input type="hidden" name="Jahr" id="betHinzu">
+        <button  style="transform: translate(-0.5cm,0mm)" id="betHinzu" type="submit">Neuer Betreuer hinzufügen</button>
+    </form>
+    <br>
+    <br>
+    <form  action="/Professor/kurs/GruppeLoeschen" method="post" >
+        @csrf
+        <input type="hidden" value="{{$gr->GruppenID}}" name="GruppenID" >
+        <button style="transform: translate(-0.5cm,0.5cm)"   type="submit">Gruppe Loeschen</button>
+    </form>
+    <br>
+    <br>
+    <a class="close" id="b1" href="/Professor/kurs" title="schließen">schließen</a>
+</div>
+
 <form  action="/Professor/kurs/new/group" method="get" >
     @csrf
     <input type="hidden" value="{{$gruppe[0]->Modulnummer}}" name="GruppenID" >
@@ -65,7 +73,7 @@
     <form  action="/Professor/kurs/KursLoeschen" method="post" >
         @csrf
         <input type="hidden" value="{{$gruppe[0]->Modulnummer}}" name="GruppenID" >
-        <button class="button1"  type="submit">Delete kurs</button>
+        <button class="button1"  type="submit">Kurs Loeschen</button>
     </form>
 
 

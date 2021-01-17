@@ -419,6 +419,51 @@ class ProfessorController extends Controller
 
         return view('Professor.testat',['testat'=>$testat, 'gruppenname' => $request->Gruppenname,   'modulname' => $request->Modulname,'title'=>'testat']);
     }
+
+
+    public function betreuerHinzufu(Request $request){
+        $ex=db::table('tutor')
+            ->select('Kennung')
+            ->where('Kennung','=',$request->TutorID)
+            ->get();
+
+        if(sizeof($ex)>0) {
+
+            $ingruppe = db::table('tutorbetreutgruppen')
+                ->where('GruppenID', '=', $request->GruppenID)
+                ->where('TutorID', '=', $request->TutorID)
+                ->get();
+
+            if (sizeof($ingruppe)==0) {
+                DB::table('tutorbetreutgruppen')
+                    ->insert([
+                        'GruppenID' => $request->GruppenID,
+                        'TutorID' => $request->TutorID
+                    ]);
+                return redirect()->route('kurs',['Gruppenummer'=>$request->GruppenID, 'Modulnummer'=>$request->Modulnummer,
+                    'Jahr' => $request-> Jahr]);
+            } else {
+                return redirect()->route('kurs',['Gruppenummer'=>$request->GruppenID, 'Modulnummer'=>$request->Modulnummer,
+                    'Jahr' => $request-> Jahr]);
+            }
+        }else{
+            return redirect()->route('kurs',['Gruppenummer'=>$request->GruppenID, 'Modulnummer'=>$request->Modulnummer,
+                'Jahr' => $request-> Jahr]);
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
     public function newGroup(Request $request){
 
         return view('Professor.new_group');

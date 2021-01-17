@@ -52,6 +52,7 @@ Route::middleware('auth')->prefix('Professor')->group(function() {
     Route::post('/kurs/new/group', [ProfessorController::class, 'createGroup']);
     Route::get('/kurs/new', [ProfessorController::class, 'newCourse']);
     Route::post('/kurs/new', [ProfessorController::class, 'createCourse']);
+    Route::post('/kurs/betreuerHinzufu', [ProfessorController::class, 'betreuerHinzufu']);
     Route::post('/kurs/GruppeLoeschen', [ProfessorController::class, 'gruppeLoeschen']);
     Route::post('/kurs/KursLoeschen', [ProfessorController::class, 'KursLoeschen']);
     Route::post('/gruppe/tutorloeschen', [ProfessorController::class, 'tutorLoeschen']);
