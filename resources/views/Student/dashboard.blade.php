@@ -9,21 +9,12 @@
 
     @forelse($student as $s)
         <div style= "margin-bottom:20px;border:2px solid black;background-color: #d6d6d6;">
-            <div><h4>  {{$s->Semester}}{{$s->Jahr}}</h4></div>
+            <div><h4>{{$s->Modulnummer}} {{$s->Modulname}}  {{$s->Semester}}{{$s->Jahr}}</h4></div>
             <div class="abstand clearfix">
-                <p>
-                    {{$s->Modulnummer}}  {{$s->Modulname}}
-                </p>
-                <p>
-                    {{$s->Gruppenname}}
-                </p>
-                <p>
-                    {{__("Raum")}}: {{$s->Raum}}
-                </p>
-                <p>
-                    Webexlink: {{$s->Webex}}
 
-                </p>
+                <p>{{$s->Gruppenname}}</p>
+                <p>{{__("Raum")}}: {{$s->Raum}}</p>
+                <p>Webexlink: {{$s->Webex}}</p>
 
                 <form action="/Student/dashboard/{{$s->Modulname}}_{{$s->Jahr}}" method="post">
                     @csrf

@@ -11,8 +11,8 @@
             <div><h4 align="center">  {{$t->Modulnummer}}  {{$t->Modulname}}   {{$t->Semester}}  {{$t->Jahr}}</h4></div>
             <div class="abstand clearfix">
                 <p>{{$t->Gruppenname}}</p>
-                <p>Webexlink: {{$t->Webex}}</p>
                 <p>{{__("Raum")}}: {{$t->Raum}}</p>
+                <p>Webexlink: {{$t->Webex}}</p>
 
                 <form action="/Tutor/dashboard/testatverwaltung" method="post">
                     @csrf
@@ -21,10 +21,11 @@
                     <input type="hidden"  value="{{$t->Jahr}} " name="Jahr" id="Testat">
                     <button type="submit"  value="{{$t->Modulname}} " name="Modulname" id="Testat">{{__("Testverwaltung")}}</button>
                 </form>
+
             </div>
         </div>
     @empty
-        <li>Keine Daten vorhanden.</li>
+        <li>{{__("Keine Daten vorhanden")}}.</li>
     @endforelse
 
 
