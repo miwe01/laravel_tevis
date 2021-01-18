@@ -115,6 +115,9 @@ class AuthenticationController extends Controller
 
 
     public function konto(Request $request){
+        if (isset($_SESSION['language']))
+            \App::setLocale($_SESSION['language']);
+
         if ((isset($_SESSION['HiWi_UserId'])))
         {
             return view('Login.konto',

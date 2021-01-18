@@ -380,7 +380,7 @@ input[type="file"] {
         margin: 0 auto;
     }
     #col-1-fileUpload{
-        width: 55%;
+        width: 65%;
     }
 
     #col-1-last-added {
@@ -389,6 +389,10 @@ input[type="file"] {
         max-height: 226px;
         width: 85%;
     }
+    input[type="file"]{
+    width: 100%;
+    }
+
     .last-added-li{
         text-align: center;
         list-style-type: none;
