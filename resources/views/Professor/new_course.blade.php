@@ -5,7 +5,7 @@
 
     <link rel="stylesheet" href="{{URL::asset("CSS/styleProfessor_gruppe.css")}}">
 
-  <h1>Kurs Anlegen</h1>
+  <h1>{{__("Neuen Kurs anlegen")}}</h1>
 
     <form action="/Professor/kurs/new" method="post">
         @csrf
@@ -15,16 +15,16 @@
         <input  class ="style1 " n type="text" id="coursName" name="coursName" >
         <br>
         <br>
-        <label style="font-weight: bolder; font-family: Verdana,serif;color: darkslategrey;" for="Raum">Raum</label> <br>
+        <label style="font-weight: bolder; font-family: Verdana,serif;color: darkslategrey;" for="Raum">{{__("Raum")}}</label> <br>
         <input class ="style1 " name="Raum" id="Raum" type="number" value=""><br>
         <br>
         <br>
 
-        <label style="font-weight: bolder" for="moduleNumber">Modul Nummer </label>
+        <label style="font-weight: bolder" for="moduleNumber">{{__("Modulnummer")}}</label>
         <input type="number" id="moduleNumber" name="moduleNumber">
         <br>
         <br>
-        <label style="font-weight: bolder" for="year">Jahr</label>
+        <label style="font-weight: bolder" for="year">{{__("Jahr")}}</label>
         <input type="number" id="year" name="year">
         <br>
         <br>
@@ -32,7 +32,7 @@
         <input type="text" id="semester" name="semester">
         <br>
         <br>
-        <button style="font-weight: bolder ;background-color: cadetblue" type="submit">Kurs Hinzufügen </button>
+        <button style="font-weight: bolder ;background-color: cadetblue" type="submit">{{__("Kurs hinzufügen")}}</button>
 
     </form>
 @endsection

@@ -227,20 +227,14 @@ class ProfessorController extends Controller
 
 
     public function meineKurse(Request $request){
-//        $kurse = DB::table('professor')
-//            ->leftJoin('benutzer', 'benutzer.kennung', '=', 'professor.kennung')
-//            ->leftJoin('benutzerhatmodul', 'benutzerhatmodul.BenutzerID', '=', 'benutzer.kennung')
-//            ->leftJoin('modul', 'modul.Modulnummer', '=', 'benutzerhatmodul.ModulID')
-//            ->whereColumn( 'benutzerhatmodul.Jahr' , '=' ,'modul.Jahr')
-//            ->where('professor.kennung',$_SESSION['Prof_UserId'])
-//            ->orderBy('modul.Modulname')
-//            ->groupBy('modul.Jahr')
-//            ->get();
-        $kurse = DB::table('benutzerhatmodul')
-            ->where('BenutzerID', '=', $_SESSION['Prof_UserId'])
-            ->leftJoin('modul','modul.Modulnummer', '=', 'benutzerhatmodul.ModulID')
-            ->groupBy(['modul.Jahr'])
+
+        $kurse = DB::table('professorbetreutgruppen')
+            ->where('ProfessorID', '=', $_SESSION['Prof_UserId'])
+            ->leftJoin('gruppe','gruppe.Gruppenummer', '=', 'professorbetreutgruppen.GruppenID')
+            ->leftJoin('modul','modul.Modulnummer', '=', 'gruppe.Modulnummer')
+            ->whereColumn('gruppe.Jahr', '=' ,'modul.Jahr')
             ->get();
+
 
         $gruppen = DB::table('professor')
             ->leftJoin('benutzer', 'benutzer.kennung', '=', 'professor.kennung')
@@ -255,34 +249,7 @@ class ProfessorController extends Controller
             ->orderBy('gruppe.Gruppenummer')
             ->get();
 
-        for ($i = 0; $i < count($kurse); $i++) {
-            $kursModuleNummer =  $kurse[$i]->Modulnummer;
-            $kurse[$i]->mengeDerGruppen = 0;
-
-
-            for ($x = 0; $x < count($gruppen); $x++) {
-                $TNanzahl = DB::table('gruppe')
-                    ->where('Gruppenummer','=', $gruppen[$x]->GruppenID)
-                    ->where('Jahr','=', $kurse[$i]->Jahr)
-                    ->leftJoinWhere('studenteningruppen','studenteningruppen.GruppenID', '=', $gruppen[$x]->GruppenID)
-                    ->select('studenteningruppen.Matrikelnummer')
-                    ->distinct()
-                    ->count();
-                echo $TNanzahl;echo'-';
-                $kurse[$i]->TNanzahl = $TNanzahl;
-
-                $gruppenNummer = $gruppen[$x]->Modulnummer;
-
-                if ($kursModuleNummer == $gruppenNummer and $kurse[$i]->Jahr == $gruppen[$x]->Jahr) {
-                    $kurse[$i]->mengeDerGruppen++;
-                }
-            }
-        }
-
-
-
-
-        return view('Professor.meine_kurse', ['kurse' => $kurse, 'title' => 'Meine Kurse', 'gruppen' => $gruppen,'TNanzahl'=>$TNanzahl]);
+        return view('Professor.meine_kurse', ['kurse' => $kurse, 'title' => 'Meine Kurse', 'gruppen' => $gruppen]);
     }
 
 
