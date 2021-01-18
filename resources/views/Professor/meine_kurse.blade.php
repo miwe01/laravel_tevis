@@ -12,20 +12,7 @@
         <button class="b2" type="submit" id="kursanlegen"> neuen kurse anlegen </button>
     </form>
     @foreach($kurse as $kurs)
-
-        <div class="grid2">{{ $kurs->Semester }} {{ $kurs->Jahr }}</div>
-
-        <div>
-            <ul style="text-align: center">
-                <li style="margin-left: 10cm">{{$kurs->Modulname}}</li>
-                <li>
-                    Anzahl der betreuten Gruppen  : {{$kurs->TNanzahl}}</li>
-                <li>Anzahl der beutreuten Teilnehmer : {{$kurs->mengeDerGruppen}}</li>
-
-            </ul>
-        </div>
-        <br>
-        <br>
+        <div class="grid2">{{$kurs->Modulname}} {{$kurs->Gruppenname}} {{ $kurs->Semester }} {{ $kurs->Jahr }}</div>
     @endforeach
 
 @endsection
