@@ -23,6 +23,7 @@ class PAAuth
 
         if (!isset($_SESSION['PA_UserId']))
         {
+            session_destroy();
             return redirect()->route('login');
         }
         return $next($request);

@@ -58,21 +58,18 @@ Route::middleware('ProfAuth')->prefix('Professor')->group(function() {
 
 // student routes
 Route::middleware('StudentAuth')->prefix('Student')->group(function() {
-
     Route::get('/dashboard', [StudentController::class, 'index'])->name('Student/dashboard');
-    Route::post('/testatbogen', [StudentController::class, 'show']);
+    Route::get('/testatbogen', [StudentController::class, 'show'])->name('Student/testatbogen');
     Route::post('/dashboard', [StudentController::class, 'index']);
     Route::post('/dashboard/{testat}', [StudentController::class, 'testat']);
-
+    Route::post('/testatbogen', [StudentController::class, 'show']);
 });
 
 // Tutor routes
 Route::middleware('TutorAuth')->prefix('Tutor')->group(function(){
-
     Route::get('/dashboard', [TutorController::class, 'index'])->name('Tutor/dashboard');
-    Route::post('/dashboard/{testatverwaltung}', [TutorController::class, 'testatverwaltung']);
-    Route::get('/dashboard/{testatverwaltung}', [TutorController::class, 'testatverwaltung'])->name('Tutor/testatverwaltung');
-    Route::post('/dashboard/{testatverwaltung}/{testat}', [TutorController::class, 'testat'])->name('Tutor/testat');
-
+    Route::post('/dashboard/testatverwaltung', [TutorController::class, 'testatverwaltung']);
+    Route::get('/dashboard/testatverwaltung', [TutorController::class, 'testatverwaltung'])->name('Tutor/testatverwaltung');
+    Route::any('/dashboard/testatverwaltung/testat', [TutorController::class, 'testat'])->name('Tutor/testat');
 });
 

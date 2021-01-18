@@ -46,6 +46,12 @@ class TutorController extends Controller
     public function testatverwaltung(Request $request)
     {
 
+        $studenten = DB::table('student')
+            ->leftJoin('benutzer', 'benutzer.kennung', '=', 'student.kennung')
+            ->leftJoin('studenteningruppen', 'studenteningruppen.Matrikelnummer', '=', 'student.Matrikelnummer')
+            ->join('gruppe', 'gruppe.gruppenummer', '=', 'studenteningruppen.GruppenID')
+            ->where('gruppe.gruppenummer', $request->Gruppenummer)
+            ->get();
         $msg = null;
         if(isset($request->search))
         {
@@ -60,16 +66,15 @@ class TutorController extends Controller
                 })
                 ->get();
         }
-        if($studenten->isEmpty())
-        {
+
+        if ($studenten->isEmpty()) {
             $studenten = DB::table('student')
                 ->leftJoin('benutzer', 'benutzer.kennung', '=', 'student.kennung')
                 ->leftJoin('studenteningruppen', 'studenteningruppen.Matrikelnummer', '=', 'student.Matrikelnummer')
                 ->join('gruppe', 'gruppe.gruppenummer', '=', 'studenteningruppen.GruppenID')
                 ->where('gruppe.gruppenummer', $request->Gruppenummer)
                 ->get();
-            if(isset($request->search))
-            {
+            if (isset($request->search)) {
                 $msg = "Gesuchter Student ist nicht vorhanden";
             }
         }

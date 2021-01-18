@@ -2,6 +2,7 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\Auth;
 use App\Http\Middleware\PAAuth;
 use App\Http\Middleware\EncryptCookies;
 use App\Http\Middleware\PreventRequestsDuringMaintenance;
@@ -78,6 +79,7 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $routeMiddleware = [
+        'auth' => Auth::class,
         'PAAuth' => PAAuth::class,
         'StudentAuth' => StudentAuth::class,
         'TutorAuth' => TutorAuth::class,

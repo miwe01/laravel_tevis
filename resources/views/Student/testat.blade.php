@@ -1,34 +1,39 @@
 @extends ('Template.layout')
 @section('main')
     @extends('Template.links')
+    <link rel="stylesheet" href="{{URL::asset("CSS/styleHiWi.css")}}">
     <br>
-    <h1 align="center">  {{$testat[0]->Modulname}} {{$testat[0]->Jahr}}</h1>
-    <h1 align="center"> {{$gruppenname}}</h1>
+    <h1>  {{$testat[0]->Modulname}} {{$testat[0]->Jahr}}</h1>
+    <h1> {{$gruppenname}}</h1>
     <br>
-    <table border="2">
-        <tr style="background-color: #eaeaea">
-            <th>Matrikelnummer</th>
-            <th>{{__("Vorname")}}</th>
-            <th>{{__("Nachname")}}</th>
-            @foreach($testat as $t)
-                <th>{{$t->Praktikumsname}}</th>
-            @endforeach
-        </tr>
-        <tr>
-            <th>
-                {{$testat[0]->Matrikelnummer}}
-            </th>
-            <th>        {{$testat[0]->Vorname}}</th>
-            <th>        {{$testat[0]->Nachname}}</th>
-            @foreach($testat as $t)
-                @if ($t->Testat == 1)
-                    <th>&#10004</th>
-                @else
-                    <th></th>
-                @endif
-            @endforeach
-        </tr>
-    </table>
+    <div style="overflow-x:auto;">
+        <table border="2">
+            <tr style="background-color: #eaeaea">
+                <th>Matrikelnummer</th>
+                <th>{{__("Vorname")}}</th>
+                <th>{{__("Nachname")}}</th>
+                @forelse($testat as $t)
+                    <th>{{$t->Praktikumsname}}</th>
+                @empty
+                    <th>{{__("Keine Daten vorhanden")}}.</th>
+                @endforelse
+            </tr>
+            <tr>
+                <th>{{$testat[0]->Matrikelnummer}}</th>
+                <th>{{$testat[0]->Vorname}}</th>
+                <th>{{$testat[0]->Nachname}}</th>
+                @forelse($testat as $t)
+                    @if ($t->Testat == 1)
+                        <th>&#10004</th>
+                    @else
+                        <th>&#10006</th>
+                    @endif
+                @empty
+                    <th>{{__("Keine Daten vorhanden")}}.</th>
+                @endforelse
+            </tr>
+        </table>
+    </div>
     <br>
     <br>
     <table border="2">
@@ -51,10 +56,6 @@
                 <th>{{$b->Email}}</th>
             </tr>
         @endforeach
-
-
-
     </table>
-    <br>
-    <a href="/Student/dashboard">{{__("Zurück zur Übersicht")}}</a>
+
 @endsection

@@ -27,7 +27,7 @@ class TutorAuth
         {
             return $next($request);
         }
-
+        session_destroy();
         return redirect()->route('login');
 
     }

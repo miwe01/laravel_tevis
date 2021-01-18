@@ -3,26 +3,18 @@
     @extends('Template.links')
     <link rel="stylesheet" href="{{URL::asset("CSS/styleHiWi.css")}}">
     <br>
-    <h1 align="center">{{__("Meine Kurse")}}</h1>
+    <h1>{{__("Meine Kurse")}}</h1>
     <br>
     <br>
+
     @forelse($student as $s)
         <div style= "margin-bottom:20px;border:2px solid black;background-color: #d6d6d6;">
-            <div><h4 align="center">  {{$s->Semester}}{{$s->Jahr}}</h4></div>
+            <div><h4>{{$s->Modulnummer}} {{$s->Modulname}}  {{$s->Semester}}{{$s->Jahr}}</h4></div>
             <div class="abstand clearfix">
-                <p>
-                    {{$s->Modulnummer}}  {{$s->Modulname}}
-                </p>
-                <p>
-                    {{$s->Gruppenname}}
-                </p>
-                <p>
-                    {{__("Raum")}}: {{$s->Raum}}
-                </p>
-                <p>
-                    Webexlink: {{$s->Webex}}
 
-                </p>
+                <p>{{$s->Gruppenname}}</p>
+                <p>{{__("Raum")}}: {{$s->Raum}}</p>
+                <p>Webexlink: {{$s->Webex}}</p>
 
                 <form action="/Student/dashboard/{{$s->Modulname}}_{{$s->Jahr}}" method="post">
                     @csrf
@@ -37,10 +29,5 @@
     @empty
         <li>{{__("Keine Daten vorhanden")}}.</li>
     @endforelse
-
-
-    <a href="/Student/testatbogen">{{__("Testatbogen")}}</a>
-
-
 @endsection
 
