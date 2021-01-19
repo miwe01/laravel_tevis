@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="{{URL::asset("CSS/styleProfessor_kurs.css")}}">
 
     <h1 class ="meinekurse">{{$gruppe[0]->Modulname}}</h1>
-    <h4 style="font-family: Verdana">Beteiligter Professor :
+    <h4 style="font-family: Verdana">{{__("Beteiligter Professor")}}:
         @foreach($haupt as $prof)
             <ul style="font-family: Verdana">Herr {{$prof->Vorname}}</ul>
         @endforeach
@@ -14,7 +14,7 @@
     <form  action="/Professor/kurs/new" method="get" >
         @csrf
         <input type="hidden" value="{{$gruppe[0]->Modulnummer}}" name="GruppenID" id="kursanlegen">
-        <button class="b2" type="submit" id="kursanlegen"> neuen kurse anlegen </button>
+        <button class="b2" type="submit" id="kursanlegen">{{__("Neuen Kurs anlegen")}}</button>
     </form>
 
 
@@ -23,7 +23,7 @@
     <div class="grid-container">
         <div class="grid-item1"></div>
         <div class="grid-itemtitel">{{$gruppe[0]->Modulname}}</div>
-        <div class="grid-itemtitel">Online Meeting über </div>
+        <div class="grid-itemtitel">{{__("Online Meeting über")}} </div>
         @foreach($gruppe as $gr)
             <div class="grid-item1"><a href="#d">
                     <input type="hidden" value="{{$gr->GruppenID}}" id="GruppenID" name="GruppenID">
@@ -32,7 +32,7 @@
                     <button class="button" type="submit" name="GruppenID" id="GruppenID"><span>+</span></button></a></div>
 
             <div class="grid-item">
-                <a href="gruppebearbeiten.php">{{$gr->Gruppenname}}</a> - Raum: {{$gr->Raum}} -  Anzahl der Teilnehmer : {{$gr->mengeDerGruppen}}
+                <a href="gruppebearbeiten.php">{{$gr->Gruppenname}}</a> - {{__("Raum")}}: {{$gr->Raum}} -  {{__("Anzahl der Teilnehmer")}}: {{$gr->mengeDerGruppen}}
             </div>
             <div class="grid-item1">
                 <a href="link">{{$gr->Webex}}</a>
@@ -50,30 +50,30 @@
             <input type="hidden" name="GruppenID" id="betHinzu">
             <input type="hidden" name="Modulnummer" id="betHinzu">
             <input type="hidden" name="Jahr" id="betHinzu">
-            <button  style="transform: translate(-0.5cm,0mm)" id="betHinzu" type="submit">Neuer Betreuer hinzufügen</button>
+            <button  style="transform: translate(-0.5cm,0mm)" id="betHinzu" type="submit">{{__("Neuer Betreuer hinzufügen")}}</button>
         </form>
         <br>
         <br>
         <form  action="/Professor/kurs/GruppeLoeschen" method="post" >
             @csrf
             <input type="hidden" value="{{$gr->GruppenID}}" name="GruppenID" >
-            <button style="transform: translate(-0.5cm,0.5cm)"   type="submit">Gruppe Loeschen</button>
+            <button style="transform: translate(-0.5cm,0.5cm)"   type="submit">{{__("Gruppe löschen")}}</button>
         </form>
         <br>
         <br>
-        <a class="close" id="b1" href="/Professor/kurs" title="schließen">schließen</a>
+        <a class="close" id="b1" href="/Professor/kurs" title="schließen">{{__("Schließen")}}</a>
     </div>
 
     <form  action="/Professor/kurs/new/group" method="get" >
         @csrf
         <input type="hidden" value="{{$gruppe[0]->Modulnummer}}" name="GruppenID" >
-        <button  class="button3" type="submit" >Gruppe hinzufügen</button>
+        <button  class="button3" type="submit" >{{__("Gruppe hinzufügen")}}</button>
     </form>
     <br>
     <form  action="/Professor/kurs/KursLoeschen" method="post" >
         @csrf
         <input type="hidden" value="{{$gruppe[0]->Modulnummer}}" name="GruppenID" >
-        <button class="button1"  type="submit">Kurs Loeschen</button>
+        <button class="button1"  type="submit">{{__("Kurs löschen)}}</button>
     </form>
 
 

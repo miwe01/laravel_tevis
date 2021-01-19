@@ -17,7 +17,7 @@
                 @forelse($testat as $t)
                     <th>{{$t->Praktikumsname}}</th>
                 @empty
-                    <th>Keine Daten vorhanden.</th>
+                    <th>{{__("Keine Daten vorhanden")}}.</th>
                 @endforelse
             </tr>
             <tr>
@@ -29,7 +29,7 @@
                         <input type="checkbox" id="scales" value="{{$t->TestatID}}" name="Testat[]" {{$t->Testat==1 ? 'checked':''}}>
                     </th>
                 @empty
-                    <th>Keine Daten vorhanden.</th>
+                    <th>{{__("Keine Daten vorhanden")}}.</th>
                 @endforelse
             </tr>
             <tr>
@@ -39,7 +39,7 @@
                         <input type="hidden" value="{{$t->TestatID}}" name="Testatcomment[]">
                     </th>
                 @empty
-                    <th>Keine Daten vorhanden.</th>
+                    <th>{{__("Keine Daten vorhanden")}}.</th>
                 @endforelse
             </tr>
             <tr>
@@ -48,7 +48,7 @@
                         <input type="number"  min="1" max="5" step="0.1" value="{{$t->Benotung}}" name="note[]">
                     </th>
                 @empty
-                    <th>Keine Daten vorhanden.</th>
+                    <th>{{__("Keine Daten vorhanden")}}n.</th>
                 @endforelse
             </tr>
         </table>

@@ -33,7 +33,7 @@
                             <input type="hidden" value="{{$student->Matrikelnummer}}" name="Matrikelnummer" id="sloeschen">
                             <input type="hidden" value="{{$modul->Modulnummer}}" name="Modulnummer" id="sloeschen">
                             <input type="hidden" value="{{$modul->Jahr}}" name="Jahr" id="sloeschen">
-                            <input type="submit" value="Löschen" name="loeschen" id="sloeschen">
+                            <input type="submit" value="{{__("Löschen")}}" name="loeschen" id="sloeschen">
                         </form>
                         <form action="/Professor/gruppe/studentVerschieben" method="post">
                             @csrf
@@ -46,7 +46,7 @@
                             <input type="hidden" value="{{$student->Matrikelnummer}}" name="Matrikelnummer" id="verschieben">
                             <input type="hidden" value="{{$modul->Modulnummer}}" name="Modulnummer" id="verschieben">
                             <input type="hidden" value="{{$modul->Jahr}}" name="Jahr" id="verschieben">
-                            <input type="submit" value="Verschieben" name="verschieben" id="verschieben">
+                            <input type="submit" value="{{__("Verschieben")}}" name="verschieben" id="verschieben">
                         </form>
                         <form action="/Professor/gruppe/testat" method="post">
                             @csrf
@@ -54,7 +54,7 @@
                             <input type="hidden"  value="{{$gruppeninfo->Gruppenname}} " name="Gruppenname" id="Testat">
                             <input type="hidden"  value="{{$gruppeninfo->Gruppenummer}} " name="Gruppenummer" id="Testat">
                             <input type="hidden"  value="{{$modul->Jahr}} " name="Jahr" id="Testat">
-                            <button type="submit"  value="{{$modul->Modulname}} " name="Modulname" id="Testat">Testat</button>
+                            <button type="submit"  value="{{$modul->Modulname}} " name="Modulname" id="Testat">{{__("Testat")}}</button>
                         </form>
                     </td>
                 </tr>
@@ -71,7 +71,7 @@
             <input type="hidden" value="{{$gruppeninfo->Gruppenummer}}" name="GruppenID" id="hinzu">
             <input type="hidden" value="{{$modul->Modulnummer}}" name="Modulnummer" id="hinzu">
             <input type="hidden" value="{{$modul->Jahr}}" name="Jahr" id="hinzu">
-            <input type="submit" value="Student hinzufügen" id="hinzu">
+            <input type="submit" value="{{__("Student hinzufügen")}}" id="hinzu">
         </form>
     </div>
 
@@ -99,7 +99,7 @@
                             <input type="hidden" value="{{$tutor->Kennung}}" name="Kennung" id="loeschen">
                             <input type="hidden" value="{{$modul->Modulnummer}}" name="Modulnummer" id="loeschen">
                             <input type="hidden" value="{{$modul->Jahr}}" name="Jahr" id="loeschen">
-                            <input type="submit" name="loeschen" value="Löschen" id="loeschen">
+                            <input type="submit" name="loeschen" value="{{__("Löschen")}}" id="loeschen">
                         </form>
 
                         <form action="/Professor/gruppe/Hauptbetreuer" method="post">
@@ -108,7 +108,7 @@
                             <input type="hidden" value="{{$tutor->Kennung}}" name="Kennung" id="haupt">
                             <input type="hidden" value="{{$modul->Modulnummer}}" name="Modulnummer" id="haupt">
                             <input type="hidden" value="{{$modul->Jahr}}" name="Jahr" id="haupt">
-                            <input type="submit" value="Hauptbetreuer" name="Haupt" id="haupt">
+                            <input type="submit" value="{{__("Hauptbetreuer")}}" name="Haupt" id="haupt">
                         </form>
 
                     </td>
@@ -122,7 +122,7 @@
             <input type="hidden" value="{{$gruppeninfo->Gruppenummer}}" name="Gruppennummer" id="betHinzu">
             <input type="hidden" value="{{$modul->Modulnummer}}" name="Modulnummer" id="betHinzu">
             <input type="hidden" value="{{$modul->Jahr}}" name="Jahr" id="betHinzu">
-            <input type="submit" value="Betreuer hinzufügen" name="betHinzu" id="betHinzu">
+            <input type="submit" value="{{__("Betreuer hinzufügen")}}" name="betHinzu" id="betHinzu">
         </form>
     </div>
 @endsection
