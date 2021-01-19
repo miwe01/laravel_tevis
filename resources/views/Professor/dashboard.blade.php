@@ -21,14 +21,8 @@
             <div><h4 align="center">  {{$kurs->Modulnummer}}  {{$kurs->Modulname}}   {{$kurs->Semester}}  {{$kurs->Jahr}}</h4></div>
             <div class="abstand clearfix">
                 <p>{{__("Rolle")}}: {{$kurs->Rolle}}</p>
-                <p>{{__("Raum")}}: {{$kurs->Raum}}</p>  
-                
-                 <form action="/Professor/kurs" method="get">
-                    @csrf
-                    <input type="hidden" value="{{$kurs->Modulnummer}}" name="Modulname" id="bearbeiten">
-                    <input type="hidden" value="{{$kurs->Jahr}}" name="Jahr" id="bearbeiten">
-                    <input type="submit" name="bearbeiten" id="bearbeiten" value="{{__("bearbeiten")}}">
-                </form>
+                <p>{{__("Raum")}}: {{$kurs->Raum}}</p>                  
+            
                 <br>
                 <details>
                     <summary>{{__("Gruppen")}}</summary>
