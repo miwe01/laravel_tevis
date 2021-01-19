@@ -49,7 +49,6 @@ Route::middleware('ProfAuth')->prefix('Professor')->group(function() {
     Route::post('/meine_kurse/createCourse', [ProfessorController::class, 'createCourse']);
     Route::post('/meine_kurse/kursverwaltung', [ProfessorController::class, 'kursverwaltung'])->name('kursverwaltung');
     Route::post('/meine_kurse/kursverwaltung/gruppe_erstellen', [ProfessorController::class, 'Gruppe_erstellen']);
-    Route::post('/meine_kurse/kursverwaltung/gruppe_erstellen', [ProfessorController::class, 'Neue_Gruppe']);
 
 
 
