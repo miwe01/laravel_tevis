@@ -3,7 +3,7 @@
 
 @section('main')
 
-    <link rel="stylesheet" href="{{URL::asset("CSS/styleHiWi.css")}}">
+    <link rel="stylesheet" href="{{URL::asset("CSS/styleProfessor.css")}}">
     <br>
     <h1 align="center">{{__("Meine Kurse")}}</h1>
     <br>
