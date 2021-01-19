@@ -118,12 +118,12 @@
     h4{
         text-align: center;
     }
-
 }
 .link { text-align: center;
 }
-.area {
-    text-align: center;
+label{
+    float: left;
+    width: 10em;
+    margin-right: 1em;
 }
-
 
