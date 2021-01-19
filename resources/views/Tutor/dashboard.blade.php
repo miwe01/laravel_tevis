@@ -12,7 +12,7 @@
             <div class="abstand clearfix">
                 <p>{{$t->Gruppenname}}</p>
                 <p>{{__("Raum")}}: {{$t->Raum}}</p>
-                <p>Webexlink: {{$t->Webex}}</p>
+                <p>{{__("Webexlink")}}: <a target="_blank" {{__("Webex")}}: href="{{$t->Webex}}">{{$t->Webex}}</a></p>
 
                 <form action="/Tutor/dashboard/testatverwaltung" method="post">
                     @csrf
