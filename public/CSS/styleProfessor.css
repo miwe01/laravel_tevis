@@ -1,0 +1,127 @@
+* body {
+    font-family : Arial, Verdana;
+    color : #000000;
+    background-color : #ffffff;
+}
+
+
+
+.test {float:left;}
+.test2 {float:right;}
+
+.abstand{
+    margin-bottom: 10px;
+    margin-left:5px;
+    margin-right:5px;
+    border:2px solid black;
+    background-color: #eaeaea;;
+
+}
+.clearfix {
+    overflow: auto;
+}
+
+.abstandtabelle{
+    margin-bottom:10px;
+    margin-left: 5px;
+    margin-right:5px;
+}
+.table{
+    width: auto;
+
+}
+
+@media(max-width: 610px){
+    h1{
+        font-size: 15px;
+        text-align: center;
+    }
+    table{
+        margin:auto;
+        width: auto;
+        border-collapse: collapse;
+    }
+    h4{
+        text-align: center;
+        font-size:12px;
+    }
+    p{
+        font-size:10px;
+    }
+    th{
+        font-size:10px;
+    }
+    a{
+        font-size:10px;
+        text-align: center;
+    }
+    .testatbogen {
+        font-size:10px;
+        text-align: center;
+    }
+}
+
+@media(max-width:1030px)  and (min-width: 610px) {
+    h1{
+        font-size: 17px;
+        text-align: center;
+    }
+    table{
+        margin:auto;
+        width: auto;
+        border-collapse: collapse;
+    }
+    h4{
+        font-size:14px;
+        text-align: center;
+    }
+    p{
+        font-size:12px;
+    }
+    th{
+        font-size:12px;
+    }
+    a{
+        margin:auto;
+        font-size:12px;
+        text-align: center;
+    }
+    body{
+        margin:auto;
+    }
+    .testatbogen {
+        font-size:12px;
+        text-align: center;
+    }
+}
+
+@media(min-width: 1030px) {
+    h1{
+        text-align: center;
+    }
+    header{
+        margin:auto;
+        max-width: 1100px;
+    }
+    body{
+        margin: auto;
+        max-width: 1100px;
+    }
+    table{
+        margin:auto;
+        width: auto;
+        border-collapse: collapse;
+    }
+    a{
+        text-align: center;
+    }
+    h4{
+        text-align: center;
+    }
+
+}
+.link { text-align: center;
+}
+
+
+
