@@ -21,8 +21,7 @@
             <div><h4 align="center">  {{$kurs->Modulnummer}}  {{$kurs->Modulname}}   {{$kurs->Semester}}  {{$kurs->Jahr}}</h4></div>
             <div class="abstand clearfix">
                 <p>{{__("Rolle")}}: {{$kurs->Rolle}}</p>
-                <p>{{__("Raum")}}: {{$kurs->Raum}}</p>
-                <br>
+                <p>{{__("Raum")}}: {{$kurs->Raum}}</p>               
                 <details>
                     <summary>{{__("Gruppen")}}</summary>
                         @foreach($gruppen as $gruppe)
