@@ -16,6 +16,32 @@ h1{
     padding: 10px;
     width: 4cm;
 }
+
+.error{
+    color: white;
+    background-color: red;
+    float:left;
+    text-align: center ;
+    width: 100%;
+    margin-top: 10px;
+    margin-bottom: 15px;
+    padding: 5px;
+}
+.info{
+    color: white;
+    background-color: cadetblue;
+    float:left;
+    text-align: center ;
+    width: 100%;
+    margin-top: 10px;
+    margin-bottom: 15px;
+    padding: 5px;
+}
+input[type="file"]{
+    width: 100% ;
+}
+
+
 .grid-container{
     margin-left: 6cm;
 }
@@ -39,13 +65,4 @@ thead{
     font-size: larger;
 }
 tr:nth-child(even) {background-color: powderblue}
-.mitte{
-    float:left;
-    background-color: cadetblue;
-    text-align: center ;
-    width: 5cm;
-    margin-left: 50%;
-    margin-top: 10px;
-    margin-bottom: 15px;
-    padding: 5px;
-}
+

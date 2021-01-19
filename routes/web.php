@@ -10,16 +10,12 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PruefungsamtController;
 use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\GeneratePdfController;
+//$_SESSION['HiWi_UserId'] = 1;
+//$_SESSION['WiMi_UserId'] = 1;
+//$_SESSION['Student_UserId'] = 1;
 
-if (isset($_GET['language'])){
-    // wenn ungültige Sprache default Sprache ist Deutsch
-    if ($_GET['language'] != "en" && $_GET['language'] != "de")
-        $_SESSION['language'] = 'de';
-    else
-        $_SESSION['language'] = $_GET['language'];
-}
 
-//login/logout route + authentication + konto
+//login/logout route + authentication
 Route::view('/', 'Login.index', [])->name('login');
 Route::post('/authentication', [AuthenticationController::class, 'authenticate']);
 Route::post('/logout', [AuthenticationController::class, 'logout']);
@@ -31,6 +27,7 @@ Route::post('/konto', [AuthenticationController::class, 'passwortAendern'])->mid
 Route::middleware('PAAuth')->prefix('pruefungsamt')->group(function(){
     $PC = PruefungsamtController::class;
 
+//    Route::get('', [$PC, 'index'])->name('dashboard');
     Route::any('', [$PC, 'index'])->name('dashboard');
 
     Route::post('/addPerson', [$PC,  'benutzerAdd']);
@@ -57,7 +54,9 @@ Route::middleware('ProfAuth')->prefix('Professor')->group(function() {
     Route::post('/gruppe/studentloeschen', [ProfessorController::class, 'studentenAusGruppeLoeschen']);
     Route::post('/gruppe/studentVerschieben', [ProfessorController::class, 'studentVerschieben']);
     Route::post('/gruppe/studentHinzu', [ProfessorController::class, 'studentZuGruppe']);
+    Route::post('/gruppe/studentenHinzu', [ProfessorController::class, 'studentenZuGruppe']);
     Route::post('/gruppe/betreuerHinzu', [ProfessorController::class, 'betreuerZuGruppe']);
+    Route::post('/gruppe/betreuerinGruppenHinzu', [ProfessorController::class, 'betreuerinGruppenHinzu']);
     Route::post('/gruppe/Hauptbetreuer', [ProfessorController::class, 'ansprechperson']);
 
 

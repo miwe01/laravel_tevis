@@ -1,93 +1,95 @@
 body{
-            max-width: 90%;
-        }
-
-        .headbutton{
-            margin-right: 2cm;
-        }
+    max-width: 90%;
+}
 
 
-        button.b2{
-            background-color: cadetblue;
-            text-align: center ;
-            margin-right: 2cm;
-            transform: translate(32cm,-1.5cm);
-            width: 5cm;
-            padding-: 10;
-        }
-        hr{
-            font-weight: bold;
-            position: relative;
-        }
-        h1.dashboard{
-            text-align: left;
-            color: cadetblue;
-            font-family: Verdana;
-            font-weight: 90;
-            margin-top: 1mm;
-        }
-        div.grid1{
-            margin-left: 6cm;
-            text-align: -moz-center;
-            font-weight: bold;
-            font-family: Verdana;
-            border-style:solid;
-            padding-bottom :1cm;
-            border-bottom: none;
-            background-color: lightblue;
-            max-width: 70%;
-            min-width: 10cm;
-        }
-        div.grid2{
-            margin-left: 6cm;
-            background-color: lightblue;
-            margin-top: 2cm;
-            text-align: -moz-center;
-            font-weight: bold;
-            font-family: Verdana;
-            border-style:solid;
-            padding-bottom :1cm;
-            border-bottom: none;
-            max-width: 70%;
-            min-width: 10cm;
-        }
-        div.table{
-            margin-left: 6cm;
-            border-bottom: none;
-            border-style: solid;
-            padding-bottom: 2cm;
-            min-width: 10cm;
-            max-width: 70%;
-        }
 
-        li.kurse {
+.headbutton{
+    margin-right: 2cm;
+}
 
-            border-left: solid;
-            float: left;
-            list-style: none;
-            margin-right: 0.5cm;
-            padding-left: 1cm;
-            list-style: none;
-            border-left: none;
-            font-family: Calibri;
-        }
-        li.li1{
-            border-left: solid;
-            float: left;
-            list-style: none;
-            margin-right: 0.5cm;
-            padding-left: 1cm;
-            border-left: none;
-        }
-        li.unten {
-            border-left: solid;
-            float: left;
-            list-style: none;
-            margin-right: 0.5cm;
-            padding-left: 1cm;
-        }
 
-        a{
-            text-decoration: none;
-            color: cadetblue;
-        }
+button.b2{
+    background-color: cadetblue;
+    text-align: center ;
+    margin-right: 2cm;
+    transform: translate(32cm,-1.5cm);
+    width: 5cm;
+    padding-: 10;
+}
+hr{
+    font-weight: bold;
+    position: relative;
+}
+h1.dashboard{
+    text-align: left;
+    color: cadetblue;
+    font-family: Verdana;
+    font-weight: 90;
+    margin-top: 1mm;
+}
+div.grid1{
+    margin-left: 6cm;
+    text-align: -moz-center;
+    font-weight: bold;
+    font-family: Verdana;
+    border-style:solid;
+    padding-bottom :1cm;
+    border-bottom: none;
+    background-color: lightblue;
+    max-width: 70%;
+    min-width: 10cm;
+}
+div.grid2{
+    margin-left: 6cm;
+    background-color: lightblue;
+    margin-top: 2cm;
+    text-align: -moz-center;
+    font-weight: bold;
+    font-family: Verdana;
+    border-style:solid;
+    padding-bottom :1cm;
+    border-bottom: none;
+    max-width: 70%;
+    min-width: 10cm;
+}
+div.table{
+    margin-left: 6cm;
+    border-bottom: none;
+    border-style: solid;
+    padding-bottom: 2cm;
+    min-width: 10cm;
+    max-width: 70%;
+}
+
+li.kurse {
+
+    border-left: solid;
+    float: left;
+    list-style: none;
+    margin-right: 0.5cm;
+    padding-left: 1cm;
+    list-style: none;
+    border-left: none;
+    font-family: Calibri;
+}
+li.li1{
+    border-left: solid;
+    float: left;
+    list-style: none;
+    margin-right: 0.5cm;
+    padding-left: 1cm;
+    border-left: none;
+}
+li.unten {
+    border-left: solid;
+    float: left;
+    list-style: none;
+    margin-right: 0.5cm;
+    padding-left: 1cm;
+}
+
+a{
+    text-decoration: none;
+    color: cadetblue;
+}

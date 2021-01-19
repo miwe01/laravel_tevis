@@ -204,11 +204,6 @@ class ProfessorController extends Controller
     }
 
 
-
-
-
-
-
     public function gruppe(Request $request){
         $module = DB::table('modul')
             ->select('Modulnummer', 'Modulname', 'Jahr')
@@ -216,9 +211,16 @@ class ProfessorController extends Controller
             ->where('Jahr', $request->Jahr)
             ->get();
 
+
         $gruppeninfos = DB::table('gruppe')
             ->select('Gruppenummer', 'Gruppenname')
             ->where('Gruppenummer',$request->Gruppenummer)
+            ->get();
+
+        $gruppenNamen =  DB::table('gruppe')
+            ->select('Gruppenname')
+            ->where('Modulnummer',$request->Modulnummer)
+            ->where('Jahr', $request->Jahr)
             ->get();
 
         $gruppen = DB::table('professor')
@@ -254,6 +256,7 @@ class ProfessorController extends Controller
             ->leftJoin('tutorbetreutgruppen', 'tutorbetreutgruppen.TutorID','=', 'tutor.kennung')
             ->join('gruppe', 'gruppe.gruppenummer', '=','tutorbetreutgruppen.GruppenID' )
             ->where('gruppe.gruppenummer',$request->Gruppenummer)
+            ->orderBy('Hauptbetreuer', 'DESC')
             ->orderBy('tutor.Kennung')
             ->get();
 
@@ -269,7 +272,7 @@ class ProfessorController extends Controller
 
         return view('Professor.gruppe_bearbeiten',['studenten'=>$studenten, 'modul' =>$modul, 'betreuer' => $betreuer,
             'modulnummer' => $request->Modulnummer,'jahr' => $request->Jahr,'gruppennummer' => $request->Gruppenummer,
-            'gruppeninfo' => $gruppeninfo, 'gruppen'=>$gruppen, 'testat' => $testat,'title'=>'Gruppe']);
+            'gruppeninfo' => $gruppeninfo, 'gruppen'=>$gruppen, 'GruppenName'=>$gruppenNamen, 'testat' => $testat,'title'=>'Gruppe']);
     }
 
 
@@ -312,13 +315,21 @@ class ProfessorController extends Controller
     public function studentZuGruppe(Request $request){
 
         $ex=db::table('student')
-            ->select('Matrikelnummer')
+            ->select('Kennung')
             ->where('Matrikelnummer','=',$request->Matrikelnummer)
+            ->value('Kennung');
+
+        // checkt ob Student im Modul ist
+        $benutzerinModul=db::table('benutzerhatmodul')
+            ->select('BenutzerID')
+            ->where('BenutzerID','=',$ex)
+            ->where('ModulID', '=', $request->Modulnummer)
+            ->where('Jahr', '=', $request->Jahr)
             ->get();
 
-
-
-        if(sizeof($ex)>0) {
+        //dump($ex);
+        // Wenn Matrikelnummer in Datei existiert und Benutzer ist in Modul
+        if($ex != NULL && sizeof($benutzerinModul)>0) {
 
             $ingruppe = db::table('studenteningruppen')
                 ->where('GruppenID', '=', $request->GruppenID)
@@ -333,18 +344,82 @@ class ProfessorController extends Controller
                         'Matrikelnummer' => $request->Matrikelnummer
                     ]);
                 return redirect()->route('gruppe',['Gruppenummer'=>$request->GruppenID, 'Modulnummer'=>$request->Modulnummer,
-                    'Jahr' => $request-> Jahr]);
+                    'Jahr' => $request-> Jahr,'info'=>'Student ist jetzt in Gruppe']);
 
             } else {
                 return redirect()->route('gruppe',['Gruppenummer'=>$request->GruppenID, 'Modulnummer'=>$request->Modulnummer,
-                    'Jahr' => $request-> Jahr]);
+                    'Jahr' => $request-> Jahr,  'info'=>'Student ist bereits in Gruppe']);
             }
         }else{
+
             return redirect()->route('gruppe',['Gruppenummer'=>$request->GruppenID, 'Modulnummer'=>$request->Modulnummer,
-                'Jahr' => $request-> Jahr]);
+                'Jahr' => $request-> Jahr, 'fehler'=>'Kein gültige Matrikelnummer']);
+        }
+    }
+
+    public function studentenZuGruppe(Request $request){
+        $file = $request->file('studenten');
+
+        // Wenn keine Datei oder keine CSV -> zurück auf gruppe view
+        if($file->getSize() == 0){
+            return redirect()->route('gruppe',['Gruppenummer'=>$request->GruppenID, 'Modulnummer'=>$request->Modulnummer,
+                'Jahr' => $request-> Jahr, 'fehler'=>'Datei ist leer']);
+        }
+        if($file->getClientOriginalExtension() != "csv"){
+            return redirect()->route('gruppe',['Gruppenummer'=>$request->GruppenID, 'Modulnummer'=>$request->Modulnummer,
+                'Jahr' => $request-> Jahr, 'fehler'=>'Keine CSV Datei']);
         }
 
+        // liest Matrikelnummern aus Datei aus
+        $file = file_get_contents($file);
+        // macht Matrikelnummer in einen Array
+        $studentenarray = explode(";", $file);
+        //dump($studentenarray);
+
+        for($i=0;$i<count($studentenarray);$i++){
+            // gibt Kennung von Student zurück
+            $ex=db::table('student')
+                ->select('Kennung')
+                ->where('Matrikelnummer','=',$studentenarray[$i])
+                ->value('Kennung');
+            //dump($ex);
+
+            // checkt ob Student im Modul ist
+            $benutzerinModul=db::table('benutzerhatmodul')
+                ->select('BenutzerID')
+                ->where('BenutzerID','=',$ex)
+                ->where('ModulID', '=', $request->Modulnummer)
+                ->where('Jahr', '=', $request->Jahr)
+                ->get();
+
+
+            //dump($ex);
+            // Wenn Matrikelnummer in Datei existiert und Benutzer ist in Modul
+            if($ex != NULL && sizeof($benutzerinModul)>0) {
+                $ingruppe = db::table('studenteningruppen')
+                    ->where('GruppenID', '=', $request->GruppenID)
+                    ->where('Matrikelnummer', '=', $studentenarray[$i])
+                    ->get();
+
+                //dump($ingruppe);
+
+                if (sizeof($ingruppe)==0) {
+                    DB::table('studenteningruppen')
+                        ->insertOrIgnore([
+                            'GruppenID' => $request->GruppenID,
+                            'Matrikelnummer' => $studentenarray[$i]
+                        ]);
+                }
+
+
+            }
+
+        }
+       // dd('check');
+        return redirect()->route('gruppe',['Gruppenummer'=>$request->GruppenID, 'Modulnummer'=>$request->Modulnummer,
+            'Jahr' => $request-> Jahr, 'info'=>'Datei wurde importiert']);
     }
+
 
 
     Public function studentVerschieben(Request $request){
@@ -386,6 +461,103 @@ class ProfessorController extends Controller
                 'Jahr' => $request-> Jahr]);
         }
     }
+
+    public function betreuerinGruppenHinzu(Request $request){
+        // Kennung von Tutor
+        $ex=db::table('tutor')
+            ->select('Kennung')
+            ->where('Kennung','=',$request->TutorID)
+            ->get();
+
+        // Wenn Tutor existiert
+        if(sizeof($ex)>0) {
+            // Kennung von Tutor
+            //dump($request->gruppen);
+            // dd($request->gruppen);
+
+            $checkboxen = $request->gruppen;
+
+            // Gruppen in der Tutor hinzugefügt werden kann
+            $gruppenNamen =  DB::table('gruppe')
+                ->select('Gruppenummer')
+                ->where('Modulnummer',$request->Modulnummer)
+                ->where('Jahr', $request->Jahr)
+                ->get();
+            //dd($gruppenNamen[1]->Gruppenummer);
+
+            if ($checkboxen == NULL)
+                return redirect()->route('gruppe',['Gruppenummer'=>$request->Gruppennummer, 'Modulnummer'=>$request->Modulnummer, 'Jahr' => $request-> Jahr, 'fehler'=>'Keine Checkbox ausgewählt']);
+
+
+
+            for ($i=0;$i<count($checkboxen);$i++){
+                    // if Checkbox angeklickt
+                    if ($checkboxen[$i] == "on"){
+
+                        // wenn tutor schon gruppe betreut
+                        $ingruppe = db::table('tutorbetreutgruppen')
+                            ->where('GruppenID', '=', $gruppenNamen[$i]->Gruppenummer)
+                            ->where('TutorID', '=', $request->TutorID)
+                            ->get();
+
+                        // wenn tutor noch nicht gruppe betreut
+                        if (sizeof($ingruppe)==0) {
+
+                            DB::table('tutorbetreutgruppen')
+                                ->insert([
+                                    'GruppenID' => $gruppenNamen[$i]->Gruppenummer,
+                                    'TutorID' => $request->TutorID
+                                ]);
+
+                        }
+                    }
+            }
+
+            return redirect()->route('gruppe',['Gruppenummer'=>$request->Gruppennummer, 'Modulnummer'=>$request->Modulnummer, 'Jahr' => $request-> Jahr, 'info'=>'Erfolgreich']);
+
+            } else{
+            return redirect()->route('gruppe',['Gruppenummer'=>$request->Gruppennummer, 'Modulnummer'=>$request->Modulnummer, 'Jahr' => $request-> Jahr, 'fehler'=>'Betreuer gibt es nicht']);
+        }
+
+
+
+
+
+
+        $ex=db::table('tutor')
+            ->select('Kennung')
+            ->where('Kennung','=',$request->TutorID)
+            ->get();
+
+        if(sizeof($ex)>0) {
+            $ingruppe = db::table('tutorbetreutgruppen')
+                ->where('GruppenID', '=', $request->Gruppennummer)
+                ->where('TutorID', '=', $request->TutorID)
+                ->get();
+
+            if (sizeof($ingruppe)==0) {
+                DB::table('tutorbetreutgruppen')
+                    ->insert([
+                        'GruppenID' => $request->Gruppennummer,
+                        'TutorID' => $request->TutorID
+                    ]);
+                return redirect()->route('gruppe',['Gruppenummer'=>$request->Gruppennummer, 'Modulnummer'=>$request->Modulnummer,
+                    'Jahr' => $request-> Jahr]);
+            } else {
+                return redirect()->route('gruppe',['Gruppenummer'=>$request->Gruppennummer, 'Modulnummer'=>$request->Modulnummer,
+                    'Jahr' => $request-> Jahr]);
+            }
+        }else{
+            return redirect()->route('gruppe',['Gruppenummer'=>$request->Gruppennummer, 'Modulnummer'=>$request->Modulnummer,
+                'Jahr' => $request-> Jahr]);
+        }
+
+
+
+        return redirect()->route('gruppe',['Gruppenummer'=>$request->Gruppennummer, 'Modulnummer'=>$request->Modulnummer,
+            'Jahr' => $request-> Jahr]);
+    }
+
 
     public function ansprechperson(Request $request){
         DB::table('tutorbetreutgruppen')

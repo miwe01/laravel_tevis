@@ -54,7 +54,7 @@
         </table>
         <input type="hidden"  value="{{$testat[0]->Matrikelnummer}}" name="Matrikelnummer" id="Testat">
         <input type="hidden"  value="{{$gruppenname}} " name="Gruppenname" id="Testat">
-        <input type="hidden"  value="{{$Gruppenummer}} " name="Gruppenummer" id="Testat">
+
         <input type="hidden"  value="{{$testat[0]->Jahr}} " name="Jahr" id="Testat">
         <input type="hidden"  value="{{$modulname}} " name="Modulname" id="Testat">
         <br>
