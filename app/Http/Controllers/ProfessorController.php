@@ -12,6 +12,7 @@ class ProfessorController extends Controller
 {
 
     public function index(Request $request){
+
         $kurse = DB::table('professor')
             ->leftJoin('benutzer', 'benutzer.kennung', '=', 'professor.kennung')
             ->leftJoin('benutzerhatmodul', 'benutzerhatmodul.BenutzerID', '=', 'benutzer.kennung')
@@ -21,7 +22,7 @@ class ProfessorController extends Controller
             ->where('professor.kennung',$_SESSION['Prof_UserId'])
             ->orderBy('modul.Modulname')
             ->get();
-//echo $kurse;
+
         $gruppen = DB::table('professor')
             ->leftJoin('benutzer', 'benutzer.kennung', '=', 'professor.kennung')
             ->leftJoin('benutzerhatmodul', 'benutzerhatmodul.BenutzerID', '=', 'benutzer.kennung')
@@ -45,6 +46,50 @@ class ProfessorController extends Controller
 
         return view('Professor.dashboard', ['kurse'=> $kurse, 'gruppen' => $gruppen , 'title' => 'Dashboard', 'haupt' => $haupt]);
     }
+
+    public function meineKurse(Request $request){
+
+
+        $kurse = DB::table('professor')
+            ->leftJoin('benutzer', 'benutzer.kennung', '=', 'professor.kennung')
+            ->leftJoin('benutzerhatmodul', 'benutzerhatmodul.BenutzerID', '=', 'benutzer.kennung')
+            ->leftJoin('modul', 'modul.Modulnummer', '=', 'benutzerhatmodul.ModulID')
+            ->whereColumn( 'benutzerhatmodul.Jahr' , '=' ,'modul.Jahr')
+            ->where('professor.kennung',$_SESSION['Prof_UserId'])
+            ->orderBy('modul.Modulname')
+            ->get();
+
+
+
+        return view('Professor.meine_kurse', ['kurse' => $kurse, 'title' => 'Meine Kurse']);
+    }
+
+    public function newCourse(Request $request)
+    {
+        return view('Professor.new_course', ['title'=>'Neuen Kurs hinzufügen']);
+    }
+
+    public function createCourse(Request $request) {
+        DB::table('modul')
+            ->insertGetId([
+                'Modulnummer' => $request->moduleNumber,
+                'Modulname' => $request->coursName,
+                'Raum' => $request->Raum,
+                'Semester' => $request->semester,
+                'Jahr' => $request->year,
+            ]);
+
+        DB::table('benutzerhatmodul')
+            ->insert([
+                'BenutzerID' => $_SESSION['Prof_UserId'],
+                'ModulID' => $request->moduleNumber,
+                'Jahr' => $request->year
+            ]);
+
+        return redirect()->route('Professor');
+    }
+
+
 
 
     public function gruppe(Request $request){
@@ -216,7 +261,7 @@ class ProfessorController extends Controller
             ->select( 'Vorname', 'Nachname')
             ->leftJoin('professorbetreutgruppen','benutzer.Kennung','=','professorbetreutgruppen.ProfessorID')
             ->where( 'benutzer.Kennung', '=',$_SESSION['Prof_UserId'] )
-            ->groupBy('benutzer.Kennung')
+            //    ->groupBy('benutzer.Kennung')
             ->get();
 
         //echo $haupt;
@@ -226,64 +271,7 @@ class ProfessorController extends Controller
 
 
 
-    public function meineKurse(Request $request){
-//        $kurse = DB::table('professor')
-//            ->leftJoin('benutzer', 'benutzer.kennung', '=', 'professor.kennung')
-//            ->leftJoin('benutzerhatmodul', 'benutzerhatmodul.BenutzerID', '=', 'benutzer.kennung')
-//            ->leftJoin('modul', 'modul.Modulnummer', '=', 'benutzerhatmodul.ModulID')
-//            ->whereColumn( 'benutzerhatmodul.Jahr' , '=' ,'modul.Jahr')
-//            ->where('professor.kennung',$_SESSION['Prof_UserId'])
-//            ->orderBy('modul.Modulname')
-//            ->groupBy('modul.Jahr')
-//            ->get();
-        $kurse = DB::table('benutzerhatmodul')
-            ->where('BenutzerID', '=', $_SESSION['Prof_UserId'])
-            ->leftJoin('modul','modul.Modulnummer', '=', 'benutzerhatmodul.ModulID')
-            ->groupBy(['modul.Jahr'])
-            ->get();
 
-        $gruppen = DB::table('professor')
-            ->leftJoin('benutzer', 'benutzer.kennung', '=', 'professor.kennung')
-            ->leftJoin('benutzerhatmodul', 'benutzerhatmodul.BenutzerID', '=', 'benutzer.kennung')
-            ->leftJoin('modul', 'modul.Modulnummer', '=', 'benutzerhatmodul.ModulID')
-            ->leftJoin('professorbetreutgruppen', 'professorbetreutgruppen.ProfessorID', '=', 'professor.Kennung')
-            ->RightJoin('gruppe', 'gruppe.Gruppenummer', '=', 'professorbetreutgruppen.GruppenID')
-            ->whereColumn('gruppe.Modulnummer', '=', 'modul.Modulnummer')
-            ->whereColumn( 'benutzerhatmodul.Jahr' , '=' ,'modul.Jahr')
-            ->whereColumn('gruppe.Jahr', '=', 'modul.Jahr')
-            ->where('professor.kennung', '=', $_SESSION['Prof_UserId'])
-            ->orderBy('gruppe.Gruppenummer')
-            ->get();
-
-        for ($i = 0; $i < count($kurse); $i++) {
-            $kursModuleNummer =  $kurse[$i]->Modulnummer;
-            $kurse[$i]->mengeDerGruppen = 0;
-
-
-            for ($x = 0; $x < count($gruppen); $x++) {
-                $TNanzahl = DB::table('gruppe')
-                    ->where('Gruppenummer','=', $gruppen[$x]->GruppenID)
-                    ->where('Jahr','=', $kurse[$i]->Jahr)
-                    ->leftJoinWhere('studenteningruppen','studenteningruppen.GruppenID', '=', $gruppen[$x]->GruppenID)
-                    ->select('studenteningruppen.Matrikelnummer')
-                    ->distinct()
-                    ->count();
-                echo $TNanzahl;echo'-';
-                $kurse[$i]->TNanzahl = $TNanzahl;
-
-                $gruppenNummer = $gruppen[$x]->Modulnummer;
-
-                if ($kursModuleNummer == $gruppenNummer and $kurse[$i]->Jahr == $gruppen[$x]->Jahr) {
-                    $kurse[$i]->mengeDerGruppen++;
-                }
-            }
-        }
-
-
-
-
-        return view('Professor.meine_kurse', ['kurse' => $kurse, 'title' => 'Meine Kurse', 'gruppen' => $gruppen,'TNanzahl'=>$TNanzahl]);
-    }
 
 
     public function tutorLoeschen(Request $request){
@@ -523,30 +511,6 @@ class ProfessorController extends Controller
         return view('Professor.new_group', ['title'=>'Neue Gruppe hinzufügen']);
     }
 
-    public function newCourse(Request $request)
-    {
-        return view('Professor.new_course', ['title'=>'Neuen Kurs hinzufügen']);
-    }
-
-    public function createCourse(Request $request) {
-        DB::table('modul')
-            ->insertGetId([
-                'Modulnummer' => $request->moduleNumber,
-                'Modulname' => $request->coursName,
-                'Raum' => $request->Raum,
-                'Semester' => $request->semester,
-                'Jahr' => $request->year,
-            ]);
-
-        DB::table('benutzerhatmodul')
-            ->insert([
-                'BenutzerID' => $_SESSION['Prof_UserId'],
-                'ModulID' => $request->moduleNumber,
-                'Jahr' => $request->year
-            ]);
-
-        return redirect()->route('Professor');
-    }
 
     public function createGroup(Request $request) {
         $createdGroupNumber = DB::table('gruppe')
