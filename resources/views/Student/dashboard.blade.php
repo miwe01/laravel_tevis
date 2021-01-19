@@ -14,8 +14,8 @@
 
                 <p>{{$s->Gruppenname}}</p>
                 <p>{{__("Raum")}}: {{$s->Raum}}</p>
-                <p>Webexlink: {{$s->Webex}}</p>
-
+                <p>{{__("Webexlink")}}: <a target="_blank" {{__("Webex")}}: href="{{$s->Webex}}">{{$s->Webex}}</a></p>
+                
                 <form action="/Student/dashboard/{{$s->Modulname}}_{{$s->Jahr}}" method="post">
                     @csrf
                     <input type="hidden"  value="{{$s->Gruppenname}} " name="Gruppenname" id="Testat">
