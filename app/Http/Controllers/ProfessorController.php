@@ -60,34 +60,109 @@ class ProfessorController extends Controller
             ->get();
 
 
-
         return view('Professor.meine_kurse', ['kurse' => $kurse, 'title' => 'Meine Kurse']);
     }
 
     public function newCourse(Request $request)
     {
-        return view('Professor.new_course', ['title'=>'Neuen Kurs hinzufügen']);
+        $aktuellesJahr = date("Y");
+        return view('Professor.new_course', ['aktuellesJahr'=> $aktuellesJahr,'title'=>'Neuen Kurs hinzufügen']);
     }
 
     public function createCourse(Request $request) {
-        DB::table('modul')
-            ->insertGetId([
-                'Modulnummer' => $request->moduleNumber,
-                'Modulname' => $request->coursName,
-                'Raum' => $request->Raum,
-                'Semester' => $request->semester,
-                'Jahr' => $request->year,
-            ]);
 
-        DB::table('benutzerhatmodul')
-            ->insert([
-                'BenutzerID' => $_SESSION['Prof_UserId'],
-                'ModulID' => $request->moduleNumber,
-                'Jahr' => $request->year
-            ]);
+        DB::beginTransaction();
+        try {
+            DB::table('modul')
+                ->insert([
+                    'Modulnummer' => $request->Modulnummer,
+                    'Modulname' => $request->ModulName,
+                    'Raum' => $request->Raum,
+                    'Semester' => $request->Semester,
+                    'Jahr' => $request->Jahr,
+                ]);
 
-        return redirect()->route('Professor');
+            DB::table('benutzerhatmodul')
+                ->insert([
+                    'BenutzerID' => $_SESSION['Prof_UserId'],
+                    'ModulID' => $request->Modulnummer,
+                    'Jahr' => $request->Jahr,
+                    'Rolle' => "Professor"
+                ]);
+
+            $msg = "Neuer Kurs wurde angelegt!";
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            $msg = "Fehler beim Anlegen des Kurses!";
+        }
+        DB::commit();
+
+
+        $aktuellesJahr = date("Y");
+
+        return view('Professor.new_course', ['aktuellesJahr'=> $aktuellesJahr, 'msg' => $msg,'title'=>'Neuen Kurs hinzufügen']);
     }
+
+    public function kursverwaltung(Request $request){
+
+
+
+        $leiter = DB::table('benutzerhatmodul')
+            ->where('benutzerhatmodul.ModulID', '=',$request->Modulnummer)
+            ->where('benutzerhatmodul.Jahr', '=',$request->Jahr)
+            ->where('benutzerhatmodul.BenutzerID', '=',$_SESSION['Prof_UserId'])
+            ->leftJoin('benutzer', 'benutzer.kennung','=', 'benutzerhatmodul.BenutzerID')
+            ->get();
+
+        $kursverwaltung = DB::table('benutzerhatmodul')
+            ->where('benutzerhatmodul.ModulID', '=',$request->Modulnummer)
+            ->where('benutzerhatmodul.Jahr', '=',$request->Jahr)
+            ->leftJoin('modul', 'modul.Modulnummer', '=', 'benutzerhatmodul.ModulID')
+            ->get();
+
+
+
+        dump($kursverwaltung);
+        return view('Professor.kursverwaltung', ['title' => 'Modul','kursverwaltung' => $kursverwaltung, 'leiter' => $leiter]);
+    }
+    public function Gruppe_erstellen(Request $request){
+
+        return view('Professor.new_group', ['title'=>'Neue Gruppe hinzufügen']);
+    }
+
+
+    public function Neue_Gruppe(Request $request) {
+
+
+
+
+        return view('Professor.new_group', ['title'=>'Neue Gruppe hinzufügen']);
+        $createdGroupNumber = DB::table('gruppe')
+            ->insertGetId([
+                'Gruppenname' => $request->groupName,
+                'Modulnummer' => $request->moduleNumber,
+                'Jahr' => $request->year,
+                'Webex' => $request->webexLink,
+            ]);
+
+        DB::table('professorbetreutgruppen')
+            ->insert([
+                'ProfessorID' => $_SESSION['Prof_UserId'],
+                'GruppenID' => $createdGroupNumber,
+            ]);
+        $module = DB::table('modul')
+            ->select('Modulnummer','Modulname','Raum','Semester', 'Jahr')
+            ->where('Modulnummer', '=', $request->Modulnummer)
+            ->where('Jahr', $request->Jahr)
+            ->get();
+
+
+
+    }
+
+
+
 
 
 
@@ -156,118 +231,6 @@ class ProfessorController extends Controller
             'gruppeninfo' => $gruppeninfo, 'gruppen'=>$gruppen, 'testat' => $testat,'title'=>'Gruppe']);
     }
 
-
-    public function kurs(Request $request){
-        $kurses=DB::table('modul')
-            ->select('Modulnummer','Modulname','Raum','Semester', 'Jahr')
-            ->where( 'Modulname' ,$request->Modulname)
-            ->get();
-        // echo $kurses; echo 'eeeeeeeeeend  ';
-        $k=DB::table('professor')
-            ->where('professor.Kennung',$_SESSION['Prof_UserId'] )
-            ->leftJoin ( 'professorbetreutgruppen','professorbetreutgruppen.ProfessorID' ,'=','professor.Kennung')
-            ->leftJoin('gruppe','gruppe.Gruppenummer','=','professorbetreutgruppen.GruppenID')
-            ->leftJoin('modul','modul.Modulnummer','=','gruppe.Modulnummer')
-            ->where('modul.Modulnummer',$request->Modulnummer)
-            ->where('modul.Jahr',$request->Jahr)
-            ->get();
-//echo$k;
-
-        $kurse = DB::table('professor')
-            ->leftJoin('benutzer', 'benutzer.kennung', '=', 'professor.kennung')
-            ->leftJoin('benutzerhatmodul', 'benutzerhatmodul.BenutzerID', '=', 'benutzer.kennung')
-            ->leftJoin('modul', 'modul.Modulnummer', '=', 'benutzerhatmodul.ModulID')
-            ->whereColumn( 'benutzerhatmodul.Jahr' , '=' ,'modul.Jahr')
-            ->where('modul.Jahr', '=', 2020)
-            ->where('professor.kennung',$_SESSION['Prof_UserId'])
-            ->orderBy('modul.Modulname')
-            ->get();
-        $gruppeninfos = DB::table('gruppe')
-            ->where('professorbetreutgruppen.ProfessorID',$_SESSION['Prof_UserId'] )
-            ->leftJoin('professorbetreutgruppen','professorbetreutgruppen.GruppenID','=','gruppe.Gruppenummer')
-            ->where('Gruppenummer',$request->GruppenID)
-            ->get();
-        //  echo $gruppeninfos;
-//echo $request->GruppenID;
-
-        $module = DB::table('modul')
-            ->select('Modulnummer','Modulname','Raum','Semester', 'Jahr')
-            ->where('modulnummer', '=', $request->Modulnummer)
-            ->where('Jahr', $request->Jahr)
-            ->get();
-//echo 'blaaaaaaaaaaaaaaaaaaaaaaaaaaaaa                       ';
-        $gruppen = DB::table('gruppe')
-            ->where('Modulnummer', '=', $request->Modulnummer)
-            ->get();
-
-        // echo $gruppen;
-        $gruppe = DB::table('professor')
-            ->leftJoin('benutzer', 'benutzer.kennung', '=', 'professor.kennung')
-            ->leftJoin('benutzerhatmodul', 'benutzerhatmodul.BenutzerID', '=', 'benutzer.kennung')
-            ->leftJoin('modul', 'modul.Modulnummer', '=', 'benutzerhatmodul.ModulID')
-            ->leftJoin('professorbetreutgruppen', 'professorbetreutgruppen.ProfessorID', '=', 'professor.Kennung')
-            ->RightJoin('gruppe', 'gruppe.Gruppenummer', '=', 'professorbetreutgruppen.GruppenID')
-            ->whereColumn('gruppe.Modulnummer', '=', 'modul.Modulnummer')
-            ->whereColumn( 'benutzerhatmodul.Jahr' , '=' ,'modul.Jahr')
-            ->where('modul.Jahr', '=', 2020)
-            //  ->where('modul.Modulname',$request->Modulname)
-            ->whereColumn('gruppe.Jahr', '=', 'modul.Jahr')
-            ->where('professor.kennung',$_SESSION['Prof_UserId'])
-            ->orderBy('gruppe.Gruppenummer')
-            ->get();
-
-        // echo $gruppe; echo 'eeeeeeeeeend           ';
-//echo $request->Jahr;
-        $group=DB::table('gruppe')
-            ->select('Gruppenummer','Gruppenname','Modulnummer','Webex', 'Jahr')
-            // ->whereColumn('modul.Modulnummer','=','Modulnummer')
-            ->where( 'Modulnummer' ,$request->Modulnummer)
-            ->where('Jahr',$request->Jahr)
-            ->get();
-        //  echo $group;echo 'eeeeeeeeeend           ';
-        //$TNanzahl = DB::table('benutzerhatmodul')
-//            ->where('BenutzerID', '=', $_SESSION['Prof_UserId'])
-//            ->whereColumn('benutzerhatmodul.Jahr','gruppe.Jahr')
-//            ->leftJoin('gruppe','gruppe.Modulnummer', '=', 'benutzerhatmodul.ModulID')
-//            ->leftJoinWhere('professorbetreutgruppen','professorbetreutgruppen.ProfessorID','=', $_SESSION['Prof_UserId'])
-//            ->leftJoin('studenteningruppen','studenteningruppen.GruppenID', '=', 'gruppe.Gruppenummer')
-        //->where('gruppe.Gruppenummer', '=', 'benutzerhatmodul.GruppenID')
-        // ->groupBy('gruppe.Jahr')
-//            ->distinct()
-//
-//            ->get();
-        for ($i = 0; $i < count($gruppe); $i++) {
-            $gruppe[$i]->mengeDerGruppen = 0;
-            $TNanzahl = DB::table('gruppe')
-                ->where('Gruppenummer', '=', $gruppe[$i]->GruppenID)
-                ->where('Jahr', '=', $gruppe[$i]->Jahr)
-                ->leftJoinWhere('studenteningruppen', 'studenteningruppen.GruppenID', '=', $gruppe[$i]->GruppenID)
-                ->select('studenteningruppen.Matrikelnummer')
-                ->whereNotNull('studenteningruppen.Matrikelnummer')
-                //->distinct()
-                ->get();
-            // echo $TNanzahl;
-            $gruppe[$i]->mengeDerGruppen = count($TNanzahl);
-
-
-        }
-
-        $professor = DB::table('benutzerhatmodul')
-            ->where('BenutzerID', '=', $_SESSION['Prof_UserId'])
-            ->where('benutzerhatmodul.Jahr',$request->Jahr)
-            ->leftJoin('gruppe', 'gruppe.Modulnummer', '=', 'benutzerhatmodul.ModulID')
-            ->get();
-        $haupt = DB::table('benutzer')
-            ->select( 'Vorname', 'Nachname')
-            ->leftJoin('professorbetreutgruppen','benutzer.Kennung','=','professorbetreutgruppen.ProfessorID')
-            ->where( 'benutzer.Kennung', '=',$_SESSION['Prof_UserId'] )
-            //    ->groupBy('benutzer.Kennung')
-            ->get();
-
-        //echo $haupt;
-
-        return view('Professor.kurs', ['title' => 'Modul', 'group'=>$group,'kurses'=>$kurses,'gruppeninfos' => $gruppeninfos,'haupt' => $haupt,'kurse'=>$kurse, 'Modulnummer' => $request->Modulnummer,'jahr' => $request->Jahr,'gruppennummer' => $request->Gruppenummer,'module'=>$module, 'gruppen' => $gruppen,'gruppe'=>$gruppe]);
-    }
 
 
 
@@ -506,37 +469,7 @@ class ProfessorController extends Controller
 
 
 
-    public function newGroup(Request $request){
 
-        return view('Professor.new_group', ['title'=>'Neue Gruppe hinzufügen']);
-    }
-
-
-    public function createGroup(Request $request) {
-        $createdGroupNumber = DB::table('gruppe')
-            ->insertGetId([
-                'Gruppenname' => $request->groupName,
-                'Modulnummer' => $request->moduleNumber,
-                'Jahr' => $request->year,
-                'Webex' => $request->webexLink,
-            ]);
-
-        DB::table('professorbetreutgruppen')
-            ->insert([
-                'ProfessorID' => $_SESSION['Prof_UserId'],
-                'GruppenID' => $createdGroupNumber,
-            ]);
-        $module = DB::table('modul')
-            ->select('Modulnummer','Modulname','Raum','Semester', 'Jahr')
-            ->where('Modulnummer', '=', $request->Modulnummer)
-            ->where('Jahr', $request->Jahr)
-            ->get();
-
-
-
-
-        return redirect()->route('Professor',['title'=> 'Gruppe erstellen', 'module'=>$module]);
-    }
 
     public function gruppeLoeschen(Request $request){
         //echo 'noooooom';
