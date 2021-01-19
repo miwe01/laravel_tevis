@@ -3,7 +3,7 @@
 
 @section('main')
 
-    <link rel="stylesheet" href="{{URL::asset("CSS/styleProfessor_mKurse.css")}}">
+    <link rel="stylesheet" href="{{URL::asset("CSS/styleProfessor.css")}}">
 
     <h1 class ="meinekurse">Meine Kurse</h1>
     <form  action="/Professor/meine_kurse/new" method="post" >
@@ -11,6 +11,7 @@
         <input type="hidden" value="{{$kurse[0]->Modulnummer}}" name="Modulnummer" id="kursanlegen">
         <button class="b2" type="submit" id="kursanlegen"> neuen kurse anlegen </button>
     </form>
+    <br>
     @forelse($kurse as $kurs)
         <div style= "margin-bottom:20px;border:2px solid black;background-color: #d6d6d6;">
             <div><h4 align="center">  {{$kurs->Modulnummer}}  {{$kurs->Modulname}}   {{$kurs->Semester}}  {{$kurs->Jahr}}</h4></div>
