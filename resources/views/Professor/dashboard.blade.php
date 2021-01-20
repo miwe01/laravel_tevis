@@ -42,7 +42,7 @@
                                     <input type="hidden" value="{{$gruppe->Modulnummer}}" name="Modulnummer" id="bearbeiten">
                                     <input type="hidden" value="{{$gruppe->Jahr}}" name="Jahr" id="bearbeiten">
                                     <input type="hidden" value="{{$gruppe->Gruppenummer}}" name="Gruppenummer" id="bearbeiten">
-                                    <input type="submit" name="bearbeiten" id="bearbeiten" value="{{__("bearbeiten")}}">
+                                    <input type="submit" name="bearbeiten" id="bearbeiten" value="{{__("Testatverwaltung")}}">
                                 </form>
                             </ul>
                         @endif
