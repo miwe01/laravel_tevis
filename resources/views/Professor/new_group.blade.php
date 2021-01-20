@@ -36,11 +36,18 @@
         </select>
         <br><br><br>
         <button name="submit" value="1" type="submit">Gruppe hinzufügen </button>
+        @if (isset($msg))
+            {{$msg}}
+        @endif
     </form>
     <br>
-
-    @if (isset($msg))
-        {{$msg}}
-    @endif
+    <div>
+        <form action="/Professor/meine_kurse/kursverwaltung" method="post">
+            @csrf
+            <input type="hidden" value="{{$Modulnummer}}" name="Modulnummer" id="bearbeiten">
+            <input type="hidden" value="{{$Jahr}}" name="Jahr" id="bearbeiten">
+            <input type="submit" name="bearbeiten" id="bearbeiten" value="{{__("Zurück zur Kursverwaltung")}}">
+        </form>
+    </div>
 
 @endsection
