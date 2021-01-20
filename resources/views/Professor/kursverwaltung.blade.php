@@ -2,12 +2,16 @@
 @extends('Template.links')
 
 @section('main')
-    <h1 class ="meinekurse">Leitender Professor: {{$leiter[0]->Vorname}} {{$leiter[0]->Nachname}}</h1>
+    <link rel="stylesheet" href="{{URL::asset("CSS/styleProfessor.css")}}">
+    <h1> Leitender Professor:</h1>
+    <h4> {{$leiter[0]->Vorname}} {{$leiter[0]->Nachname}}</h4>
+    <h1> Betreuender Professor:</h1>
+
     @if ($leiter[0]->Rolle == 'Professor')
         <!-- <link rel="stylesheet" href="{{URL::asset("CSS/styleProfessor_kurs.css")}}"> -->
         @forelse ($beteiligt as $b)
             @if ($b->Rolle == 'Beteiligter Professor')
-                {{$b->Vorname}} {{$b->Nachname}}
+                <h4>{{$b->Vorname}} {{$b->Nachname}}</h4>
             @endif
         @empty
             <li>{{__("Keine Daten vorhanden")}}.</li>
@@ -25,8 +29,9 @@
 
         </table>
         @if (isset($msg))
-            {{$msg}}
+           <h4>{{$msg}}</h4>
         @endif
+        <div style="text-align: center">
         <form action="/Professor/meine_kurse/kursverwaltung" method="post">
             @csrf
             <input type="hidden" value="{{$kursverwaltung[0]->Modulnummer}}" name="Modulnummer" id="bearbeiten">
@@ -47,8 +52,9 @@
             @csrf
             <input type="hidden" value="{{$kursverwaltung[0]->Modulnummer}}" name="Modulnummer" id="bearbeiten">
             <input type="hidden" value="{{$kursverwaltung[0]->Jahr}}" name="Jahr" id="bearbeiten">
-            <input type="submit" name="bearbeiten" id="bearbeiten" value="{{__("bearbeiten")}}">
+            <input type="submit" name="bearbeiten" id="bearbeiten" value="{{__("neue Gruppe hinzufügen")}}">
         </form>
+        </div>
     @else
         Fehlende Berechtigung für diesen Kurs!
     @endif
