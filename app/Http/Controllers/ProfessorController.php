@@ -438,7 +438,8 @@ class ProfessorController extends Controller
 
 
 
-    public function gruppe(Request $request){
+    public function gruppe(Request $request)
+    {
         $module = DB::table('modul')
             ->select('Modulnummer', 'Modulname', 'Jahr')
             ->where('modulnummer', '=', $request->Modulnummer)
@@ -448,12 +449,12 @@ class ProfessorController extends Controller
 
         $gruppeninfos = DB::table('gruppe')
             ->select('Gruppenummer', 'Gruppenname')
-            ->where('Gruppenummer',$request->Gruppenummer)
+            ->where('Gruppenummer', $request->Gruppenummer)
             ->get();
 
-        $gruppenNamen =  DB::table('gruppe')
+        $gruppenNamen = DB::table('gruppe')
             ->select('Gruppenname')
-            ->where('Modulnummer',$request->Modulnummer)
+            ->where('Modulnummer', $request->Modulnummer)
             ->where('Jahr', $request->Jahr)
             ->get();
 
@@ -464,55 +465,57 @@ class ProfessorController extends Controller
             ->leftJoin('professorbetreutgruppen', 'professorbetreutgruppen.ProfessorID', '=', 'professor.Kennung')
             ->RightJoin('gruppe', 'gruppe.Gruppenummer', '=', 'professorbetreutgruppen.GruppenID')
             ->whereColumn('gruppe.Modulnummer', '=', 'modul.Modulnummer')
-            ->whereColumn( 'benutzerhatmodul.Jahr' , '=' ,'modul.Jahr')
+            ->whereColumn('benutzerhatmodul.Jahr', '=', 'modul.Jahr')
             ->where('modul.Jahr', '=', 2020)
             ->whereColumn('gruppe.Jahr', '=', 'modul.Jahr')
-            ->where('professor.kennung',$_SESSION['Prof_UserId'])
+            ->where('professor.kennung', $_SESSION['Prof_UserId'])
             ->orderBy('gruppe.Gruppenummer')
             ->get();
 
         $testat = DB::table('testat')
             ->where('Jahr', '=', 2020)
-            ->where('Modulnummer',$request->Modulnummer)
+            ->where('Modulnummer', $request->Modulnummer)
             ->get();
 
         $studenten = DB::table('student')
-            ->leftJoin('benutzer' ,'benutzer.kennung', '=', 'student.kennung')
-            ->leftJoin('studenteningruppen', 'studenteningruppen.Matrikelnummer','=', 'student.Matrikelnummer')
-            ->join('gruppe', 'gruppe.gruppenummer', '=','studenteningruppen.GruppenID' )
-            ->where('gruppe.gruppenummer',$request->Gruppenummer)
-            ->where('gruppe.Modulnummer',$request->Modulnummer)
+            ->leftJoin('benutzer', 'benutzer.kennung', '=', 'student.kennung')
+            ->leftJoin('studenteningruppen', 'studenteningruppen.Matrikelnummer', '=', 'student.Matrikelnummer')
+            ->join('gruppe', 'gruppe.gruppenummer', '=', 'studenteningruppen.GruppenID')
+            ->where('gruppe.gruppenummer', $request->Gruppenummer)
+            ->where('gruppe.Modulnummer', $request->Modulnummer)
             ->orderBy('student.Matrikelnummer')
             ->get();
 
         $gruppennummer = $request->Gruppenummer;
         $betreuer = DB::table('benutzer')
-            ->leftJoin("tutorbetreutgruppen", function($join) use ($gruppennummer){
-                $join->on("tutorbetreutgruppen.TutorID","=","benutzer.kennung")
-                    ->where('tutorbetreutgruppen.GruppenID', '=',  $gruppennummer);
+            ->select('tutorbetreutgruppen.Hauptbetreuer AS THaupt', 'professorbetreutgruppen.Hauptbetreuer AS PHaupt', 'benutzer.Kennung', 'benutzer.email',
+                'benutzer.Vorname', 'benutzer.Nachname', 'gruppe.Gruppenummer', 'tutorbetreutgruppen.TutorID', 'professorbetreutgruppen.ProfessorID', 'tutor.Rolle',
+                'tutor.Webexraum', 'gruppe.Gruppenname', 'gruppe.Modulnummer', 'gruppe.webex', 'gruppe.jahr', 'gruppe.tag', 'gruppe.uhrzeit', 'benutzer.Email')
+            ->leftJoin("tutorbetreutgruppen", function ($join) use ($gruppennummer) {
+                $join->on("tutorbetreutgruppen.TutorID", "=", "benutzer.kennung")
+                    ->where('tutorbetreutgruppen.GruppenID', '=', $gruppennummer);
             })
-
-            ->leftJoin('professorbetreutgruppen', 'professorbetreutgruppen.ProfessorID','=', 'benutzer.kennung')
-            ->leftJoin('tutor', 'Benutzer.Kennung','=', 'tutor.Kennung')
-            ->join("gruppe",function($join){
-                $join->on("gruppe.gruppenummer","=","professorbetreutgruppen.GruppenID")
+            ->leftJoin('professorbetreutgruppen', 'professorbetreutgruppen.ProfessorID', '=', 'benutzer.kennung')
+            ->leftJoin('tutor', 'Benutzer.Kennung', '=', 'tutor.Kennung')
+            ->join("gruppe", function ($join) {
+                $join->on("gruppe.gruppenummer", "=", "professorbetreutgruppen.GruppenID")
                     ->orOn('gruppe.gruppenummer', '=', "tutorbetreutgruppen.GruppenID");
             })
-            ->where('gruppe.gruppenummer',$request->Gruppenummer)
+            ->where('gruppe.gruppenummer', $request->Gruppenummer)
             ->orderBy('Rolle', 'ASC')
             ->orderBy('professorbetreutgruppen.Hauptbetreuer', 'DESC')
             ->orderBy('tutorbetreutgruppen.Hauptbetreuer', 'DESC')
-
             ->get();
 
-        foreach($module as $mods){
+
+        foreach ($module as $mods) {
             $modul = $mods;
         }
 
 
-        return view('Professor.gruppe',['studenten'=>$studenten, 'modul' =>$modul, 'betreuer' => $betreuer,
-            'modulnummer' => $request->Modulnummer,'jahr' => $request->Jahr,'Gruppenummer' => $request->Gruppenummer,
-            'gruppeninfo' => $gruppeninfos, 'gruppen'=>$gruppen, 'GruppenName'=>$gruppenNamen, 'testat' => $testat,'title'=>'Gruppe']);
+        return view('Professor.gruppe', ['studenten' => $studenten, 'modul' => $modul, 'betreuer' => $betreuer,
+            'modulnummer' => $request->Modulnummer, 'jahr' => $request->Jahr, 'Gruppenummer' => $request->Gruppenummer,
+            'gruppeninfo' => $gruppeninfos, 'gruppen' => $gruppen, 'GruppenName' => $gruppenNamen, 'testat' => $testat, 'title' => 'Gruppe']);
     }
 
 

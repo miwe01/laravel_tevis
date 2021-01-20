@@ -113,7 +113,7 @@
 
                 <tr>
                     <td>
-                        @if($tutor->Hauptbetreuer == 1)
+                        @if($tutor->PHaupt == 1||$tutor->THaupt)
                             <b>
                                 @endif
                                 {{--Professor--}}
@@ -121,24 +121,24 @@
                                     {{"Prof."}}
                                 @endif
                                 {{$tutor->Vorname}} {{$tutor->Nachname}}
-                                @if($tutor->Hauptbetreuer == 1)
+                                @if($tutor->PHaupt == 1||$tutor->THaupt)
                             </b>
                         @endif
                     </td>
                     <td>
-                        @if($tutor->Hauptbetreuer == 1)
+                        @if($tutor->PHaupt == 1||$tutor->THaupt)
                             <b>
                                 @endif
                                 <a href="mailto:{{$tutor->Email}}">{{$tutor->Email}}</a>
-                                @if($tutor->Hauptbetreuer == 1)
+                                @if($tutor->PHaupt == 1||$tutor->THaupt)
                             </b>
                         @endif</td>
                     <td>
-                        @if($tutor->Hauptbetreuer == 1)
+                        @if($tutor->PHaupt == 1||$tutor->THaupt)
                             <b>
                                 @endif
                                 <a href="{{$tutor->Webexraum}}">{{$tutor->Webexraum}}</a>
-                                @if($tutor->Hauptbetreuer == 1)
+                                @if($tutor->PHaupt == 1||$tutor->THaupt)
                             </b>
                         @endif
                     </td>
@@ -159,15 +159,13 @@
                             <input type="hidden" value="{{$gruppeninfo[0]->Gruppenummer}}" name="Gruppenummer" id="haupt">
 
                             @if (!empty($tutor->ProfessorID))
-                                @dump($tutor->ProfessorID)
                                 <input type="hidden" value="{{$tutor->ProfessorID}}" name="PKennung" id="loeschen">
                             @else
-                                @dump($tutor->Kennung)
                                 <input type="hidden" value="{{$tutor->Kennung}}" name="TKennung" id="loeschen">
                             @endif
                             <input type="hidden" value="{{$modul->Modulnummer}}" name="Modulnummer" id="haupt">
                             <input type="hidden" value="{{$modul->Jahr}}" name="Jahr" id="haupt">
-                            @if($tutor->Hauptbetreuer == 1)
+                            @if($tutor->PHaupt == 1||$tutor->THaupt)
                                 <input type="submit" value="{{__("Hauptbetreuer")}}" name="Haupt" id="haupt" disabled>
                             @else
                                 <input type="submit" value="{{__("Hauptbetreuer")}}" name="Haupt" id="haupt">
