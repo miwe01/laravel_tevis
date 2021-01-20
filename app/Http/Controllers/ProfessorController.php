@@ -144,7 +144,7 @@ class ProfessorController extends Controller
         $leiter = DB::table('benutzerhatmodul')
             ->where('benutzerhatmodul.ModulID', '=',$request->Modulnummer)
             ->where('benutzerhatmodul.Jahr', '=',$request->Jahr)
-            ->where('benutzerhatmodul.BenutzerID', '=',$_SESSION['Prof_UserId'])
+            ->where('benutzerhatmodul.Rolle', '=','Professor')
             ->leftJoin('benutzer', 'benutzer.kennung','=', 'benutzerhatmodul.BenutzerID')
             ->get();
 
@@ -163,11 +163,68 @@ class ProfessorController extends Controller
             ->leftJoin('benutzerhatmodul','benutzerhatmodul.BenutzerID', '=','benutzer.kennung')
             ->get();
 
+        if (isset($request->testat_anlegen)) {
+            $abfrage = DB::table('testat')
+                ->where(['Modulnummer' => $request->Modulnummer,
+                    'Jahr' => $request->Jahr])
+                ->get();
+
+
+            if($abfrage->isEmpty())
+            {
+                DB::beginTransaction();
+                try {
+                    for ($i = 0; $i < $request->Testatanzahl; $i++) {
+                        DB::table('testat')
+                            ->insert(['Praktikumsnummer' => $i + 1, 'Modulnummer' => $request->Modulnummer,
+                                'Jahr' => $request->Jahr, 'Praktikumsname' => 'Praktikum ' . ($i + 1)]);
+                    }
+
+                    DB::table('testat')
+                        ->insert(['Praktikumsnummer' => $request->Testatanzahl +1, 'Modulnummer' => $request->Modulnummer, 'Jahr' => $request->Jahr, 'Praktikumsname' => 'Joker']);
+
+                    DB::table('testat')
+                        ->insert(['Praktikumsnummer' => $request->Testatanzahl + 2, 'Modulnummer' => $request->Modulnummer, 'Jahr' => $request->Jahr, 'Praktikumsname' => 'Endtestat']);
+                    $msg = "Neues Testat wurde angelegt!";
+                } catch (\Exception $e) {
+                    DB::rollback();
+                    $msg = "Fehler beim Anlegen des Testates!";
+                }
+                DB::commit();
+            }
+            else{$msg = "Fehler Testat schon vorhanden!";
+
+
+            }
+        }
+
+        if (isset($request->kurs_delete)) {
+
+            DB::table('modul')
+                ->where('Modulnummer', $request->Modulnummer)
+                ->where('Jahr', $request->Jahr)
+                ->delete();
+            $kurse = DB::table('professor')
+                ->leftJoin('benutzer', 'benutzer.kennung', '=', 'professor.kennung')
+                ->leftJoin('benutzerhatmodul', 'benutzerhatmodul.BenutzerID', '=', 'benutzer.kennung')
+                ->leftJoin('modul', 'modul.Modulnummer', '=', 'benutzerhatmodul.ModulID')
+                ->whereColumn( 'benutzerhatmodul.Jahr' , '=' ,'modul.Jahr')
+                ->where('professor.kennung',$_SESSION['Prof_UserId'])
+                ->orderBy('modul.Modulname')
+                ->get();
+
+
+            return view('Professor.meine_kurse', ['kurse' => $kurse, 'title' => 'Meine Kurse']);
+        }
+
+
+
 
 
         return view('Professor.kursverwaltung',
             ['title' => 'Modul','kursverwaltung' => $kursverwaltung, 'leiter' => $leiter, 'beteiligt' =>$beteiligt, 'professor'=> $professor, 'msg' => $msg]);
     }
+
     public function Gruppe_erstellen(Request $request){
         $msg = null;
         if (isset($request->submit))
@@ -191,17 +248,100 @@ class ProfessorController extends Controller
                 $msg = "Fehler beim Anlegen des Gruppe!";
             }
             DB::commit();
-            DB::table('professorbetreutgruppen')
-                ->insert([
-                    'ProfessorID' => $_SESSION['Prof_UserId'],
-                    'GruppenID' => $createdGroupNumber,
-                ]);
 
         }
 
         return view('Professor.new_group',
             ['title'=>'Neue Gruppe hinzufügen', 'msg' => $msg, 'Modulnummer' => $request->Modulnummer, 'Jahr' => $request->Jahr]);
     }
+    public function Testat_erstellen(Request $request){
+        DB::beginTransaction();
+        try {
+            for ($i =0; $i < $request->Testatanzahl; $i++)
+            {
+                DB::table('professorbetreutgruppen')
+                    ->insert(['Praktikumsnummer' => $i+1, 'Modulnummer' => $request->Modulnummer, 'Jahr' => $request->Jahr, 'Praktikumsname' => 'Praktikum' . ($i+1)]);
+            }
+
+            DB::table('professorbetreutgruppen')
+                ->insert(['Praktikumsnummer' => $request->Testatanzahl, 'Modulnummer' => $request->Modulnummer, 'Jahr' => $request->Jahr, 'Praktikumsname' => 'Joker']);
+
+            DB::table('professorbetreutgruppen')
+                ->insert(['Praktikumsnummer' => $request->Testatanzahl+1, 'Modulnummer' => $request->Modulnummer, 'Jahr' => $request->Jahr, 'Praktikumsname' => 'Endtestat']);
+            $msg = "Neues Testat wurde angelegt!";
+        } catch (\Exception $e) {
+            DB::rollback();
+            $msg = "Fehler beim Anlegen des Testates!";
+        }
+        DB::commit();
+
+    }
+
+    public function gruppenuebersicht(Request $request)
+    {
+
+        $studenten = DB::table('student')
+            ->leftJoin('benutzer', 'benutzer.kennung', '=', 'student.kennung')
+            ->leftJoin('studenteningruppen', 'studenteningruppen.Matrikelnummer', '=', 'student.Matrikelnummer')
+            ->join('gruppe', 'gruppe.gruppenummer', '=', 'studenteningruppen.GruppenID')
+            ->where('gruppe.gruppenummer', $request->Gruppenummer)
+            ->get();
+        $abc = null;
+        if(isset($request->search))
+        {
+            $studenten = DB::table('student')
+                ->leftJoin('benutzer' ,'benutzer.kennung', '=', 'student.kennung')
+                ->leftJoin('studenteningruppen', 'studenteningruppen.Matrikelnummer','=', 'student.Matrikelnummer')
+                ->join('gruppe', 'gruppe.gruppenummer', '=','studenteningruppen.GruppenID' )
+                ->where('gruppe.gruppenummer',$request->Gruppenummer)
+                ->where(function($q) use ($request) {
+                    $q->where("Vorname", "LIKE", "%{$request->term}%")
+                        ->orWhere("Nachname", "LIKE", "%{$request->term}%");
+                })
+                ->get();
+        }
+
+        if ($studenten->isEmpty()) {
+            $studenten = DB::table('student')
+                ->leftJoin('benutzer', 'benutzer.kennung', '=', 'student.kennung')
+                ->leftJoin('studenteningruppen', 'studenteningruppen.Matrikelnummer', '=', 'student.Matrikelnummer')
+                ->join('gruppe', 'gruppe.gruppenummer', '=', 'studenteningruppen.GruppenID')
+                ->where('gruppe.gruppenummer', $request->Gruppenummer)
+                ->get();
+            if (isset($request->search)) {
+                $abc = "Gesuchter Student ist nicht vorhanden";
+            }
+        }
+        $testat = DB::table('testat')
+            ->join('testatverwaltung', 'testatverwaltung.testatID', '=', 'testat.id')
+            ->join('modul', 'modul.Modulnummer', '=', 'testat.Modulnummer')
+            ->join('student', 'student.Matrikelnummer', '=', 'testatverwaltung.Matrikelnummer')
+            ->join('benutzer' ,'benutzer.kennung', '=', 'student.kennung')
+            ->whereColumn('testat.Jahr', '=', 'modul.Jahr')
+            ->where('modul.Modulname',$request->Modulname)
+            ->where('modul.Jahr',$request->Jahr)
+            ->get();
+
+        $betreuer = DB::table('tutor')
+            ->leftJoin('benutzer', 'benutzer.kennung', '=', 'tutor.kennung')
+            ->leftJoin('tutorbetreutgruppen', 'tutorbetreutgruppen.TutorID', '=', 'tutor.kennung')
+            ->join('gruppe', 'gruppe.gruppenummer', '=', 'tutorbetreutgruppen.GruppenID')
+            ->where('gruppe.gruppenummer', $request->Gruppenummer)
+            ->get();
+
+        $betreuerp = DB::table('professor')
+            ->leftJoin('benutzer', 'benutzer.kennung', '=', 'professor.kennung')
+            ->leftJoin('professorbetreutgruppen', 'professorbetreutgruppen.professorID', '=', 'professor.kennung')
+            ->join('gruppe', 'gruppe.gruppenummer', '=', 'professorbetreutgruppen.GruppenID')
+            ->where('gruppe.gruppenummer', $request->Gruppenummer)
+            ->get();
+
+
+        return view('Professor.testatverwaltung',['testat'=>$testat,'studenten'=>$studenten,'gruppenname' => $request->Gruppenname,
+            'modulname' => $request->Modulname, 'betreuer' => $betreuer, 'betreuerp' =>$betreuerp,'jahr' => $request->Jahr,'abc'=>$abc , 'title'=>'Gruppe']);
+    }
+
+
 
 
     public function gruppe(Request $request){
@@ -255,7 +395,7 @@ class ProfessorController extends Controller
         $betreuer = DB::table('benutzer')
             ->leftJoin("tutorbetreutgruppen", function($join) use ($gruppennummer){
                 $join->on("tutorbetreutgruppen.TutorID","=","benutzer.kennung")
-                     ->where('tutorbetreutgruppen.GruppenID', '=',  $gruppennummer);
+                    ->where('tutorbetreutgruppen.GruppenID', '=',  $gruppennummer);
             })
 
 
@@ -290,7 +430,6 @@ class ProfessorController extends Controller
             'modulnummer' => $request->Modulnummer,'jahr' => $request->Jahr,'gruppennummer' => $request->Gruppenummer,
             'gruppeninfo' => $gruppeninfo, 'gruppen'=>$gruppen, 'GruppenName'=>$gruppenNamen, 'testat' => $testat,'title'=>'Gruppe']);
     }
-
 
 
 
@@ -431,7 +570,7 @@ class ProfessorController extends Controller
             }
 
         }
-       // dd('check');
+        // dd('check');
         return redirect()->route('gruppe',['Gruppenummer'=>$request->GruppenID, 'Modulnummer'=>$request->Modulnummer,
             'Jahr' => $request-> Jahr, 'info'=>'Datei wurde importiert']);
     }
@@ -526,33 +665,33 @@ class ProfessorController extends Controller
 
 
             for ($i=0;$i<count($checkboxen);$i++){
-                    // if Checkbox angeklickt
-                    if ($checkboxen[$i] == "on"){
+                // if Checkbox angeklickt
+                if ($checkboxen[$i] == "on"){
 
-                        // wenn tutor/professor schon gruppe betreut
-                        $ingruppe = db::table($tablename)
-                            ->where('GruppenID', '=', $gruppenNamen[$i]->Gruppenummer)
-                            ->where($id, '=', $request->TutorID)
-                            ->get();
+                    // wenn tutor/professor schon gruppe betreut
+                    $ingruppe = db::table($tablename)
+                        ->where('GruppenID', '=', $gruppenNamen[$i]->Gruppenummer)
+                        ->where($id, '=', $request->TutorID)
+                        ->get();
 
-                        //dd($ingruppe);
+                    //dd($ingruppe);
 
-                        // wenn tutor noch nicht gruppe betreut
-                        if (sizeof($ingruppe)==0) {
+                    // wenn tutor noch nicht gruppe betreut
+                    if (sizeof($ingruppe)==0) {
 
-                            DB::table($tablename)
-                                ->insert([
-                                    'GruppenID' => $gruppenNamen[$i]->Gruppenummer,
-                                    $id => $request->TutorID
-                                ]);
+                        DB::table($tablename)
+                            ->insert([
+                                'GruppenID' => $gruppenNamen[$i]->Gruppenummer,
+                                $id => $request->TutorID
+                            ]);
 
-                        }
                     }
+                }
             }
 
             return redirect()->route('gruppe',['Gruppenummer'=>$request->Gruppennummer, 'Modulnummer'=>$request->Modulnummer, 'Jahr' => $request-> Jahr, 'info'=>'Erfolgreich']);
 
-            } else{
+        } else{
             return redirect()->route('gruppe',['Gruppenummer'=>$request->Gruppennummer, 'Modulnummer'=>$request->Modulnummer, 'Jahr' => $request-> Jahr, 'fehler'=>'Betreuer gibt es nicht']);
         }
 
@@ -629,70 +768,6 @@ class ProfessorController extends Controller
 
         return redirect()->route('gruppe',['Gruppenummer'=>$request->Gruppennummer, 'Modulnummer'=>$request->Modulnummer,
             'Jahr' => $request-> Jahr]);
-    }
-
-    public function testatverwaltung(Request $request)
-    {
-
-        $studenten = DB::table('student')
-            ->leftJoin('benutzer', 'benutzer.kennung', '=', 'student.kennung')
-            ->leftJoin('studenteningruppen', 'studenteningruppen.Matrikelnummer', '=', 'student.Matrikelnummer')
-            ->join('gruppe', 'gruppe.gruppenummer', '=', 'studenteningruppen.GruppenID')
-            ->where('gruppe.gruppenummer', $request->Gruppenummer)
-            ->get();
-        $abc = null;
-        if(isset($request->search))
-        {
-            $studenten = DB::table('student')
-                ->leftJoin('benutzer' ,'benutzer.kennung', '=', 'student.kennung')
-                ->leftJoin('studenteningruppen', 'studenteningruppen.Matrikelnummer','=', 'student.Matrikelnummer')
-                ->join('gruppe', 'gruppe.gruppenummer', '=','studenteningruppen.GruppenID' )
-                ->where('gruppe.gruppenummer',$request->Gruppenummer)
-                ->where(function($q) use ($request) {
-                    $q->where("Vorname", "LIKE", "%{$request->term}%")
-                        ->orWhere("Nachname", "LIKE", "%{$request->term}%");
-                })
-                ->get();
-        }
-
-        if ($studenten->isEmpty()) {
-            $studenten = DB::table('student')
-                ->leftJoin('benutzer', 'benutzer.kennung', '=', 'student.kennung')
-                ->leftJoin('studenteningruppen', 'studenteningruppen.Matrikelnummer', '=', 'student.Matrikelnummer')
-                ->join('gruppe', 'gruppe.gruppenummer', '=', 'studenteningruppen.GruppenID')
-                ->where('gruppe.gruppenummer', $request->Gruppenummer)
-                ->get();
-            if (isset($request->search)) {
-                $abc = "Gesuchter Student ist nicht vorhanden";
-            }
-        }
-        $testat = DB::table('testat')
-            ->join('testatverwaltung', 'testatverwaltung.testatID', '=', 'testat.id')
-            ->join('modul', 'modul.Modulnummer', '=', 'testat.Modulnummer')
-            ->join('student', 'student.Matrikelnummer', '=', 'testatverwaltung.Matrikelnummer')
-            ->join('benutzer' ,'benutzer.kennung', '=', 'student.kennung')
-            ->whereColumn('testat.Jahr', '=', 'modul.Jahr')
-            ->where('modul.Modulname',$request->Modulname)
-            ->where('modul.Jahr',$request->Jahr)
-            ->get();
-
-        $betreuer = DB::table('tutor')
-            ->leftJoin('benutzer', 'benutzer.kennung', '=', 'tutor.kennung')
-            ->leftJoin('tutorbetreutgruppen', 'tutorbetreutgruppen.TutorID', '=', 'tutor.kennung')
-            ->join('gruppe', 'gruppe.gruppenummer', '=', 'tutorbetreutgruppen.GruppenID')
-            ->where('gruppe.gruppenummer', $request->Gruppenummer)
-            ->get();
-
-        $betreuerp = DB::table('professor')
-            ->leftJoin('benutzer', 'benutzer.kennung', '=', 'professor.kennung')
-            ->leftJoin('professorbetreutgruppen', 'professorbetreutgruppen.professorID', '=', 'professor.kennung')
-            ->join('gruppe', 'gruppe.gruppenummer', '=', 'professorbetreutgruppen.GruppenID')
-            ->where('gruppe.gruppenummer', $request->Gruppenummer)
-            ->get();
-
-
-        return view('Professor.testatverwaltung',['testat'=>$testat,'studenten'=>$studenten,'gruppenname' => $request->Gruppenname,
-            'modulname' => $request->Modulname, 'betreuer' => $betreuer, 'betreuerp' =>$betreuerp,'jahr' => $request->Jahr,'abc'=>$abc , 'title'=>'Gruppe']);
     }
 
     public function testat(Request $request)
@@ -792,19 +867,6 @@ class ProfessorController extends Controller
                 'Jahr' => $request-> Jahr]);
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     public function gruppeLoeschen(Request $request){
