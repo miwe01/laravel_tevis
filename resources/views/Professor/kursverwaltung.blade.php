@@ -56,6 +56,12 @@
         </form>
         </div>
     @else
-        Fehlende Berechtigung für diesen Kurs!
+        <h4>Fehlende Berechtigung für diesen Kurs!</h4>
     @endif
+    <div>
+        <form action="/Professor/meine_kurse" method="post">
+            @csrf
+            <button type="submit">{{__("Zurück zur Kursübersicht")}}</button>
+        </form>
+    </div>
 @endsection
