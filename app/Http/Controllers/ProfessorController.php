@@ -18,7 +18,10 @@ class ProfessorController extends Controller
             ->leftJoin('benutzerhatmodul', 'benutzerhatmodul.BenutzerID', '=', 'benutzer.kennung')
             ->leftJoin('modul', 'modul.Modulnummer', '=', 'benutzerhatmodul.ModulID')
             ->whereColumn( 'benutzerhatmodul.Jahr' , '=' ,'modul.Jahr')
-            ->where('modul.Jahr', '=', $aktuellesJahr-1)
+            ->where(function($q) use ($aktuellesJahr) {
+                $q->where('modul.Jahr', '=', $aktuellesJahr-1)
+                    ->orWhere('modul.Jahr', '=', $aktuellesJahr);
+            })
             ->where('professor.kennung',$_SESSION['Prof_UserId'])
             ->orderBy('modul.Modulname')
             ->get();
@@ -31,7 +34,10 @@ class ProfessorController extends Controller
             ->RightJoin('gruppe', 'gruppe.Gruppenummer', '=', 'professorbetreutgruppen.GruppenID')
             ->whereColumn('gruppe.Modulnummer', '=', 'modul.Modulnummer')
             ->whereColumn( 'benutzerhatmodul.Jahr' , '=' ,'modul.Jahr')
-            ->where('modul.Jahr', '=', $aktuellesJahr-1)
+            ->where(function($q) use ($aktuellesJahr) {
+                $q->where('modul.Jahr', '=', $aktuellesJahr-1)
+                    ->orWhere('modul.Jahr', '=', $aktuellesJahr);
+            })
             ->whereColumn('gruppe.Jahr', '=', 'modul.Jahr')
             ->where('professor.kennung',$_SESSION['Prof_UserId'])
             ->orderBy('gruppe.Gruppenummer')
@@ -269,28 +275,15 @@ class ProfessorController extends Controller
         return view('Professor.new_group',
             ['title'=>'Neue Gruppe hinzufügen', 'msg' => $msg, 'Modulnummer' => $request->Modulnummer, 'Jahr' => $request->Jahr]);
     }
-    public function Testat_erstellen(Request $request){
-        DB::beginTransaction();
-        try {
-            for ($i =0; $i < $request->Testatanzahl; $i++)
-            {
-                DB::table('professorbetreutgruppen')
-                    ->insert(['Praktikumsnummer' => $i+1, 'Modulnummer' => $request->Modulnummer, 'Jahr' => $request->Jahr, 'Praktikumsname' => 'Praktikum' . ($i+1)]);
-            }
 
-            DB::table('professorbetreutgruppen')
-                ->insert(['Praktikumsnummer' => $request->Testatanzahl, 'Modulnummer' => $request->Modulnummer, 'Jahr' => $request->Jahr, 'Praktikumsname' => 'Joker']);
 
-            DB::table('professorbetreutgruppen')
-                ->insert(['Praktikumsnummer' => $request->Testatanzahl+1, 'Modulnummer' => $request->Modulnummer, 'Jahr' => $request->Jahr, 'Praktikumsname' => 'Endtestat']);
-            $msg = "Neues Testat wurde angelegt!";
-        } catch (\Exception $e) {
-            DB::rollback();
-            $msg = "Fehler beim Anlegen des Testates!";
-        }
-        DB::commit();
 
-    }
+
+
+
+
+
+
 
     public function gruppenuebersicht(Request $request)
     {
@@ -352,9 +345,62 @@ class ProfessorController extends Controller
             ->get();
 
 
-        return view('Professor.gruppenübersicht',['testat'=>$testat,'studenten'=>$studenten,'gruppenname' => $request->Gruppenname,
+        return view('Professor.gruppenuebersicht',['testat'=>$testat,'studenten'=>$studenten,'gruppenname' => $request->Gruppenname,
             'modulname' => $request->Modulname, 'betreuer' => $betreuer, 'betreuerp' =>$betreuerp,'jahr' => $request->Jahr,'abc'=>$abc , 'title'=>'Gruppe']);
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -426,21 +472,14 @@ class ProfessorController extends Controller
 
             ->get();
 
-
-
-
-        foreach($gruppeninfos as $ginfos){
-            $gruppeninfo = $ginfos;
-        }
-
         foreach($module as $mods){
             $modul = $mods;
         }
 
 
-        return view('Professor.gruppe_bearbeiten',['studenten'=>$studenten, 'modul' =>$modul, 'betreuer' => $betreuer,
-            'modulnummer' => $request->Modulnummer,'jahr' => $request->Jahr,'gruppennummer' => $request->Gruppenummer,
-            'gruppeninfo' => $gruppeninfo, 'gruppen'=>$gruppen, 'GruppenName'=>$gruppenNamen, 'testat' => $testat,'title'=>'Gruppe']);
+        return view('Professor.gruppe',['studenten'=>$studenten, 'modul' =>$modul, 'betreuer' => $betreuer,
+            'modulnummer' => $request->Modulnummer,'jahr' => $request->Jahr,'Gruppenummer' => $request->Gruppenummer,
+            'gruppeninfo' => $gruppeninfos, 'gruppen'=>$gruppen, 'GruppenName'=>$gruppenNamen, 'testat' => $testat,'title'=>'Gruppe']);
     }
 
 
@@ -608,6 +647,8 @@ class ProfessorController extends Controller
             ->where('Matrikelnummer', '=', $request->Matrikelnummer)
             ->delete();
         $this->studentZuGruppe($request);
+        return redirect()->route('gruppe',['Gruppenummer'=>$request->GruppenID, 'Modulnummer'=>$request->Modulnummer,
+            'Jahr' => $request-> Jahr, 'info'=>'Student wurde verschoben']);
     }
 
 
@@ -629,8 +670,8 @@ class ProfessorController extends Controller
             // wenn tutor ist
             if (sizeof($ex)>0)
             {
-              $id = "TutorID";
-              $tablename = "tutorbetreutgruppen";
+                $id = "TutorID";
+                $tablename = "tutorbetreutgruppen";
             }else{
                 $id = "ProfessorID";
                 $tablename = "professorbetreutgruppen";
@@ -780,32 +821,37 @@ class ProfessorController extends Controller
 
 
     public function ansprechperson(Request $request){
-        // checkt ob Professor oder Tutor ist
-        $tablename = "";
-        $id = "";
-        if (isset($request->professor)){
-            $tablename ="professorbetreutgruppen";
-            $id = "ProfessorID";
-        } else{
-            $tablename ="tutorbetreutgruppen";
-            $id = "TutorID";
-        }
-
         DB::table("tutorbetreutgruppen")
             ->where('GruppenID', $request->Gruppennummer)
             ->update(['Hauptbetreuer' => 0]);
-
         DB::table("professorbetreutgruppen")
             ->where('GruppenID', $request->Gruppennummer)
             ->update(['Hauptbetreuer' => 0]);
 
 
-        DB::table($tablename)
-            ->where('GruppenID', $request->Gruppennummer)
-            ->where($id, $request->Kennung)
-            ->update(['Hauptbetreuer' => 1]);
 
-        return redirect()->route('gruppe',['Gruppenummer'=>$request->Gruppennummer, 'Modulnummer'=>$request->Modulnummer,
+
+
+        if (isset($request->PKennung))
+
+        {
+            DB::table('professorbetreutgruppen')
+                ->where('GruppenID', $request->Gruppenummer)
+                ->where('ProfessorID', $request->PKennung)
+                ->update(['Hauptbetreuer' => 1]);
+
+        }
+        elseif(isset($request->TKennung))
+
+        {
+
+            DB::table('tutorbetreutgruppen')
+                ->where('GruppenID', $request->Gruppenummer)
+                ->where('TutorID', $request->TKennung)
+                ->update(['Hauptbetreuer' => 1]);
+        }
+
+        return redirect()->route('gruppe',['Gruppenummer'=>$request->Gruppenummer, 'Modulnummer'=>$request->Modulnummer,
             'Jahr' => $request-> Jahr]);
     }
 
@@ -860,6 +906,26 @@ class ProfessorController extends Controller
             }
         }
 
+        DB::beginTransaction();
+        try {
+            $counter2 = 0;
+            if(isset($request->Testatcomment))
+            {
+                foreach ($request->Testatcomment as $try)
+                {
+                    DB::table('testatverwaltung')
+                        ->where('testatverwaltung.Matrikelnummer', $request->Matrikelnummer)
+                        ->where('testatverwaltung.TestatID', $try)
+                        ->update(['testatverwaltung.Benotung' => $request->note[$counter2]]);
+                    $counter2++;
+                }
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+        }
+        DB::commit();
+
+
         $testat = DB::table('testat')
             ->join('testatverwaltung', 'testatverwaltung.testatID', '=', 'testat.id')
             ->join('modul', 'modul.Modulnummer', '=', 'testat.Modulnummer')
@@ -895,35 +961,17 @@ class ProfessorController extends Controller
                         'GruppenID' => $request->GruppenID,
                         'TutorID' => $request->TutorID
                     ]);
-                return redirect()->route('kurs',['Gruppenummer'=>$request->GruppenID, 'Modulnummer'=>$request->Modulnummer,
+                return redirect()->route('gruppe',['Gruppenummer'=>$request->GruppenID, 'Modulnummer'=>$request->Modulnummer,
                     'Jahr' => $request-> Jahr]);
             } else {
-                return redirect()->route('kurs',['Gruppenummer'=>$request->GruppenID, 'Modulnummer'=>$request->Modulnummer,
+                return redirect()->route('gruppe',['Gruppenummer'=>$request->GruppenID, 'Modulnummer'=>$request->Modulnummer,
                     'Jahr' => $request-> Jahr]);
             }
         }else{
-            return redirect()->route('kurs',['Gruppenummer'=>$request->GruppenID, 'Modulnummer'=>$request->Modulnummer,
+            return redirect()->route('gruppe',['Gruppenummer'=>$request->GruppenID, 'Modulnummer'=>$request->Modulnummer,
                 'Jahr' => $request-> Jahr]);
         }
     }
 
 
-    public function gruppeLoeschen(Request $request){
-        //echo 'noooooom';
-        echo $request->GruppenID;
-
-        DB::table('gruppe')
-            ->where('Gruppenummer', $request->GruppenID)
-            ->delete();
-
-        return redirect()->route('kurs');
-    }
-
-    public function KursLoeschen(Request $request){
-        DB::table('modul')
-            ->where('Modulnummer', $request->GruppenID)
-            ->delete();
-
-        return redirect()->route('Professor');
-    }
 }

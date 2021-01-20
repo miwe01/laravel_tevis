@@ -45,7 +45,7 @@
                     <li>{{__("Keine Daten vorhanden")}}.</li>
                 @endforelse
             </select>
-            <input type="submit" name="Hinzufügen" id="Hinzufügen" value="{{__("Beteiligten Professor hinzufügen")}}">
+            <input type="submit" name="Hinzufügen" id="Hinzufügen" value="{{__("Beteiligten Professor hinzufügen/löschen")}}">
         </form>
         <br>
         <form action="/Professor/meine_kurse/kursverwaltung/gruppe_erstellen" method="post">

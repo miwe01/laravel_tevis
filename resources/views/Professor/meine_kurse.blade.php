@@ -28,12 +28,12 @@
                     <details>
                         <summary> {{$gruppe->Gruppenname}}</summary>
                         <ul>
-                            <form action="/Professor/gruppenuebersicht" method="post">
+                            <form action="/Professor/gruppe" method="post">
                                 @csrf
-                                <input type="hidden"  value="{{$gruppe->Gruppenname}} " name="Gruppenname" id="Testat">
-                                <input type="hidden"  value="{{$gruppe->Gruppenummer}} " name="Gruppenummer" id="Testat">
-                                <input type="hidden"  value="{{$gruppe->Jahr}} " name="Jahr" id="Testat">
-                                <button type="submit"  value="{{$gruppe->Modulname}} " name="Modulname" id="Testat">{{__("Gruppenverwaltung")}} {{$gruppe->Gruppenname}}</button>
+                                <input type="hidden" value="{{$gruppe->Modulnummer}}" name="Modulnummer" id="bearbeiten">
+                                <input type="hidden" value="{{$gruppe->Jahr}}" name="Jahr" id="bearbeiten">
+                                <input type="hidden" value="{{$gruppe->Gruppenummer}}" name="Gruppenummer" id="bearbeiten">
+                                <input type="submit" name="bearbeiten" id="bearbeiten" value="{{__("Gruppenübersicht")}}">
                             </form>
                             <form action="/Professor/meine_kurse" method="post">
                                 @csrf
@@ -44,7 +44,7 @@
                     </details>
                 @endif
             @empty
-                <h4>{{__("Keine betreuten Gruppen in diesem Kurs")}}.</h4>
+                <li>{{__("Keine betreuten Gruppen in diesem Kurs")}}.</li>
             @endforelse
 
         </div>

@@ -5,7 +5,7 @@
 
     <link rel="stylesheet" href="{{URL::asset("CSS/styleProfessor.css")}}">
     <br>
-    <h1 align="center">{{__("Meine Kurse")}}</h1>
+    <h1 align="center">{{__("Betreute Kurse")}}</h1>
     <br>
 
     <form action="/Professor/meine_kurse" method="post">
