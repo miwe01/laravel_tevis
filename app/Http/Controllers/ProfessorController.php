@@ -413,8 +413,6 @@ class ProfessorController extends Controller
                     ->where('tutorbetreutgruppen.GruppenID', '=',  $gruppennummer);
             })
 
-
-
             ->leftJoin('professorbetreutgruppen', 'professorbetreutgruppen.ProfessorID','=', 'benutzer.kennung')
             ->leftJoin('tutor', 'Benutzer.Kennung','=', 'tutor.Kennung')
             ->join("gruppe",function($join){
@@ -448,24 +446,37 @@ class ProfessorController extends Controller
 
 
 
-
-
     public function tutorLoeschen(Request $request){
-        $betreut=DB::table('tutorbetreutgruppen')
-            ->where('TutorID', $request->Kennung)
+        //11111
+        // checkt ob Professor oder Tutor ist
+        $tablename = "";
+        $id = "";
+        if (isset($request->professor)){
+            $tablename ="professorbetreutgruppen";
+            $id = "ProfessorID";
+        } else{
+            $tablename ="tutorbetreutgruppen";
+            $id = "TutorID";
+        }
+
+        //dd($request->Gruppennummer);
+        //dd($tablename);
+        // checkt ob Tutor/Professor gruppe betreut
+        $betreut=DB::table($tablename)
+            ->where($id, $request->Kennung)
             ->where('GruppenID', $request->Gruppennummer)
             ->get();
 
         if(!empty($betreut)) {
-            DB::table('tutorbetreutgruppen')
-                ->where('TutorID', '=', $request->Kennung)
+            DB::table($tablename)
+                ->where($id, '=', $request->Kennung)
                 ->where('GruppenID', '=', $request->Gruppennummer)
                 ->delete();
             return redirect()->route('gruppe',['Gruppenummer'=>$request->Gruppennummer, 'Modulnummer'=>$request->Modulnummer,
-                'Jahr' => $request-> Jahr]);
+                'Jahr' => $request-> Jahr, 'info'=>'Benutzer wurde gelöscht']);
         }else{
             return redirect()->route('gruppe',['Gruppenummer'=>$request->Gruppennummer, 'Modulnummer'=>$request->Modulnummer,
-                'Jahr' => $request-> Jahr]);
+                'Jahr' => $request-> Jahr, 'Fehler aufgetreten']);
         }
     }
 
@@ -600,34 +611,53 @@ class ProfessorController extends Controller
     }
 
 
+
     public function betreuerZuGruppe(Request $request){
         $ex=db::table('tutor')
             ->select('Kennung')
             ->where('Kennung','=',$request->TutorID)
             ->get();
 
-        if(sizeof($ex)>0) {
+        $prof=db::table('professor')
+            ->select('Kennung')
+            ->where('Kennung','=',$request->TutorID)
+            ->get();
 
-            $ingruppe = db::table('tutorbetreutgruppen')
+        if(sizeof($ex)>0 || sizeof($prof)>0) {
+            $id = "";
+            $tablename = "";
+            // wenn tutor ist
+            if (sizeof($ex)>0)
+            {
+              $id = "TutorID";
+              $tablename = "tutorbetreutgruppen";
+            }else{
+                $id = "ProfessorID";
+                $tablename = "professorbetreutgruppen";
+            }
+
+
+
+            $ingruppe = db::table($tablename)
                 ->where('GruppenID', '=', $request->Gruppennummer)
-                ->where('TutorID', '=', $request->TutorID)
+                ->where($id, '=', $request->TutorID)
                 ->get();
 
             if (sizeof($ingruppe)==0) {
-                DB::table('tutorbetreutgruppen')
+                DB::table($tablename)
                     ->insert([
                         'GruppenID' => $request->Gruppennummer,
-                        'TutorID' => $request->TutorID
+                        $id => $request->TutorID
                     ]);
                 return redirect()->route('gruppe',['Gruppenummer'=>$request->Gruppennummer, 'Modulnummer'=>$request->Modulnummer,
-                    'Jahr' => $request-> Jahr]);
+                    'Jahr' => $request-> Jahr, 'info'=>'Betreuer hinzugefügt']);
             } else {
                 return redirect()->route('gruppe',['Gruppenummer'=>$request->Gruppennummer, 'Modulnummer'=>$request->Modulnummer,
-                    'Jahr' => $request-> Jahr]);
+                    'Jahr' => $request-> Jahr, 'info'=>'Betreuer gibt es schon']);
             }
         }else{
             return redirect()->route('gruppe',['Gruppenummer'=>$request->Gruppennummer, 'Modulnummer'=>$request->Modulnummer,
-                'Jahr' => $request-> Jahr]);
+                'Jahr' => $request-> Jahr, 'fehler'=> 'Keine gültige Kennung']);
         }
     }
 
@@ -774,11 +804,6 @@ class ProfessorController extends Controller
             ->where('GruppenID', $request->Gruppennummer)
             ->where($id, $request->Kennung)
             ->update(['Hauptbetreuer' => 1]);
-
-
-
-
-
 
         return redirect()->route('gruppe',['Gruppenummer'=>$request->Gruppennummer, 'Modulnummer'=>$request->Modulnummer,
             'Jahr' => $request-> Jahr]);

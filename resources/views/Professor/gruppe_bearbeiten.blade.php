@@ -148,6 +148,7 @@
                             <input type="hidden" value="{{$gruppeninfo->Gruppenummer}}" name="Gruppennummer" id="loeschen">
                             {{-- Wenn Professor --}}
                             @if($tutor->Rolle == NULL)
+                                <input type="hidden" value="1" name="professor" id="loeschen">
                                 <input type="hidden" value="{{$tutor->ProfessorID}}" name="Kennung" id="loeschen">
                             @else
                                 <input type="hidden" value="{{$tutor->Kennung}}" name="Kennung" id="loeschen">
@@ -162,6 +163,7 @@
                             @csrf
                             <input type="hidden" value="{{$gruppeninfo->Gruppenummer}}" name="Gruppennummer" id="haupt">
                             {{-- Wenn Professor --}}
+
                             @if($tutor->Rolle == NULL)
                                 <input type="hidden" value="1" name="professor" id="loeschen">
                                 <input type="hidden" value="{{$tutor->ProfessorID}}" name="Kennung" id="loeschen">

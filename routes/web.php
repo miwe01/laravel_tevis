@@ -60,7 +60,7 @@ Route::middleware('ProfAuth')->prefix('Professor')->group(function() {
     Route::post('/gruppe/studentenHinzu', [ProfessorController::class, 'studentenZuGruppe']);
     Route::post('/gruppe/betreuerHinzu', [ProfessorController::class, 'betreuerZuGruppe']);
     Route::post('/gruppe/betreuerinGruppenHinzu', [ProfessorController::class, 'betreuerinGruppenHinzu']);
-    Route::post('/gruppe/Hauptbetreuer', [ProfessorController::class, 'ansprechperson']);
+    Route::post('/gruppe/Hauptbetreuer', [ProfessorController::class, 'betreuerHinzufu']);
 
 
     Route::post('/kurs/BeteiligProf', [ProfessorController::class, 'BeteiligProf']);
