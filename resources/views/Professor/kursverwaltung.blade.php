@@ -7,31 +7,31 @@
     <h4> {{$leiter[0]->Vorname}} {{$leiter[0]->Nachname}}</h4>
     <h1> Betreuender Professor:</h1>
 
-    @if ($leiter[0]->Rolle == 'Professor')
-        <!-- <link rel="stylesheet" href="{{URL::asset("CSS/styleProfessor_kurs.css")}}"> -->
-        @forelse ($beteiligt as $b)
-            @if ($b->Rolle == 'Beteiligter Professor')
-                <h4>{{$b->Vorname}} {{$b->Nachname}}</h4>
-            @endif
-        @empty
-            <li>{{__("Keine Daten vorhanden")}}.</li>
-        @endforelse
-        <table>
-            <tr>
-                <th>Modulnummer</th>
-                <th>Erstelldatum</th>
-            </tr>
-            <tr>
-                <th>{{$kursverwaltung[0]->Modulnummer}}</th>
-                <th>{{$kursverwaltung[0]->erstellt_am}}</th>
-            </tr>
 
-
-        </table>
-        @if (isset($msg))
-           <h4>{{$msg}}</h4>
+    <!-- <link rel="stylesheet" href="{{URL::asset("CSS/styleProfessor_kurs.css")}}"> -->
+    @forelse ($beteiligt as $b)
+        @if ($b->Rolle == 'Beteiligter Professor' && $b->Jahr == $kursverwaltung[0]->Jahr && $b->ModulID == $kursverwaltung[0]->Modulnummer)
+            <h4>{{$b->Vorname}} {{$b->Nachname}}</h4>
         @endif
-        <div style="text-align: center">
+    @empty
+        <li>{{__("Keine Daten vorhanden")}}.</li>
+    @endforelse
+    <table>
+        <tr>
+            <th>Modulnummer</th>
+            <th>Erstelldatum</th>
+        </tr>
+        <tr>
+            <th>{{$kursverwaltung[0]->Modulnummer}}</th>
+            <th>{{$kursverwaltung[0]->erstellt_am}}</th>
+        </tr>
+
+
+    </table>
+    @if (isset($msg))
+        <h4>{{$msg}}</h4>
+    @endif
+    <div style="text-align: center">
         <form action="/Professor/meine_kurse/kursverwaltung" method="post">
             @csrf
             <input type="hidden" value="{{$kursverwaltung[0]->Modulnummer}}" name="Modulnummer" id="bearbeiten">
@@ -47,17 +47,32 @@
             </select>
             <input type="submit" name="Hinzufügen" id="Hinzufügen" value="{{__("Beteiligten Professor hinzufügen")}}">
         </form>
-
+        <br>
         <form action="/Professor/meine_kurse/kursverwaltung/gruppe_erstellen" method="post">
             @csrf
             <input type="hidden" value="{{$kursverwaltung[0]->Modulnummer}}" name="Modulnummer" id="bearbeiten">
             <input type="hidden" value="{{$kursverwaltung[0]->Jahr}}" name="Jahr" id="bearbeiten">
             <input type="submit" name="bearbeiten" id="bearbeiten" value="{{__("neue Gruppe hinzufügen")}}">
         </form>
-        </div>
-    @else
-        <h4>Fehlende Berechtigung für diesen Kurs!</h4>
-    @endif
+        <br>
+        <form action="/Professor/meine_kurse/kursverwaltung" method="post">
+            @csrf
+            <input type="number" name="Testatanzahl" min="1" id="Testatanzahl">
+            <input type="hidden" value="{{$kursverwaltung[0]->Modulnummer}}" name="Modulnummer" id="bearbeiten">
+            <input type="hidden" value="{{$kursverwaltung[0]->Jahr}}" name="Jahr" id="bearbeiten">
+            <input type="submit" name="testat_anlegen" id="testat_anlegen" value="{{__("Testat hinzufügen")}}">
+        </form>
+        @if ($leiter[0]->Kennung == $_SESSION['Prof_UserId'])
+            <br>
+            <form action="/Professor/meine_kurse/kursverwaltung" method="post">
+                @csrf
+                <input type="hidden" value="{{$kursverwaltung[0]->Modulnummer}}" name="Modulnummer" id="bearbeiten">
+                <input type="hidden" value="{{$kursverwaltung[0]->Jahr}}" name="Jahr" id="bearbeiten">
+                <input type="submit" name="kurs_delete" id="kurs_delete" value="{{__("Diesen Kurs löschen")}}">
+            </form>
+        @endif
+    </div>
+    <br>
     <div>
         <form action="/Professor/meine_kurse" method="post">
             @csrf

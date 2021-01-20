@@ -27,9 +27,9 @@
         <input type="text" id="Semester" name="Semester" />
         <br><br><br>
         <button type="submit">Kurs Hinzufügen </button>
-         @if (isset($msg))
-        {{$msg}}
-    @endif
+        @if (isset($msg))
+            {{$msg}}
+        @endif
     </form>
     <br>
     <div>
@@ -39,6 +39,6 @@
         </form>
     </div>
 
-   
+
 
 @endsection
