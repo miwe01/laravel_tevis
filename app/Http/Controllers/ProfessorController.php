@@ -12,13 +12,13 @@ class ProfessorController extends Controller
 {
 
     public function index(Request $request){
-
+        $aktuellesJahr = date("Y");
         $kurse = DB::table('professor')
             ->leftJoin('benutzer', 'benutzer.kennung', '=', 'professor.kennung')
             ->leftJoin('benutzerhatmodul', 'benutzerhatmodul.BenutzerID', '=', 'benutzer.kennung')
             ->leftJoin('modul', 'modul.Modulnummer', '=', 'benutzerhatmodul.ModulID')
             ->whereColumn( 'benutzerhatmodul.Jahr' , '=' ,'modul.Jahr')
-            ->where('modul.Jahr', '=', 2020)
+            ->where('modul.Jahr', '=', $aktuellesJahr-1)
             ->where('professor.kennung',$_SESSION['Prof_UserId'])
             ->orderBy('modul.Modulname')
             ->get();
@@ -31,7 +31,7 @@ class ProfessorController extends Controller
             ->RightJoin('gruppe', 'gruppe.Gruppenummer', '=', 'professorbetreutgruppen.GruppenID')
             ->whereColumn('gruppe.Modulnummer', '=', 'modul.Modulnummer')
             ->whereColumn( 'benutzerhatmodul.Jahr' , '=' ,'modul.Jahr')
-            ->where('modul.Jahr', '=', 2020)
+            ->where('modul.Jahr', '=', $aktuellesJahr-1)
             ->whereColumn('gruppe.Jahr', '=', 'modul.Jahr')
             ->where('professor.kennung',$_SESSION['Prof_UserId'])
             ->orderBy('gruppe.Gruppenummer')
@@ -44,12 +44,18 @@ class ProfessorController extends Controller
             ->where('tutorbetreutgruppen.Hauptbetreuer', '=', 1)
             ->get();
 
+
         return view('Professor.dashboard', ['kurse'=> $kurse, 'gruppen' => $gruppen , 'title' => 'Dashboard', 'haupt' => $haupt]);
     }
 
     public function meineKurse(Request $request){
-
-
+        $aktuellesJahr = date("Y");
+        if (isset($request->löschen))
+        {
+            DB::table('gruppe')
+                ->where('Gruppenummer', $request->Gruppenummer)
+                ->delete();
+        }
         $kurse = DB::table('professor')
             ->leftJoin('benutzer', 'benutzer.kennung', '=', 'professor.kennung')
             ->leftJoin('benutzerhatmodul', 'benutzerhatmodul.BenutzerID', '=', 'benutzer.kennung')
@@ -59,8 +65,21 @@ class ProfessorController extends Controller
             ->orderBy('modul.Modulname')
             ->get();
 
+        $gruppen = DB::table('professor')
+            ->leftJoin('benutzer', 'benutzer.kennung', '=', 'professor.kennung')
+            ->leftJoin('benutzerhatmodul', 'benutzerhatmodul.BenutzerID', '=', 'benutzer.kennung')
+            ->leftJoin('modul', 'modul.Modulnummer', '=', 'benutzerhatmodul.ModulID')
+            ->RightJoin('gruppe', 'gruppe.Modulnummer', '=', 'modul.Modulnummer')
+            ->whereColumn('gruppe.Modulnummer', '=', 'modul.Modulnummer')
+            ->whereColumn( 'benutzerhatmodul.Jahr' , '=' ,'modul.Jahr')
+            ->whereColumn('gruppe.Jahr', '=', 'modul.Jahr')
+            ->where('professor.kennung',$_SESSION['Prof_UserId'])
+            ->orderBy('gruppe.Gruppenummer')
+            ->get();
 
-        return view('Professor.meine_kurse', ['kurse' => $kurse, 'title' => 'Meine Kurse']);
+
+
+        return view('Professor.meine_kurse', ['kurse' => $kurse, 'gruppen' => $gruppen, 'title' => 'Meine Kurse']);
     }
 
     public function newCourse(Request $request)
@@ -217,10 +236,6 @@ class ProfessorController extends Controller
             return view('Professor.meine_kurse', ['kurse' => $kurse, 'title' => 'Meine Kurse']);
         }
 
-
-
-
-
         return view('Professor.kursverwaltung',
             ['title' => 'Modul','kursverwaltung' => $kursverwaltung, 'leiter' => $leiter, 'beteiligt' =>$beteiligt, 'professor'=> $professor, 'msg' => $msg]);
     }
@@ -337,7 +352,7 @@ class ProfessorController extends Controller
             ->get();
 
 
-        return view('Professor.testatverwaltung',['testat'=>$testat,'studenten'=>$studenten,'gruppenname' => $request->Gruppenname,
+        return view('Professor.gruppenübersicht',['testat'=>$testat,'studenten'=>$studenten,'gruppenname' => $request->Gruppenname,
             'modulname' => $request->Modulname, 'betreuer' => $betreuer, 'betreuerp' =>$betreuerp,'jahr' => $request->Jahr,'abc'=>$abc , 'title'=>'Gruppe']);
     }
 
@@ -413,7 +428,6 @@ class ProfessorController extends Controller
 
             ->get();
 
-        dd($betreuer);
 
 
 
