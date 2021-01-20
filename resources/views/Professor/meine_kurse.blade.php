@@ -44,7 +44,7 @@
                     </details>
                 @endif
             @empty
-                <li>{{__("Keine betreuten Gruppen in diesem Kurs")}}.</li>
+                <h4>{{__("Keine betreuten Gruppen in diesem Kurs")}}.</h4>
             @endforelse
 
         </div>
