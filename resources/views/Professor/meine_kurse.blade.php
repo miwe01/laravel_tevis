@@ -9,7 +9,7 @@
     <form  action="/Professor/meine_kurse/new" method="post" >
         @csrf
         <input type="hidden" value="{{$kurse[0]->Modulnummer}}" name="Modulnummer" id="kursanlegen">
-        <button class="b2" type="submit" id="kursanlegen"> neuen kurse anlegen </button>
+        <button class="b2" type="submit" id="kursanlegen"> Neuen Kurs anlegen </button>
     </form>
     <br>
     @forelse($kurse as $kurs)
@@ -19,7 +19,7 @@
                     @csrf
                     <input type="hidden" value="{{$kurs->Modulnummer}}" name="Modulnummer" id="bearbeiten">
                     <input type="hidden" value="{{$kurs->Jahr}}" name="Jahr" id="bearbeiten">
-                    <input type="submit" name="bearbeiten" id="bearbeiten" value="{{__("bearbeiten")}}">
+                    <input type="submit" name="bearbeiten" id="bearbeiten" value="{{__("Kursverwaltung")}}">
                 </form></div>
         </div>
     @empty
