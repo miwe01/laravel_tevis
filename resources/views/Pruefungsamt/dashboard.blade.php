@@ -230,7 +230,7 @@
                 <form action="/pruefungsamt/praktikumAnerkennen" method="post">
                     @csrf
                     <div>
-                        <label for="matrikelnummer2" class="form-label" >Matrikelnummer</label>
+                        <label for="matrikelnummer2" class="form-label">{{ __("Matrikelnummer")}}</label>
                         <input type="number" class="matrikelnummer-input" id="matrikelnummer2" name="matrikelnummer" placeholder="XXXXXX" min="1111111" max="9999999" value="3553355" required>
                         <select class="select-form" name="modul">
                             <option value="">{{__("Modul auswählen")}}</option>
@@ -259,7 +259,7 @@
                     @csrf
                     <h3>{{__("Testatbogen anzeigen")}}</h3>
                     <div>
-                        <label for="matrikelnummer3" class="form-label">Matrikelnummer</label>
+                        <label for="matrikelnummer3" class="form-label">{{ __("Matrikelnummer")}}</label>
                         <input type="number" class="matrikelnummer-input" id="matrikelnummer3" name="matrikelnummer" value="4444446" placeholder="XXXXXXX" min="1111111" max="9999999" required>
                         <button type="submit" class="form-button" name="matrikel-anzeigen">{{__("Anzeigen")}}</button>
                     </div>
