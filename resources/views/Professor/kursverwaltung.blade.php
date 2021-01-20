@@ -57,6 +57,14 @@
         <br>
         <form action="/Professor/meine_kurse/kursverwaltung" method="post">
             @csrf
+            <input type="text" name="Matrikel" id="Matrikel">
+            <input type="hidden" value="{{$kursverwaltung[0]->Modulnummer}}" name="Modulnummer" id="bearbeiten">
+            <input type="hidden" value="{{$kursverwaltung[0]->Jahr}}" name="Jahr" id="bearbeiten">
+            <input type="submit" name="student_hinzu" id="student_hinzu" value="{{__("Student hinzufügen")}}">
+        </form>
+        <br>
+        <form action="/Professor/meine_kurse/kursverwaltung" method="post">
+            @csrf
             <input type="number" name="Testatanzahl" min="1" id="Testatanzahl">
             <input type="hidden" value="{{$kursverwaltung[0]->Modulnummer}}" name="Modulnummer" id="bearbeiten">
             <input type="hidden" value="{{$kursverwaltung[0]->Jahr}}" name="Jahr" id="bearbeiten">
