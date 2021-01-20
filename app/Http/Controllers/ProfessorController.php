@@ -251,14 +251,30 @@ class ProfessorController extends Controller
             ->orderBy('student.Matrikelnummer')
             ->get();
 
-        $betreuer = DB::table('tutor')
-            ->leftJoin('benutzer' ,'benutzer.kennung', '=', 'tutor.kennung')
-            ->leftJoin('tutorbetreutgruppen', 'tutorbetreutgruppen.TutorID','=', 'tutor.kennung')
-            ->join('gruppe', 'gruppe.gruppenummer', '=','tutorbetreutgruppen.GruppenID' )
+        $gruppennummer = $request->Gruppenummer;
+        $betreuer = DB::table('benutzer')
+            ->leftJoin("tutorbetreutgruppen", function($join) use ($gruppennummer){
+                $join->on("tutorbetreutgruppen.TutorID","=","benutzer.kennung")
+                     ->where('tutorbetreutgruppen.GruppenID', '=',  $gruppennummer);
+            })
+
+
+
+            ->leftJoin('professorbetreutgruppen', 'professorbetreutgruppen.ProfessorID','=', 'benutzer.kennung')
+            ->leftJoin('tutor', 'Benutzer.Kennung','=', 'tutor.Kennung')
+            ->join("gruppe",function($join){
+                $join->on("gruppe.gruppenummer","=","professorbetreutgruppen.GruppenID")
+                    ->orOn('gruppe.gruppenummer', '=', "tutorbetreutgruppen.GruppenID");
+            })
             ->where('gruppe.gruppenummer',$request->Gruppenummer)
-            ->orderBy('Hauptbetreuer', 'DESC')
-            ->orderBy('tutor.Kennung')
+            ->orderBy('Rolle', 'ASC')
+            ->orderBy('professorbetreutgruppen.Hauptbetreuer', 'DESC')
+            ->orderBy('tutorbetreutgruppen.Hauptbetreuer', 'DESC')
+
             ->get();
+
+        dd($betreuer);
+
 
 
         foreach($gruppeninfos as $ginfos){
@@ -301,7 +317,7 @@ class ProfessorController extends Controller
     }
 
 
-    Public function studentenAusGruppeLoeschen(Request $request){
+    public function studentenAusGruppeLoeschen(Request $request){
         DB::table('studenteningruppen')
             ->where('GruppenID', '=', $request->GruppenID)
             ->where('Matrikelnummer', '=', $request->Matrikelnummer)
@@ -469,44 +485,65 @@ class ProfessorController extends Controller
             ->where('Kennung','=',$request->TutorID)
             ->get();
 
-        // Wenn Tutor existiert
-        if(sizeof($ex)>0) {
-            // Kennung von Tutor
+        $prof=db::table('professor')
+            ->select('Kennung')
+            ->where('Kennung','=',$request->TutorID)
+            ->get();
+
+        // Wenn Tutor/Professor existiert
+        if(sizeof($ex)>0 || sizeof($prof)>0) {
+            $id = "";
+            $tablename = "";
+            // Wenn Professor
+            if (sizeof($prof)>0){
+                $id = "ProfessorID";
+                $tablename = "professorbetreutgruppen";
+            }
+            // Wenn Tutor
+            else{
+                $id = "TutorID";
+                $tablename = "tutorbetreutgruppen";
+            }
+
+            // Kennung von Tutor/Professor
             //dump($request->gruppen);
-            // dd($request->gruppen);
+            //dd($request->gruppen);
 
             $checkboxen = $request->gruppen;
 
-            // Gruppen in der Tutor hinzugefügt werden kann
+            // Gruppen in der Tutor/Professor hinzugefügt werden kann
             $gruppenNamen =  DB::table('gruppe')
                 ->select('Gruppenummer')
                 ->where('Modulnummer',$request->Modulnummer)
                 ->where('Jahr', $request->Jahr)
                 ->get();
             //dd($gruppenNamen[1]->Gruppenummer);
+            //dd($gruppenNamen);
 
+            // keine Checkbox ausgewählt
             if ($checkboxen == NULL)
                 return redirect()->route('gruppe',['Gruppenummer'=>$request->Gruppennummer, 'Modulnummer'=>$request->Modulnummer, 'Jahr' => $request-> Jahr, 'fehler'=>'Keine Checkbox ausgewählt']);
-
 
 
             for ($i=0;$i<count($checkboxen);$i++){
                     // if Checkbox angeklickt
                     if ($checkboxen[$i] == "on"){
 
-                        // wenn tutor schon gruppe betreut
-                        $ingruppe = db::table('tutorbetreutgruppen')
+                        // wenn tutor/professor schon gruppe betreut
+                        $ingruppe = db::table($tablename)
                             ->where('GruppenID', '=', $gruppenNamen[$i]->Gruppenummer)
-                            ->where('TutorID', '=', $request->TutorID)
+                            ->where($id, '=', $request->TutorID)
                             ->get();
+
+                        //dd($ingruppe);
 
                         // wenn tutor noch nicht gruppe betreut
                         if (sizeof($ingruppe)==0) {
 
-                            DB::table('tutorbetreutgruppen')
+                            DB::table($tablename)
                                 ->insert([
                                     'GruppenID' => $gruppenNamen[$i]->Gruppenummer,
-                                    'TutorID' => $request->TutorID
+                                    $id => $request->TutorID
                                 ]);
 
                         }
@@ -555,18 +592,41 @@ class ProfessorController extends Controller
 
 
         return redirect()->route('gruppe',['Gruppenummer'=>$request->Gruppennummer, 'Modulnummer'=>$request->Modulnummer,
-            'Jahr' => $request-> Jahr]);
+            'Jahr' => $request-> Jahr, 'info'=> 'Hauptbetreuer aktualisiert']);
     }
 
 
     public function ansprechperson(Request $request){
-        DB::table('tutorbetreutgruppen')
+        // checkt ob Professor oder Tutor ist
+        $tablename = "";
+        $id = "";
+        if (isset($request->professor)){
+            $tablename ="professorbetreutgruppen";
+            $id = "ProfessorID";
+        } else{
+            $tablename ="tutorbetreutgruppen";
+            $id = "TutorID";
+        }
+
+        DB::table("tutorbetreutgruppen")
             ->where('GruppenID', $request->Gruppennummer)
             ->update(['Hauptbetreuer' => 0]);
-        DB::table('tutorbetreutgruppen')
+
+        DB::table("professorbetreutgruppen")
             ->where('GruppenID', $request->Gruppennummer)
-            ->where('TutorID', $request->Kennung)
+            ->update(['Hauptbetreuer' => 0]);
+
+
+        DB::table($tablename)
+            ->where('GruppenID', $request->Gruppennummer)
+            ->where($id, $request->Kennung)
             ->update(['Hauptbetreuer' => 1]);
+
+
+
+
+
+
         return redirect()->route('gruppe',['Gruppenummer'=>$request->Gruppennummer, 'Modulnummer'=>$request->Modulnummer,
             'Jahr' => $request-> Jahr]);
     }

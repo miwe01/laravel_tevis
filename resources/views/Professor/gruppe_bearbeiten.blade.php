@@ -108,34 +108,37 @@
             </tr>
             </thead>
             <tbody>
-            @php
-            $i=0;
-            @endphp
+
             @foreach($betreuer as $tutor)
+
                 <tr>
                     <td>
-                        @if($i== 0)
+                        @if($tutor->Hauptbetreuer == 1)
                             <b>
                         @endif
+                        {{--Professor--}}
+                        @if($tutor->Rolle == NULL)
+                            {{"Prof."}}
+                        @endif
                         {{$tutor->Vorname}} {{$tutor->Nachname}}
-                                @if($i== 0)
+                                @if($tutor->Hauptbetreuer == 1)
                             </b>
                                 @endif
                             </td>
                     <td>
-                        @if($i== 0)
+                        @if($tutor->Hauptbetreuer == 1)
                             <b>
                                 @endif
                         <a href="mailto:{{$tutor->Email}}">{{$tutor->Email}}</a>
-                                @if($i== 0)
+                                @if($tutor->Hauptbetreuer == 1)
                             </b>
                         @endif</td>
                     <td>
-                        @if($i== 0)
+                        @if($tutor->Hauptbetreuer == 1)
                             <b>
                                 @endif
                         <a href="{{$tutor->Webexraum}}">{{$tutor->Webexraum}}</a>
-                                @if($i== 0)
+                                @if($tutor->Hauptbetreuer == 1)
                                     </b>
                         @endif
                     </td>
@@ -143,7 +146,13 @@
                         <form action="/Professor/gruppe/tutorloeschen" method="post">
                             @csrf
                             <input type="hidden" value="{{$gruppeninfo->Gruppenummer}}" name="Gruppennummer" id="loeschen">
-                            <input type="hidden" value="{{$tutor->Kennung}}" name="Kennung" id="loeschen">
+                            {{-- Wenn Professor --}}
+                            @if($tutor->Rolle == NULL)
+                                <input type="hidden" value="{{$tutor->ProfessorID}}" name="Kennung" id="loeschen">
+                            @else
+                                <input type="hidden" value="{{$tutor->Kennung}}" name="Kennung" id="loeschen">
+                            @endif
+
                             <input type="hidden" value="{{$modul->Modulnummer}}" name="Modulnummer" id="loeschen">
                             <input type="hidden" value="{{$modul->Jahr}}" name="Jahr" id="loeschen">
                             <input type="submit" name="loeschen" value="{{__("Löschen")}}" id="loeschen">
@@ -152,10 +161,16 @@
                         <form action="/Professor/gruppe/Hauptbetreuer" method="post">
                             @csrf
                             <input type="hidden" value="{{$gruppeninfo->Gruppenummer}}" name="Gruppennummer" id="haupt">
-                            <input type="hidden" value="{{$tutor->Kennung}}" name="Kennung" id="haupt">
+                            {{-- Wenn Professor --}}
+                            @if($tutor->Rolle == NULL)
+                                <input type="hidden" value="1" name="professor" id="loeschen">
+                                <input type="hidden" value="{{$tutor->ProfessorID}}" name="Kennung" id="loeschen">
+                            @else
+                                <input type="hidden" value="{{$tutor->Kennung}}" name="Kennung" id="loeschen">
+                            @endif
                             <input type="hidden" value="{{$modul->Modulnummer}}" name="Modulnummer" id="haupt">
                             <input type="hidden" value="{{$modul->Jahr}}" name="Jahr" id="haupt">
-                            @if($i== 0)
+                            @if($tutor->Hauptbetreuer == 1)
                                 <input type="submit" value="{{__("Hauptbetreuer")}}" name="Haupt" id="haupt" disabled>
 
                             @else
