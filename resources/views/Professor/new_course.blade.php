@@ -27,11 +27,18 @@
         <input type="text" id="Semester" name="Semester" />
         <br><br><br>
         <button type="submit">Kurs Hinzufügen </button>
-    </form>
-    <br>
-
-    @if (isset($msg))
+         @if (isset($msg))
         {{$msg}}
     @endif
+    </form>
+    <br>
+    <div>
+        <form action="/Professor/meine_kurse" method="post">
+            @csrf
+            <button type="submit">{{__("Zurück zur Kursübersicht")}}</button>
+        </form>
+    </div>
+
+   
 
 @endsection
