@@ -46,15 +46,8 @@
                                     <input type="hidden" value="{{$gruppe->Modulnummer}}" name="Modulnummer" id="bearbeiten">
                                     <input type="hidden" value="{{$gruppe->Jahr}}" name="Jahr" id="bearbeiten">
                                     <input type="hidden" value="{{$gruppe->Gruppenummer}}" name="Gruppenummer" id="bearbeiten">
-                                    <input type="submit" name="bearbeiten" id="bearbeiten" value="{{__("bearbeiten")}}">
-                                </form>
-                                <form action="/Professor/gruppenübersicht" method="post">
-                                    @csrf
-                                    <input type="hidden"  value="{{$gruppe->Gruppenname}} " name="Gruppenname" id="Testat">
-                                    <input type="hidden"  value="{{$gruppe->Gruppenummer}} " name="Gruppenummer" id="Testat">
-                                    <input type="hidden"  value="{{$gruppe->Jahr}} " name="Jahr" id="Testat">
-                                    <button type="submit"  value="{{$gruppe->Modulname}} " name="Modulname" id="Testat">{{__("Testverwaltung2")}}</button>
-                                </form>
+                                    <input type="submit" name="bearbeiten" id="bearbeiten" value="{{__("Gruppenübersicht")}}">
+                                </form>                              
                             </ul>
                         </details>
                     @endif
