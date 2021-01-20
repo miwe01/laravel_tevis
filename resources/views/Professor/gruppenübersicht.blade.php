@@ -1,96 +1,217 @@
 @extends('Template.layout')
+@extends('Template.links')
+
 @section('main')
-    @extends('Template.links')
-    <link rel="stylesheet" href="{{URL::asset("CSS/styleProfessor.css")}}">
-    <br>
-    <h1 align="center">{{$modulname}}{{$jahr}}</h1>
-    <h1 align="center">{{$gruppenname}}</h1>
-    <br>
-    <br>
-    <div class="link">
-        <form action="/Professor/testatverwaltung" method="post">
-            @csrf
-            <input type="text"  name="term" id="term">
-            <input type="hidden"  value="{{$gruppenname}}" name="Gruppenname" id="search">
-            <input type="hidden"  value="{{$studenten[0]->Gruppenummer}}" name="Gruppenummer" id="search">
-            <input type="hidden"  value="{{$jahr}}" name="Jahr" id="search">
-            <input type="hidden"  value="{{$modulname}}" name="Modulname" id="search">
-            <button type="submit"  value="search" name="search" id="search">Suche</button>
-        </form>
-        @if(isset($abc))
-            <h6>{{$abc}}</h6>
-        @endif
-    </div>
-    <br>
-    <div style="overflow-x:auto;">
-        <table border="2">
-            @forelse($studenten as $s)
 
-                <tr>
-                    <th style="background-color: #eaeaea">Matrikelnummer</th>
-                    <th style="background-color: #eaeaea">{{__("Vorname")}}</th>
-                    <th style="background-color: #eaeaea">{{__("Nachname")}}</th>
-                    @forelse($testat as $t)
-                        @if ($t->Matrikelnummer == $s->Matrikelnummer)
-                            <th>{{$t->Praktikumsname}}</th>
-                        @endif
-                    @empty
-                        <th>{{__("Keine Daten vorhanden")}}.</th>
-                    @endforelse
+    <link rel="stylesheet" href="{{URL::asset("CSS/styleProfessor_gruppe.css")}}">
+    @if(isset($_GET['fehler']))
+        <p class="error">{{$_GET['fehler']}}</p>
+    @endif
+    @if(isset($_GET['info']))
+        <p class="info">{{$_GET['info']}}</p>
+    @endif
+    <h1 class ="meinekurse">{{$modul->Modulname}} {{$gruppeninfo->Gruppenname}} </h1>
 
-                    <th style="background-color: #eaeaea">{{__("Testat")}}</th>
-                    <th style="background-color: #eaeaea">{{__("Verschieben")}}</th>
-                    <th style="background-color: #eaeaea">{{__("Löschen")}}</th>
-                </tr>
-                <tr>
-                    <th>{{$s->Matrikelnummer}}</th>
-                    <th>{{$s->Vorname}}</th>
-                    <th>{{$s->Nachname}}</th>
-                    @forelse($testat as $t)
-                        @if ($t->Matrikelnummer == $s->Matrikelnummer)
-                            @if ($t->Testat == 1)
-                                <th>&#10004</th>
-                            @else
-                                <th>&#10006</th>
-                            @endif
-                        @endif
-                    @empty
-                        <th>{{__("Keine Daten vorhanden")}}.</th>
-                    @endforelse
 
-                    <th><form action="/Professor/gruppe/testat" method="post">
-                            @csrf
-                            <input type="hidden"  value="{{$s->Matrikelnummer}}" name="Matrikelnummer" id="Testat">
-                            <input type="hidden"  value="{{$s->Gruppenname}} " name="Gruppenname" id="Testat">
-                            <input type="hidden"  value="{{$s->Gruppenummer}} " name="Gruppenummer" id="Testat">
-                            <input type="hidden"  value="{{$s->Jahr}} " name="Jahr" id="Testat">
-                            <button type="submit"  value="{{$modulname}} " name="Modulname" id="Testat">{{__("Testat")}}</button>
-                        </form></th>
-                </tr>
-            @empty
-                <th>{{__("Keine Daten vorhanden")}}.</th>
-            @endforelse
-        </table>
-        <br><br>
-        <table border="2">
+    <div class="grid-container">
+        <h3>Studenten</h3>
+        <table class="mitglieder">
+            <thead>
             <tr>
-                <th style="background-color: #eaeaea">{{__("Betreuer")}}</th>
-                <th style="background-color: #eaeaea">{{__("Email-Adresse")}}</th>
-                <th style="background-color: #eaeaea">{{__("Webex Raum")}}</th>
-                <th style="background-color: #eaeaea">{{__("Bearbeiten")}}</th>
+                <th>Matrikelnummer</th>
+                <th>{{__("Vorname")}}</th>
+                <th>{{__("Nachname")}}</th>
+
+                <th>{{__("Werkzeuge")}}</th>
             </tr>
-            @foreach($betreuer as $b)
+            </thead>
+            <tbody>
+            @foreach($studenten as $student)
                 <tr>
-                    <th>{{$b->Vorname}}{{$b->Nachname}}</th>
-                    <th>{{$b->Email}}</th>
-                    <th>{{$b->Webex}}</th>
-                    <th>
+                    <td>{{$student->Matrikelnummer}}</td>
+                    <td>{{$student->Vorname}}</td>
+                    <td>{{$student->Nachname}}</td>
 
-
-                    </th>
+                    <td>
+                        <form action="/Professor/gruppe/studentloeschen" method="post">
+                            @csrf
+                            <input type="hidden" value="{{$gruppeninfo->Gruppenummer}}" name="GruppenID" id="sloeschen">
+                            <input type="hidden" value="{{$student->Matrikelnummer}}" name="Matrikelnummer" id="sloeschen">
+                            <input type="hidden" value="{{$modul->Modulnummer}}" name="Modulnummer" id="sloeschen">
+                            <input type="hidden" value="{{$modul->Jahr}}" name="Jahr" id="sloeschen">
+                            <input type="submit" value="{{__("Löschen")}}" name="loeschen" id="sloeschen">
+                        </form>
+                        <form action="/Professor/gruppe/studentVerschieben" method="post">
+                            @csrf
+                            <select id="verschieben" name="GruppenID">
+                                @foreach($gruppen as $gruppe)
+                                    <option value="{{$gruppe->Gruppenummer}}"> {{$gruppe->Gruppenummer}}</option>
+                                @endforeach
+                            </select>
+                            <input type="hidden" value="{{$gruppeninfo->Gruppenummer}}" name="altGruppenID" id="verschieben">
+                            <input type="hidden" value="{{$student->Matrikelnummer}}" name="Matrikelnummer" id="verschieben">
+                            <input type="hidden" value="{{$modul->Modulnummer}}" name="Modulnummer" id="verschieben">
+                            <input type="hidden" value="{{$modul->Jahr}}" name="Jahr" id="verschieben">
+                            <input type="submit" value="{{__("Verschieben")}}" name="verschieben" id="verschieben">
+                        </form>
+                        <form action="/Professor/gruppe/testat" method="post">
+                            @csrf
+                            <input type="hidden"  value="{{$student->Matrikelnummer}}" name="Matrikelnummer" id="Testat">
+                            <input type="hidden"  value="{{$gruppeninfo->Gruppenname}} " name="Gruppenname" id="Testat">
+                            <input type="hidden"  value="{{$gruppeninfo->Gruppenummer}} " name="Gruppenummer" id="Testat">
+                            <input type="hidden"  value="{{$modul->Jahr}} " name="Jahr" id="Testat">
+                            <button type="submit"  value="{{$modul->Modulname}} " name="Modulname" id="Testat">{{__("Testat")}}</button>
+                        </form>
+                    </td>
                 </tr>
             @endforeach
+            </tbody>
         </table>
     </div>
 
+
+
+    <div class="center">
+        <form class="mitte" action="/Professor/gruppe/studentHinzu" method="post">
+            @csrf
+            <input type="text" name="Matrikelnummer" placeholder="Matrikelnummer" id="hinzu">
+            <input type="hidden" value="{{$gruppeninfo->Gruppenummer}}" name="GruppenID" id="hinzu">
+            <input type="hidden" value="{{$modul->Modulnummer}}" name="Modulnummer" id="hinzu">
+            <input type="hidden" value="{{$modul->Jahr}}" name="Jahr" id="hinzu">
+            <input type="submit" value="{{__("Student hinzufügen")}}" id="hinzu">
+        </form>
+    </div>
+
+    <div class="center frame">
+        <p>Studenten über Datei hinzufügen</p>
+        <form class="mitte" action="/Professor/gruppe/studentenHinzu" method="post" enctype="multipart/form-data">
+            @csrf
+            <input type="file" name="studenten">
+            <input type="hidden" value="{{$gruppeninfo->Gruppenummer}}" name="GruppenID" id="hinzu">
+            <input type="hidden" value="{{$modul->Modulnummer}}" name="Modulnummer" id="hinzu">
+            <input type="hidden" value="{{$modul->Jahr}}" name="Jahr" id="hinzu">
+            <input type="submit" value="Einfügen" id="hinzu">
+        </form>
+    </div>
+
+
+
+    <div class="grid-container">
+        <h3>Professor/Betreuer</h3>
+        <table class="mitglieder">
+            <thead>
+            <tr>
+                <th>{{__("Betreuername")}}</th>
+                <th>{{__("E-Mail Adresse")}}</th>
+                <th>{{__("Webex Raum")}}</th>
+                <th>{{__("Werkzeug")}}</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            @foreach($betreuer as $tutor)
+
+                <tr>
+                    <td>
+                        @if($tutor->Hauptbetreuer == 1)
+                            <b>
+                        @endif
+                        {{--Professor--}}
+                        @if($tutor->Rolle == NULL)
+                            {{"Prof."}}
+                        @endif
+                        {{$tutor->Vorname}} {{$tutor->Nachname}}
+                                @if($tutor->Hauptbetreuer == 1)
+                            </b>
+                                @endif
+                            </td>
+                    <td>
+                        @if($tutor->Hauptbetreuer == 1)
+                            <b>
+                                @endif
+                        <a href="mailto:{{$tutor->Email}}">{{$tutor->Email}}</a>
+                                @if($tutor->Hauptbetreuer == 1)
+                            </b>
+                        @endif</td>
+                    <td>
+                        @if($tutor->Hauptbetreuer == 1)
+                            <b>
+                                @endif
+                        <a href="{{$tutor->Webexraum}}">{{$tutor->Webexraum}}</a>
+                                @if($tutor->Hauptbetreuer == 1)
+                                    </b>
+                        @endif
+                    </td>
+                    <td>
+                        <form action="/Professor/gruppe/tutorloeschen" method="post">
+                            @csrf
+                            <input type="hidden" value="{{$gruppeninfo->Gruppenummer}}" name="Gruppennummer" id="loeschen">
+                            {{-- Wenn Professor --}}
+                            @if($tutor->Rolle == NULL)
+                                <input type="hidden" value="1" name="professor" id="loeschen">
+                                <input type="hidden" value="{{$tutor->ProfessorID}}" name="Kennung" id="loeschen">
+                            @else
+                                <input type="hidden" value="{{$tutor->Kennung}}" name="Kennung" id="loeschen">
+                            @endif
+
+                            <input type="hidden" value="{{$modul->Modulnummer}}" name="Modulnummer" id="loeschen">
+                            <input type="hidden" value="{{$modul->Jahr}}" name="Jahr" id="loeschen">
+                            <input type="submit" name="loeschen" value="{{__("Löschen")}}" id="loeschen">
+                        </form>
+
+                        <form action="/Professor/gruppe/Hauptbetreuer" method="post">
+                            @csrf
+                            <input type="hidden" value="{{$gruppeninfo->Gruppenummer}}" name="Gruppennummer" id="haupt">
+                            {{-- Wenn Professor --}}
+
+                            @if($tutor->Rolle == NULL)
+                                <input type="hidden" value="1" name="professor" id="loeschen">
+                                <input type="hidden" value="{{$tutor->ProfessorID}}" name="Kennung" id="loeschen">
+                            @else
+                                <input type="hidden" value="{{$tutor->Kennung}}" name="Kennung" id="loeschen">
+                            @endif
+                            <input type="hidden" value="{{$modul->Modulnummer}}" name="Modulnummer" id="haupt">
+                            <input type="hidden" value="{{$modul->Jahr}}" name="Jahr" id="haupt">
+                            @if($tutor->Hauptbetreuer == 1)
+                                <input type="submit" value="{{__("Hauptbetreuer")}}" name="Haupt" id="haupt" disabled>
+
+                            @else
+                                <input type="submit" value="{{__("Hauptbetreuer")}}" name="Haupt" id="haupt">
+                                @endif
+
+                        </form>
+
+                    </td>
+                </tr>
+
+            @endforeach
+            </tbody>
+        </table>
+    </div>
+    <form class="center" action="/Professor/gruppe/betreuerHinzu" method="post">
+        @csrf
+        <input type="text" placeholder="Kennung" name="TutorID" id="betHinzu">
+        <input type="hidden" value="{{$gruppeninfo->Gruppenummer}}" name="Gruppennummer" id="betHinzu">
+        <input type="hidden" value="{{$modul->Modulnummer}}" name="Modulnummer" id="betHinzu">
+        <input type="hidden" value="{{$modul->Jahr}}" name="Jahr" id="betHinzu">
+        <input type="submit" value="{{__("Betreuer hinzufügen")}}" name="betHinzu" id="betHinzu">
+    </form>
+    <div class="center">
+    <h3>Betreuer in mehrere Gruppen hinzufügen</h3>
+        <form class="mitte" action="/Professor/gruppe/betreuerinGruppenHinzu" method="post">
+            @csrf
+
+          @foreach($GruppenName as $gruppe)
+              <label><input type="checkbox" name="gruppen[]" id="gruppen">
+            {{$gruppe->Gruppenname}}</label><br>
+        @endforeach
+        <br><br>
+            <input type="text" placeholder="Kennung" name="TutorID" id="betHinzu" value="sp3643s">
+            <input type="hidden" value="{{$gruppeninfo->Gruppenummer}}" name="Gruppennummer" id="betHinzu">
+            <input type="hidden" value="{{$modul->Modulnummer}}" name="Modulnummer" id="betHinzu">
+            <input type="hidden" value="{{$modul->Jahr}}" name="Jahr" id="betHinzu">
+            <button name="gruppe">Gruppen hinzufügen</button>
+        </form>
+
+    </div>
 @endsection

@@ -38,7 +38,12 @@ h1{
     padding: 5px;
 }
 input[type="file"]{
-    width: 100% ;
+    width: 200px ;
+}
+.center{
+    margin: auto;
+    width: 50%;
+    padding: 10px;
 }
 
 
@@ -51,6 +56,7 @@ h1.meinekurse{
     font-family: Verdana;
     font-weight: 90;
     margin-top: 1mm;
+    margin-left: 200px;
 }
 table{
     position: center;
