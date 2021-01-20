@@ -63,6 +63,10 @@ Route::middleware('ProfAuth')->prefix('Professor')->group(function() {
     Route::post('/kurs/BeteiligProf', [ProfessorController::class, 'BeteiligProf']);
     Route::post('/kurs/KursLoeschen', [ProfessorController::class, 'KursLoeschen']);
     Route::post('/gruppe/testat', [ProfessorController::class, 'testat']);
+    Route::post('/testatverwaltung', [ProfessorController::class, 'testatverwaltung']);
+    Route::get('/testatverwaltung', [ProfessorController::class, 'testatverwaltung'])->name('Professor/testatverwaltung');
+    Route::any('/gruppe/testat', [ProfessorController::class, 'testat'])->name('Professor/testat');
+
 });
 
 // student routes
