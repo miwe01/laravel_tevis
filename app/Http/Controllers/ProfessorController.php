@@ -167,34 +167,35 @@ class ProfessorController extends Controller
             DB::commit();
         }
         if(isset($request->student_hinzu)) {
+
             $ex = DB::table('student')
                 ->select('Kennung')
                 ->where('Matrikelnummer', '=', $request->Matrikel)
                 ->value('Kennung');
 
+            if($ex != null) {
+                $vergleich = DB::table('benutzerhatmodul')
+                    ->where('BenutzerID', '=', $ex)
+                    ->where('ModulID', '=', $request->Modulnummer)
+                    ->where('Jahr', '=', $request->Jahr)
+                    ->get();
 
-            $vergleich = DB::table('benutzerhatmodul')
-                ->where('BenutzerID', '=', $ex)
-                ->where('ModulID', '=', $request->Modulnummer)
-                ->where('Jahr', '=', $request->Jahr)
-                ->get();
 
+                if ($vergleich->isEmpty()) {
+                    DB::beginTransaction();
+                    try {
+                        DB::table('benutzerhatmodul')
+                            ->insert(['BenutzerID' => $ex, 'ModulID' => $request->Modulnummer, 'Jahr' => $request->Jahr, 'Rolle' => 'Student']);
+                        $msg = "Student wurde hinzugefüg!";
+                    } catch (\Exception $e) {
+                        DB::rollback();
+                        $msg = "Fehler beim Student hinzufügen!";
+                    }
+                    DB::commit();
 
-
-            if ($vergleich->isEmpty()) {
-                DB::beginTransaction();
-                try {
-                    DB::table('benutzerhatmodul')
-                        ->insert(['BenutzerID' => $ex, 'ModulID' => $request->Modulnummer, 'Jahr' => $request->Jahr, 'Rolle' => 'Student']);
-                    $msg = "Student wurde hinzugefüg!";
-                } catch (\Exception $e) {
-                    DB::rollback();
-                    $msg = "Fehler beim Student hinzufügen!";
+                } else {
+                    $msg = "Student schon vorhanden!";
                 }
-                DB::commit();
-
-            } else {
-                $msg = "Student schon vorhanden!";
             }
         }
 
