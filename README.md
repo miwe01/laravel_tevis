@@ -1,4 +1,4 @@
-## Laravel_Tevis
+# Laravel_Tevis
 
 Modul: SWE (Software Engineering)
 
@@ -10,14 +10,14 @@ Unter anderem wurde gewünscht, dass ein Login System entwickelt wird mit versch
 
 Die angeforderten Rollen:
 
-# Prüfungsamt
+## Prüfungsamt
 Prüfungsamt ist die höchste Instanz in dem System, die ermöglicht Studenten zu erstellen, automatisch eine Liste von Stundenten in die DB zu erstellen und weitere Funktionen.
 
-# Professor
+## Professor
 Kann seine Kurse erstellen, Verwaltung von Studenten innerhalb der Kurse, Betreuer hinzufügen.
 
-# Student
+## Student
 Ein Student sieht seine Kurse und erhaltenen Testate.
 
-# Tutor
+## Tutor
 Ist auch ein Student, jedoch kann dieser Aufgaben von Studenten überprüfen und dementsprechend als bestanden oder nicht bestanden bewerten.
